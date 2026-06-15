@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+body{
+    margin:0;
+    background:#0b0b0b;
+    color:white;
+    font-family:Arial;
+}
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 30px;
+    background:#111;
+    border-bottom:2px solid #e50914;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    width:50px;
+}
+
+.logo h1{
+    font-family:'Permanent Marker', cursive;
+    color:#e50914;
+    letter-spacing:3px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+.hero{
+    height:90vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.hero h2{
+    font-size:70px;
+    color:#e50914;
+    font-family:'Permanent Marker', cursive;
+}
+
+.hero p{
+    color:#aaa;
+    font-size:20px;
+}
+
+button{
+    background:#e50914;
+    border:none;
+    color:white;
+    padding:12px 20px;
+    cursor:pointer;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+button:hover{
+    background:red;
+}
+
+.products{
+    display:flex;
+    flex-direction:column;
+    gap:40px;
+    padding:40px;
+}
+
+.product{
+    background:#161616;
+    border:1px solid #333;
+    border-radius:20px;
+    padding:20px;
+}
+
+.product img{
+    width:100%;
+    max-width:350px;
+    border-radius:15px;
+}
+
+.color-options{
+    display:flex;
+    gap:10px;
+    margin:10px 0;
+}
+
+.color-ball{
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    cursor:pointer;
+    border:2px solid white;
+}
+
+.cart-item{
+    background:#161616;
+    padding:20px;
+    margin:20px;
+    border-radius:15px;
+}
+
+.checkout-box{
+    width:500px;
+    margin:auto;
+    margin-top:100px;
+    background:#161616;
+    padding:40px;
+    border-radius:20px;
+}
+
+.checkout-box input{
+    width:100%;
+    padding:15px;
+    margin-top:10px;
+    background:#222;
+    border:none;
+    color:white;
+}

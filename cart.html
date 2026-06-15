@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>VANDAL CART</title>
+
+<style>
+
+body{
+margin:0;
+background:#000000;
+color:rgb(255, 255, 255);
+font-family:'arial'
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+padding:20px 30px;
+background:#000000;
+border-bottom:2px solid rgb(255, 0, 0);
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.logo img{
+width:55px;
+}
+
+.container{
+padding:30px;
+}
+
+.item{
+display:flex;
+gap:20px;
+background:#161616;
+padding:20px;
+margin-bottom:20px;
+border-radius:15px;
+}
+
+.item img{
+width:180px;
+border-radius:12px;
+}
+
+button{
+padding:10px 18px;
+background:rgb(0, 0, 0);
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.total{
+font-size:30px;
+margin-top:30px;
+}
+
+.checkout{
+margin-top:20px;
+display:inline-block;
+padding:15px 30px;
+background:rgb(255, 0, 0);
+color:white;
+text-decoration:none;
+border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">
+<img src="VANDAL LOGO.png">
+<h1>VANDAL</h1>
+</div>
+
+<a href="shop.html" style="color:white;">
+Back To Shop
+</a>
+
+</nav>
+
+<div class="container" id="cart-container"></div>
+
+<script>
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const container =
+document.getElementById("cart-container");
+
+let total = 0;
+
+function renderCart(){
+
+container.innerHTML = "";
+
+cart.forEach((item,index)=>{
+
+total += item.price;
+
+container.innerHTML += `
+
+<div class="item">
+
+<img src="${item.image}">
+
+<div>
+
+<h2>${item.name}</h2>
+
+<p>Size: ${item.size}</p>
+
+<p>Color: ${item.color}</p>
+
+<h3>₦${item.price}</h3>
+
+<button onclick="removeItem(${index})">
+REMOVE
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML += `
+
+<div class="total">
+
+TOTAL: ₦${total}
+
+</div>
+
+<a href="checkout.html" class="checkout">
+CHECKOUT
+</a>
+
+`;
+
+}
+
+function removeItem(index){
+
+cart.splice(index,1);
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+location.reload();
+
+}
+
+renderCart();
+
+</script>
+
+</body>
+</html>

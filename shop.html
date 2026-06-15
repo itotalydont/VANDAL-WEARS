@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VANDAL SHOP</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:rgb(0, 0, 0);
+color:rgb(255, 255, 255);
+font-family:Arial;
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 30px;
+background:#000000;
+border-bottom:2px solid #ffffff;
+}
+
+.logo-wrap{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.logo-wrap img{
+width:60px;
+}
+
+.logo-text{
+font-family:'Creepster',cursive;
+font-size:36px;
+color:rgb(255, 255, 255);
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:25px;
+padding:30px;
+}
+
+.card{
+background:solid rgb(255, 255, 255);
+padding:18px;
+border-radius:18px;
+}
+
+.card img{
+width:100%;
+border-radius:12px;
+}
+
+.colors{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:12px;
+}
+
+.dot{
+width:25px;
+height:25px;
+border-radius:50%;
+border:2px solid rgb(255, 238, 238);
+cursor:pointer;
+}
+
+select{
+width:100%;
+padding:10px;
+margin-top:15px;
+background:#0e0c0c;
+color:rgb(255, 255, 255);
+border:none;
+border-radius:10px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:15px;
+background:rgb(0, 0, 0);
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+button:hover{
+background:#ff0000;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo-wrap">
+<img src="VANDAL LOGO.png">
+<div class="logo-text">VANDAL</div>
+</div>
+
+<div>
+<a href="cart.html" style="color:rgb(255, 255, 255);text-decoration:none;">Cart</a>
+</div>
+
+</nav>
+
+<div class="products" id="products"></div>
+
+<script>
+
+const products = [
+
+{
+name:"VANDAL JERSEY",
+price:25000,
+colors:[
+"VANDAL JERSEY RED.png",
+"VANDAL JERSEY BLUE.png",
+"VANDAL JERSEY LIGHT BLUE.png",
+"VANDAL JERSEY PINK.png",
+"VANDAL JERSEY GREEN.png",
+"VANDAL JERSEY GRAY.png",
+"VANDAL JERSEY BLACK.png"
+]
+},
+
+{
+name:"VANDAL TEE",
+price:20000,
+colors:[
+"VANDAL TEE BLACK.png",
+"VANDAL TEE GRAY.png",
+"VANDAL TEE GREEN.png",
+"VANDAL TEE WHITE.png",
+"VANDAL TEE LIME GREEN.png"
+]
+},
+
+{
+name:"DOUBLE WAIST",
+price:35000,
+colors:[
+"DOUBLE WAIST RED.png",
+"DOUBLE WAIST BLUE.png",
+"DOUBLE WAIST GRAY.png",
+"DOUBLE WAIST PINK.png",
+"DOUBLE WAIST WHITE.png",
+"DOUBLE WAIST BLACK.png"
+]
+},
+
+{
+name:"FEM POLO",
+price:20000,
+colors:[
+"FEM POLO RED.png",
+"FEM POLO BLUE.png",
+"FEM POLO GRAY.png",
+"FEM POLO PINK.png",
+"FEM POLO WHITE.png",
+"FEM POLO BLACK.png",
+"FEM POLO LIGHT GRAY.png"
+]
+},
+
+{
+name:"KOM TEE",
+price:20000,
+colors:[
+"KOM TEE RED.png",
+"KOM TEE BLUE.png",
+"KOM TEE GRAY.png",
+"KOM TEE PINK.png",
+"KOM TEE WHITE.png"
+]
+},
+
+{
+name:"VANDAL shorts V1",
+price:25000,
+colors:[
+"VANDAL shorts V1 RED.png",
+"VANDAL shorts V1 BLUE.png",
+"VANDAL shorts V1 PINK.png",
+"VANDAL shorts V1 GRAY.png",
+"VANDAL shorts v1 GREEN.png"
+]
+},
+
+{
+name:"VANDAL shorts V2",
+price:25000,
+colors:[
+"VANDAL shorts V2 RED.png",
+"VANDAL shorts V2 BLUE.png",
+"VANDAL shorts V2 PINK.png",
+"VANDAL shorts V2 GRAY.png",
+"VANDAL shorts v2 GREEN.png",
+"VANDAL shorts v2 BLACK.png",
+]
+},
+
+{
+name:"MISCHIEF SWEATS",
+price:30000,
+colors:[
+"MISCHIEF SWEATS RED.png",
+"MISCHIEF SWEATS BLUE.png",
+"MISCHIEF SWEATS GRAY.png",
+"MISCHIEF SWEATS PINK.png",
+"MISCHIEF SWEATS WHITE.png"
+]
+},
+
+{
+name:"FEM SHORTS",
+price:15000,
+colors:[
+"FEM SHORTS RED.png",
+"FEM SHORTS BLUE.png",
+"FEM SHORTS GRAY.png",
+"FEM SHORTS PINK.png",
+"FEM SHORTS BLACK.png"
+]
+},
+
+{
+name:"QUEEN BABY TEE",
+price:20000,
+colors:[
+"QOM BABY TEE RED.png",
+"QOM BABY TEE BLUE.png",
+"QOM BABY TEE GRAY.png",
+"QOM BABY TEE PINK.png",
+"QOM BABY TEE WHITE.png"
+]
+},
+
+{
+name:"FEM FOLDOVER SWEATS",
+price:30000,
+colors:[
+"FEM FOLDOVER SWEATS RED.png",    
+"FEM FOLDOVER SWEATS BLACK.png",
+"FEM FOLDOVER SWEATS GRAY.png",
+"FEM FOLDOVER SWEATS BLUE.png",
+"FEM FOLDOVER SWEATS WHITE.png",
+"FEM FOLDOVER SWEATS PINK.png",
+]
+},
+
+
+{
+name:"BEANIE",
+price:11000,
+colors:[
+"beanie-red.png",
+"beanie-blue.png",
+"beanie-gray.png",
+"beanie-pink.png",
+"beanie-black.png",
+"beanie-white.png"
+]
+}
+
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const container = document.getElementById("products");
+
+products.forEach((p,index)=>{
+
+container.innerHTML += `
+
+<div class="card">
+
+<h2>${p.name}</h2>
+
+<img id="img-${index}" src="${p.colors[0]}">
+
+<div class="colors">
+
+${p.colors.map(c=>`
+
+<div
+class="dot"
+style="background:${guessColor(c)}"
+onclick="changeImg(${index},'${c}')">
+</div>
+
+`).join("")}
+
+</div>
+
+<select id="size-${index}">
+<option>ES</option>
+<option>S</option>
+<option>M</option>
+<option>L</option>
+<option>XL</option>
+<option>XXL</option>
+</select>
+
+<button onclick="addToCart(${index})">
+ADD TO CART
+</button>
+
+</div>
+
+`;
+
+});
+
+function guessColor(file){
+
+let lower = file.toLowerCase();
+
+if(lower.includes("red")) return "red";
+if(lower.includes("blue")) return "blue";
+if(lower.includes("gray")) return "gray";
+if(lower.includes("pink")) return "pink";
+if(lower.includes("white")) return "white";
+if(lower.includes("green")) return "green";
+if(lower.includes("lime")) return "lime";
+if(lower.includes("black")) return "black";
+
+return "white";
+
+}
+
+function changeImg(index,file){
+
+document.getElementById(`img-${index}`).src = file;
+
+}
+
+function addToCart(index){
+
+const p = products[index];
+
+const img =
+document.getElementById(`img-${index}`).src;
+
+const size =
+document.getElementById(`size-${index}`).value;
+
+const color =
+img.split("/").pop().replace(".png","");
+
+cart.push({
+name:p.name,
+image:img,
+size:size,
+color:color,
+price:p.price
+});
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+alert("Added To Cart");
+
+}
+
+</script>
+
+</body>
+</html>

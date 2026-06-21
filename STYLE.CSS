@@ -69,7 +69,7 @@ button{
 }
 
 button:hover{
-    background:red;
+    background:#ff0000;
 }
 
 .products{
@@ -129,4 +129,87 @@ button:hover{
     background:#222;
     border:none;
     color:white;
+}
+.checkout-box button{
+    width:100%;
+    margin-top:20px;
+}
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+    background:black;
+}
+
+.logo{
+    color:rgb(255, 255, 255);
+    font-size:30px;
+    font-weight:bold;
+}
+
+nav ul{
+    display:flex;
+    gap:25px;
+    list-style:none;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+}
+
+nav a:hover{
+    color:rgb(253, 1, 1);
+}
+
+.contact-page{
+    text-align:center;
+    margin-top:100px;
+}
+
+.contact-page a{
+    color:rgb(255, 255, 255);
+    text-decoration:none;
+}
+
+nav{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    height:80px;
+    border-bottom:2px solid white;
+}
+
+.nav-links{
+    display:flex;
+    gap:60px;
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    font-size:20px;
+}
+
+.cart-link{
+    position:absolute;
+    right:40px;
+    color:white;
+    text-decoration:none;
+    font-size:20px;
+}
+nav{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    padding:20px 40px;
+    border-bottom:1px solid white;
+}
+body {
+    font-size: 30px;
 }

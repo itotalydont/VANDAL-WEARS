@@ -73,10 +73,10 @@ button:hover{
 }
 
 .products{
-    display:flex;
-    flex-direction:column;
-    gap:40px;
-    padding:40px;
+    display: flex;
+    flex-wrap:wrap;
+    gap:20px;
+    justify-content:center;
 }
 
 .product{
@@ -88,8 +88,8 @@ button:hover{
 
 .product img{
     width:100%;
-    max-width:350px;
-    border-radius:15px;
+    max-width:300px;
+    height:auto;
 }
 
 .color-options{
@@ -251,4 +251,31 @@ nav a:hover{
 .contact-box a {
     color: rgb(255, 255, 255);
     text-decoration: none;
+}
+
+@media (max-width: 768px){
+
+    nav{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .product{
+        width:90%;
+        margin:auto;
+    }
+
+    img{
+        max-width:100%;
+        height:auto;
+    }
+
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    overflow-x:hidden;
 }

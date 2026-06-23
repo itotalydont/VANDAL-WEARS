@@ -17,6 +17,12 @@ body{
     color:#fff;
     font-family:Arial, Helvetica, sans-serif;
     overflow-x:hidden;
+    overflow-wrap:break-word;
+}
+
+img{
+    max-width:100%;
+    height:auto;
 }
 
 /* =========================
@@ -169,6 +175,7 @@ body{
 
 .color-options{
     display:flex;
+    flex-wrap:wrap;
     gap:10px;
     margin:15px 0;
 }
@@ -233,6 +240,62 @@ button:hover{
     padding:20px;
     margin-bottom:15px;
     border-radius:10px;
+}
+
+.cart-item img{
+    width:140px;
+    border-radius:10px;
+    object-fit:cover;
+}
+
+.cart-item-info{
+    flex:1;
+    padding:0 20px;
+}
+
+.remove-btn{
+    width:auto;
+    padding:10px 18px;
+    background:#222;
+}
+
+.remove-btn:hover{
+    background:#ff0000;
+    color:#fff;
+}
+
+.cart-total{
+    font-size:1.8rem;
+    margin-top:30px;
+    text-align:right;
+}
+
+.checkout-btn{
+    margin-top:20px;
+    display:inline-block;
+    float:right;
+    padding:15px 30px;
+    background:#ff0000;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.checkout-btn:hover{
+    background:white;
+    color:black;
+}
+
+.empty-cart{
+    text-align:center;
+    color:#999;
+    padding:60px 20px;
+}
+
+.empty-cart a{
+    color:#ff0000;
 }
 
 /* =========================
@@ -350,7 +413,9 @@ footer{
 
 .cart-line{
     display:flex;
+    flex-wrap:wrap;
     justify-content:space-between;
+    gap:4px 10px;
     font-size:14px;
     color:#ccc;
     padding:8px 0;
@@ -389,10 +454,43 @@ footer{
 
     .products{
         grid-template-columns:1fr;
+        padding:20px;
+    }
+
+    .contact-grid{
+        grid-template-columns:1fr;
+    }
+
+    .contact-page{
+        padding:50px 20px;
     }
 
     .checkout-box{
         padding:25px;
+    }
+
+    .cart-item{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .cart-item img{
+        width:100%;
+        max-width:220px;
+    }
+
+    .cart-item-info{
+        padding:15px 0 0;
+    }
+
+    .checkout-btn{
+        float:none;
+        display:block;
+        text-align:center;
+    }
+
+    .cart-total{
+        text-align:center;
     }
 
     .logo img{

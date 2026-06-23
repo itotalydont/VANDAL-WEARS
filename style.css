@@ -13,7 +13,7 @@ html{
 }
 
 body{
-    background:#000;
+    background:linear-gradient(to bottom,#050505,#111,#000000);
     color:#fff;
     font-family:Arial, Helvetica, sans-serif;
     overflow-x:hidden;
@@ -46,7 +46,8 @@ body{
 }
 
 .logo span{
-    font-size:28px;
+    font-family:'Creepster', cursive;
+    font-size:32px;
     font-weight:900;
     letter-spacing:2px;
 }
@@ -68,27 +69,55 @@ body{
     color:#ff0000;
 }
 
+.nav-links a.active{
+    color:#ff0000;
+}
+
 /* =========================
    HERO
 ========================= */
 
 .hero{
-    height:70vh;
+    height:90vh;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
     text-align:center;
+    padding:20px;
 }
 
 .hero h1{
+    font-family:'Creepster', cursive;
     font-size:5rem;
     letter-spacing:4px;
 }
 
 .hero p{
+    max-width:700px;
     color:#999;
     margin-top:10px;
+    font-size:20px;
+}
+
+/* Hero CTA gets its own distinct button look (white, not red) */
+.hero button{
+    width:auto;
+    margin-top:30px;
+    padding:18px 40px;
+    background:rgb(222,222,222);
+    border:none;
+    border-radius:12px;
+    font-size:20px;
+    color:#000;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.hero button:hover{
+    background:#ff0000;
+    color:#fff;
+    transform:scale(1.05);
 }
 
 /* =========================
@@ -156,8 +185,18 @@ body{
     transform:scale(1.2);
 }
 
+.product-info select{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    background:#434141;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+}
+
 /* =========================
-   BUTTONS
+   BUTTONS (default/site-wide)
 ========================= */
 
 button{
@@ -257,6 +296,77 @@ footer{
 }
 
 /* =========================
+   CHECKOUT
+========================= */
+
+.checkout-page{
+    min-height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
+}
+
+.checkout-box{
+    background:#161616;
+    padding:40px;
+    border-radius:20px;
+    width:100%;
+    max-width:400px;
+}
+
+.checkout-box h1{
+    margin-bottom:10px;
+}
+
+.back-link{
+    display:inline-block;
+    color:#999;
+    text-decoration:none;
+    margin-bottom:20px;
+    font-size:14px;
+}
+
+.back-link:hover{
+    color:#ff0000;
+}
+
+.checkout-box input,
+.checkout-box select{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    background:#222;
+    border:none;
+    color:white;
+    border-radius:10px;
+}
+
+.cart-summary{
+    margin-top:20px;
+    max-height:200px;
+    overflow-y:auto;
+}
+
+.cart-line{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    color:#ccc;
+    padding:8px 0;
+    border-bottom:1px solid #222;
+}
+
+.empty-cart{
+    text-align:center;
+    color:#999;
+}
+
+.empty-cart a{
+    color:#ff0000;
+}
+
+/* =========================
    MOBILE
 ========================= */
 
@@ -279,6 +389,10 @@ footer{
 
     .products{
         grid-template-columns:1fr;
+    }
+
+    .checkout-box{
+        padding:25px;
     }
 
     .logo img{

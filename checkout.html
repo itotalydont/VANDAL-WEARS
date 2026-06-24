@@ -7,6 +7,8 @@
 
 <title>CHECKOUT</title>
 
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
 <style>
 
 body{
@@ -59,13 +61,15 @@ cursor:pointer;
 
 <h1>CHECKOUT</h1>
 
-<input type="text" placeholder="First Name">
+<input type="text" id="firstName" placeholder="First Name">
 
-<input type="text" placeholder="Last Name">
+<input type="text" id="lastName" placeholder="Last Name">
 
-<input type="email" placeholder="Email">
+<input type="email" id="email" placeholder="Email">
 
-<input type="text" placeholder="Address">
+<input type="text" id="phone" placeholder="Phone Number">
+
+<input type="text" id="address" placeholder="Address">
 
 <select id="delivery">
 
@@ -77,19 +81,19 @@ Lagos Island (₦8,500)
 Lagos Mainland (₦6,000)
 </option>
 
-<option value="12000">
-Outside Lagos (₦12,000)
-</option>
-
 <option value="0">
 Pick Up At Kudoro Estate (FREE)
+</option>
+
+<option value="outside">
+Outside Lagos (Message Us Directly)
 </option>
 
 </select>
 
 <h2 id="total"></h2>
 
-<button onclick="payNow()">
+<button id="payBtn" onclick="payNow()">
 PAY NOW
 </button>
 
@@ -111,11 +115,26 @@ document.getElementById("delivery");
 
 function updateTotal(){
 
+const payBtn = document.getElementById("payBtn");
+
+if(delivery.value === "outside"){
+
+document.getElementById("total").innerText =
+"Outside Lagos? Message us directly to arrange delivery.";
+
+payBtn.innerText = "MESSAGE US";
+
+return;
+
+}
+
+payBtn.innerText = "PAY NOW";
+
 const deliveryFee =
 Number(delivery.value);
 
 document.getElementById("total").innerText =
-"TOTAL: ₦" + (subtotal + deliveryFee);
+"TOTAL: ₦" + (subtotal + deliveryFee).toLocaleString("en-NG");
 
 }
 
@@ -128,9 +147,88 @@ updateTotal();
 
 function payNow(){
 
-alert(
-"Connect Paystack or Flutterwave here."
-);
+if(cart.length === 0){
+alert("Your cart is empty.");
+return;
+}
+
+if(delivery.value === "outside"){
+
+alert("Thanks! Since you're outside Lagos, please message us directly to arrange delivery and payment.");
+
+window.location.href = "contact.html";
+
+return;
+
+}
+
+const firstName = document.getElementById("firstName").value.trim();
+const lastName = document.getElementById("lastName").value.trim();
+const email = document.getElementById("email").value.trim();
+const phone = document.getElementById("phone").value.trim();
+const address = document.getElementById("address").value.trim();
+
+if(!firstName || !lastName || !email || !phone || !address){
+alert("Please fill in all fields before paying.");
+return;
+}
+
+const deliveryFee = Number(delivery.value);
+const total = subtotal + deliveryFee;
+
+FlutterwaveCheckout({
+
+public_key: "FLWPUBK_TEST-xxxxxxxxxxxxxxxxxxxxxxx-X",
+
+tx_ref: "vandal-" + Date.now(),
+
+amount: total,
+
+currency: "NGN",
+
+payment_options: "card, banktransfer, ussd",
+
+customer:{
+email: email,
+phone_number: phone,
+name: firstName + " " + lastName
+},
+
+meta:{
+address: address,
+delivery_option: delivery.options[delivery.selectedIndex].text,
+cart: JSON.stringify(cart)
+},
+
+customizations:{
+title: "VANDAL",
+description: "Payment for items in cart",
+logo: "VANDAL LOGO.png"
+},
+
+callback: function(response){
+
+if(response.status === "successful"){
+
+alert("Payment successful! Reference: " + response.transaction_id);
+
+localStorage.removeItem("cart");
+
+window.location.href = "index.html";
+
+}else{
+
+alert("Payment was not completed. Please try again.");
+
+}
+
+},
+
+onclose: function(){
+// user closed the payment modal without completing payment
+}
+
+});
 
 }
 

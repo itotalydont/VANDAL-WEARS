@@ -67,6 +67,13 @@ width:100%;
 border-radius:12px;
 }
 
+.price{
+font-size:20px;
+font-weight:bold;
+color:rgb(255, 255, 255);
+margin:8px 0 0 0;
+}
+
 .colors{
 display:flex;
 gap:10px;
@@ -203,7 +210,7 @@ colors:[
 
 {
 name:"KOM TEE",
-price:18000,
+price:20000,
 colors:[
 "KOM TEE RED.png",
 "KOM TEE BLUE.png",
@@ -215,7 +222,7 @@ colors:[
 
 {
 name:"VANDAL shorts V1",
-price:22000,
+price:25000,
 colors:[
 "VANDAL SHORTS V1 RED.png",
 "VANDAL SHORTS V1 BLUE.png",
@@ -227,7 +234,7 @@ colors:[
 
 {
 name:"VANDAL shorts V2",
-price:22000,
+price:25000,
 colors:[
 "VANDAL SHORTS V2 RED.png",
 "VANDAL SHORTS V2 BLUE.png",
@@ -240,7 +247,7 @@ colors:[
 
 {
 name:"MISCHIEF SWEATS",
-price:28000,
+price:30000,
 colors:[
 "MISCHIEF SWEATS RED.png",
 "MISCHIEF SWEATS BLUE.png",
@@ -264,7 +271,7 @@ colors:[
 
 {
 name:"QUEEN BABY TEE",
-price:18000,
+price:19000,
 colors:[
 "QOM BABY TEE RED.png",
 "QOM BABY TEE BLUE.png",
@@ -276,7 +283,7 @@ colors:[
 
 {
 name:"FEM FOLDOVER SWEATS",
-price:30000,
+price:28000,
 colors:[
 "FEM FOLDOVER SWEATS RED.png",    
 "FEM FOLDOVER SWEATS BLACK.png",
@@ -290,7 +297,7 @@ colors:[
 
 {
 name:"BEANIE",
-price:10000,
+price:11000,
 colors:[
 "beanie-red.png",
 "beanie-blue.png",
@@ -307,6 +314,10 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const container = document.getElementById("products");
 
+function formatPrice(amount){
+return "₦" + amount.toLocaleString("en-NG");
+}
+
 products.forEach((p,index)=>{
 
 container.innerHTML += `
@@ -316,6 +327,8 @@ container.innerHTML += `
 <h2>${p.name}</h2>
 
 <img id="img-${index}" src="${p.colors[0]}">
+
+<div class="price">${formatPrice(p.price)}</div>
 
 <div class="colors">
 

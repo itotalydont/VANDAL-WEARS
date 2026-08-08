@@ -81,10 +81,42 @@ flex-wrap:wrap;
 margin-top:12px;
 }
 
+.search-wrap{
+padding:25px 30px 0;
+}
+
+.search-wrap input{
+width:100%;
+padding:14px 18px;
+background:#161616;
+border:2px solid #292929;
+color:rgb(255,255,255);
+border-radius:10px;
+font-size:16px;
+outline:none;
+transition:0.2s;
+}
+
+.search-wrap input::placeholder{
+color:#777;
+}
+
+.search-wrap input:focus{
+border-color:#ff0000;
+}
+
+.no-results{
+grid-column:1/-1;
+padding:60px 30px;
+text-align:center;
+color:#777;
+font-size:18px;
+}
+
 .dot{
 width:25px;
 height:25px;
-border-radius:50%;
+border-radius:4px;
 border:2px solid rgb(255, 238, 238);
 cursor:pointer;
 }
@@ -149,6 +181,10 @@ background:#ff0000;
 
 </nav>
 
+<div class="search-wrap">
+<input type="text" id="searchInput" placeholder="Search products..." oninput="renderProducts()">
+</div>
+
 <div class="products" id="products"></div>
 
 <script>
@@ -196,7 +232,7 @@ colors:[
 
 {
 name:"FEM POLO",
-price:23000,
+price:21000,
 colors:[
 "FEM POLO RED.png",
 "FEM POLO BLUE.png",
@@ -314,11 +350,63 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const container = document.getElementById("products");
 
+function guessColor(file){
+
+let lower = file.toLowerCase();
+
+if(lower.includes("red")) return "red";
+if(lower.includes("blue")) return "blue";
+if(lower.includes("gray")) return "gray";
+if(lower.includes("pink")) return "pink";
+if(lower.includes("white")) return "white";
+if(lower.includes("green")) return "green";
+if(lower.includes("lime")) return "lime";
+if(lower.includes("black")) return "black";
+
+return "white";
+
+}
+
+function changeImg(index,file){
+
+document.getElementById(`img-${index}`).src = file;
+
+}
+
 function formatPrice(amount){
 return "₦" + amount.toLocaleString("en-NG");
 }
 
+// Shorts, sweats, double waist, and foldover pieces get a height guide
+// so people can pick the right length/fit.
+function needsHeight(name){
+return /shorts|sweats|waist|foldover/i.test(name);
+}
+
+const HEIGHT_OPTIONS = [
+"4'10\" - 5'2\"",
+"5'3\" - 5'6\"",
+"5'7\" - 5'10\"",
+"5'11\" - 6'2\"",
+"6'3\" and up"
+];
+
+function renderProducts(){
+
+const query =
+document.getElementById("searchInput").value.trim().toLowerCase();
+
+container.innerHTML = "";
+
+let matchCount = 0;
+
 products.forEach((p,index)=>{
+
+if(query && !p.name.toLowerCase().includes(query)){
+return;
+}
+
+matchCount++;
 
 container.innerHTML += `
 
@@ -353,6 +441,12 @@ onclick="changeImg(${index},'${c}')">
 <option>XXL</option>
 </select>
 
+${needsHeight(p.name) ? `
+<select id="height-${index}">
+${HEIGHT_OPTIONS.map(h=>`<option>${h}</option>`).join("")}
+</select>
+` : ""}
+
 <button onclick="addToCart(${index})">
 ADD TO CART
 </button>
@@ -363,26 +457,10 @@ ADD TO CART
 
 });
 
-function guessColor(file){
-
-let lower = file.toLowerCase();
-
-if(lower.includes("red")) return "red";
-if(lower.includes("blue")) return "blue";
-if(lower.includes("gray")) return "gray";
-if(lower.includes("pink")) return "pink";
-if(lower.includes("white")) return "white";
-if(lower.includes("green")) return "green";
-if(lower.includes("lime")) return "lime";
-if(lower.includes("black")) return "black";
-
-return "white";
-
+if(matchCount === 0){
+container.innerHTML =
+`<div class="no-results">No products match "${document.getElementById("searchInput").value}".</div>`;
 }
-
-function changeImg(index,file){
-
-document.getElementById(`img-${index}`).src = file;
 
 }
 
@@ -396,22 +474,36 @@ document.getElementById(`img-${index}`).src;
 const size =
 document.getElementById(`size-${index}`).value;
 
+const heightSelect =
+document.getElementById(`height-${index}`);
+
+const height =
+heightSelect ? heightSelect.value : null;
+
 const color =
 img.split("/").pop().replace(".png","");
 
-cart.push({
+const item = {
 name:p.name,
 image:img,
 size:size,
 color:color,
 price:p.price
-});
+};
+
+if(height){
+item.height = height;
+}
+
+cart.push(item);
 
 localStorage.setItem("cart",JSON.stringify(cart));
 
 alert("Added To Cart");
 
 }
+
+renderProducts();
 
 </script>
 

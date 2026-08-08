@@ -51,6 +51,41 @@ font-size:18px;
 cursor:pointer;
 }
 
+.promo-row{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.promo-row input{
+margin-top:0;
+flex:1;
+min-width:0;
+}
+
+.promo-row button{
+width:auto;
+margin-top:0;
+padding:12px 18px;
+font-size:15px;
+white-space:nowrap;
+}
+
+.promo-row button:disabled{
+opacity:0.5;
+cursor:default;
+}
+
+#promoMsg{
+min-height:16px;
+margin-top:8px;
+font-size:14px;
+}
+
+#total{
+line-height:1.5;
+}
+
 </style>
 
 </head>
@@ -81,15 +116,18 @@ Lagos Island (₦6,500)
 Lagos Mainland (₦5,000)
 </option>
 
-<option value="0">
-Pick Up At Kudoro Estate (FREE)
-</option>
-
 <option value="outside">
 Outside Lagos (Message Us Directly)
 </option>
 
 </select>
+
+<div class="promo-row">
+<input type="text" id="promoInput" placeholder="Discount code">
+<button id="promoBtn" onclick="applyPromo()">Apply</button>
+</div>
+
+<p id="promoMsg"></p>
 
 <h2 id="total"></h2>
 
@@ -113,6 +151,59 @@ subtotal += item.price;
 const delivery =
 document.getElementById("delivery");
 
+// ---- Discount codes ----
+// value is either a percentage off (e.g. 0.10 = 10%) or the string "freeship"
+const VALID_CODES = {
+"V-R@": 0.10,
+"SPRARER103": 0.15,
+"ITOTALDONT": "freeship"
+};
+// -------------------------
+
+let discountRate = 0;
+let freeShipping = false;
+let appliedCode = null;
+
+function applyPromo(){
+
+const input = document.getElementById("promoInput");
+const msg = document.getElementById("promoMsg");
+const code = input.value.trim().toUpperCase();
+
+if(!code){
+msg.style.color = "#ff0000";
+msg.innerText = "Enter a code first.";
+return;
+}
+
+if(!VALID_CODES.hasOwnProperty(code)){
+msg.style.color = "#ff0000";
+msg.innerText = "That code isn't valid.";
+return;
+}
+
+appliedCode = code;
+const value = VALID_CODES[code];
+
+if(value === "freeship"){
+freeShipping = true;
+discountRate = 0;
+msg.style.color = "#2ecc71";
+msg.innerText = "Free shipping applied.";
+} else {
+discountRate = value;
+freeShipping = false;
+msg.style.color = "#2ecc71";
+msg.innerText = Math.round(value * 100) + "% off applied.";
+}
+
+input.disabled = true;
+document.getElementById("promoBtn").disabled = true;
+
+updateTotal();
+
+}
+
 function updateTotal(){
 
 const payBtn = document.getElementById("payBtn");
@@ -130,11 +221,36 @@ return;
 
 payBtn.innerText = "PAY NOW";
 
-const deliveryFee =
-Number(delivery.value);
+let deliveryFee = Number(delivery.value);
+
+if(freeShipping){
+deliveryFee = 0;
+}
+
+const discountAmount = Math.round(subtotal * discountRate);
+
+const total = subtotal + deliveryFee - discountAmount;
+
+if(discountAmount > 0 || freeShipping){
+
+let html = "Subtotal: ₦" + subtotal.toLocaleString("en-NG") + "<br>";
+
+if(discountAmount > 0){
+html += "Discount: -₦" + discountAmount.toLocaleString("en-NG") + "<br>";
+}
+
+html += "Delivery: " + (freeShipping ? "FREE" : "₦" + deliveryFee.toLocaleString("en-NG")) + "<br>";
+
+html += "<strong>TOTAL: ₦" + total.toLocaleString("en-NG") + "</strong>";
+
+document.getElementById("total").innerHTML = html;
+
+} else {
 
 document.getElementById("total").innerText =
-"TOTAL: ₦" + (subtotal + deliveryFee).toLocaleString("en-NG");
+"TOTAL: ₦" + total.toLocaleString("en-NG");
+
+}
 
 }
 
@@ -173,8 +289,14 @@ alert("Please fill in all fields before paying.");
 return;
 }
 
-const deliveryFee = Number(delivery.value);
-const total = subtotal + deliveryFee;
+let deliveryFee = Number(delivery.value);
+
+if(freeShipping){
+deliveryFee = 0;
+}
+
+const discountAmount = Math.round(subtotal * discountRate);
+const total = subtotal + deliveryFee - discountAmount;
 
 FlutterwaveCheckout({
 
@@ -197,6 +319,8 @@ name: firstName + " " + lastName
 meta:{
 address: address,
 delivery_option: delivery.options[delivery.selectedIndex].text,
+promo_code: appliedCode || "none",
+discount_amount: discountAmount,
 cart: JSON.stringify(cart)
 },
 

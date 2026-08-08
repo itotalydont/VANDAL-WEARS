@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>CHECKOUT</title>
+
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+<style>
+
+body{
+margin:0;
+background:#090909;
+font-family:Arial;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.box{
+background:#161616;
+padding:40px;
+border-radius:20px;
+width:400px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:15px;
+background:#222;
+border:none;
+color:white;
+border-radius:10px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:20px;
+background:red;
+color:white;
+border:none;
+border-radius:10px;
+font-size:18px;
+cursor:pointer;
+}
+
+.promo-row{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.promo-row input{
+margin-top:0;
+flex:1;
+min-width:0;
+}
+
+.promo-row button{
+width:auto;
+margin-top:0;
+padding:12px 18px;
+font-size:15px;
+white-space:nowrap;
+}
+
+.promo-row button:disabled{
+opacity:0.5;
+cursor:default;
+}
+
+#promoMsg{
+min-height:16px;
+margin-top:8px;
+font-size:14px;
+}
+
+#total{
+line-height:1.5;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>CHECKOUT</h1>
+
+<input type="text" id="firstName" placeholder="First Name">
+
+<input type="text" id="lastName" placeholder="Last Name">
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="text" id="phone" placeholder="Phone Number">
+
+<input type="text" id="address" placeholder="Address">
+
+<select id="delivery">
+
+<option value="6500">
+Lagos Island (₦6,500)
+</option>
+
+<option value="5000">
+Lagos Mainland (₦5,000)
+</option>
+
+<option value="outside">
+Outside Lagos (Message Us Directly)
+</option>
+
+</select>
+
+<div class="promo-row">
+<input type="text" id="promoInput" placeholder="Discount code">
+<button id="promoBtn" onclick="applyPromo()">Apply</button>
+</div>
+
+<p id="promoMsg"></p>
+
+<h2 id="total"></h2>
+
+<button id="payBtn" onclick="payNow()">
+PAY NOW
+</button>
+
+</div>
+
+<script>
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+let subtotal = 0;
+
+cart.forEach(item=>{
+subtotal += item.price;
+});
+
+const delivery =
+document.getElementById("delivery");
+
+// ---- Discount codes ----
+// value is either a percentage off (e.g. 0.10 = 10%) or the string "freeship"
+const VALID_CODES = {
+"V-R@": 0.10,
+"SPRARER103": 0.15,
+"ITOTALDONT": "freeship"
+};
+// -------------------------
+
+let discountRate = 0;
+let freeShipping = false;
+let appliedCode = null;
+
+function applyPromo(){
+
+const input = document.getElementById("promoInput");
+const msg = document.getElementById("promoMsg");
+const code = input.value.trim().toUpperCase();
+
+if(!code){
+msg.style.color = "#ff0000";
+msg.innerText = "Enter a code first.";
+return;
+}
+
+if(!VALID_CODES.hasOwnProperty(code)){
+msg.style.color = "#ff0000";
+msg.innerText = "That code isn't valid.";
+return;
+}
+
+appliedCode = code;
+const value = VALID_CODES[code];
+
+if(value === "freeship"){
+freeShipping = true;
+discountRate = 0;
+msg.style.color = "#2ecc71";
+msg.innerText = "Free shipping applied.";
+} else {
+discountRate = value;
+freeShipping = false;
+msg.style.color = "#2ecc71";
+msg.innerText = Math.round(value * 100) + "% off applied.";
+}
+
+input.disabled = true;
+document.getElementById("promoBtn").disabled = true;
+
+updateTotal();
+
+}
+
+function updateTotal(){
+
+const payBtn = document.getElementById("payBtn");
+
+if(delivery.value === "outside"){
+
+document.getElementById("total").innerText =
+"Outside Lagos? Message us directly to arrange delivery.";
+
+payBtn.innerText = "MESSAGE US";
+
+return;
+
+}
+
+payBtn.innerText = "PAY NOW";
+
+let deliveryFee = Number(delivery.value);
+
+if(freeShipping){
+deliveryFee = 0;
+}
+
+const discountAmount = Math.round(subtotal * discountRate);
+
+const total = subtotal + deliveryFee - discountAmount;
+
+if(discountAmount > 0 || freeShipping){
+
+let html = "Subtotal: ₦" + subtotal.toLocaleString("en-NG") + "<br>";
+
+if(discountAmount > 0){
+html += "Discount: -₦" + discountAmount.toLocaleString("en-NG") + "<br>";
+}
+
+html += "Delivery: " + (freeShipping ? "FREE" : "₦" + deliveryFee.toLocaleString("en-NG")) + "<br>";
+
+html += "<strong>TOTAL: ₦" + total.toLocaleString("en-NG") + "</strong>";
+
+document.getElementById("total").innerHTML = html;
+
+} else {
+
+document.getElementById("total").innerText =
+"TOTAL: ₦" + total.toLocaleString("en-NG");
+
+}
+
+}
+
+delivery.addEventListener(
+"change",
+updateTotal
+);
+
+updateTotal();
+
+function payNow(){
+
+if(cart.length === 0){
+alert("Your cart is empty.");
+return;
+}
+
+if(delivery.value === "outside"){
+
+alert("Thanks! Since you're outside Lagos, please message us directly to arrange delivery and payment.");
+
+window.location.href = "contact.html";
+
+return;
+
+}
+
+const firstName = document.getElementById("firstName").value.trim();
+const lastName = document.getElementById("lastName").value.trim();
+const email = document.getElementById("email").value.trim();
+const phone = document.getElementById("phone").value.trim();
+const address = document.getElementById("address").value.trim();
+
+if(!firstName || !lastName || !email || !phone || !address){
+alert("Please fill in all fields before paying.");
+return;
+}
+
+let deliveryFee = Number(delivery.value);
+
+if(freeShipping){
+deliveryFee = 0;
+}
+
+const discountAmount = Math.round(subtotal * discountRate);
+const total = subtotal + deliveryFee - discountAmount;
+
+FlutterwaveCheckout({
+
+public_key: "FLWPUBK-3b34799c31afa84f90876a8a55afa1f0-X",
+
+tx_ref: "vandal-" + Date.now(),
+
+amount: total,
+
+currency: "NGN",
+
+payment_options: "card, banktransfer, ussd",
+
+customer:{
+email: email,
+phone_number: phone,
+name: firstName + " " + lastName
+},
+
+meta:{
+address: address,
+delivery_option: delivery.options[delivery.selectedIndex].text,
+promo_code: appliedCode || "none",
+discount_amount: discountAmount,
+cart: JSON.stringify(cart)
+},
+
+customizations:{
+title: "VANDAL",
+description: "Payment for items in cart",
+logo: "VANDAL LOGO.png"
+},
+
+callback: function(response){
+
+if(response.status === "successful"){
+
+alert("Payment successful! Reference: " + response.transaction_id);
+
+localStorage.removeItem("cart");
+
+window.location.href = "index.html";
+
+}else{
+
+alert("Payment was not completed. Please try again.");
+
+}
+
+},
+
+onclose: function(){
+// user closed the payment modal without completing payment
+}
+
+});
+
+}
+
+</script>
+
+</body>
+</html>

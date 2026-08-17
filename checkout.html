@@ -4,10 +4,16 @@
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>CHECKOUT</title>
 
+<link rel="icon" href="VANDAL LOGO.png">
+<link rel="stylesheet" href="style.css">
+
 <script src="https://checkout.flutterwave.com/v3.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
 
@@ -86,6 +92,30 @@ font-size:14px;
 line-height:1.5;
 }
 
+.confirm-block{
+margin-top:18px;
+padding:14px 16px;
+background:#0d0d0d;
+border:1px solid #292929;
+border-radius:10px;
+text-align:left;
+}
+
+.confirm-block p{
+margin:0 0 4px;
+font-size:12px;
+color:#999;
+letter-spacing:0.5px;
+text-transform:uppercase;
+}
+
+.confirm-block h2{
+margin:0;
+font-size:19px;
+color:#ff0000;
+word-break:break-all;
+}
+
 </style>
 
 </head>
@@ -116,6 +146,10 @@ Lagos Island (₦6,500)
 Lagos Mainland (₦5,000)
 </option>
 
+<option value="0">
+Pick Up At Kudoro Estate (FREE)
+</option>
+
 <option value="outside">
 Outside Lagos (Message Us Directly)
 </option>
@@ -137,6 +171,8 @@ PAY NOW
 
 </div>
 
+<script src="site.js"></script>
+
 <script>
 
 let cart =
@@ -151,14 +187,29 @@ subtotal += item.price;
 const delivery =
 document.getElementById("delivery");
 
-// ---- Discount codes ----
+// ---- EmailJS setup ----
+// Sign up free at emailjs.com, connect an email account under
+// "Email Services", then create a template under "Email Templates"
+// using the variable names sent below (to_email, customer_name,
+// order_ref, transaction_id, order_items, order_total,
+// delivery_option, address). Paste your 3 IDs here:
+emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
+const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+
+// Where YOU get notified with the full order details (color/size/height).
+// Change this if you want orders sent to a different inbox.
+const SELLER_EMAIL = "wearsvandal@gmail.com";
+// ------------------------
+
+// ---- EDIT THIS: your real discount codes ----
 // value is either a percentage off (e.g. 0.10 = 10%) or the string "freeship"
 const VALID_CODES = {
-"V-R@": 0.10,
-"SPRARER103": 0.15,
-"ITOTALDONT": "freeship"
+"WELCOME10": 0.10,
+"SAVE20": 0.20,
+"FREESHIP": "freeship"
 };
-// -------------------------
+// ----------------------------------------------
 
 let discountRate = 0;
 let freeShipping = false;
@@ -261,18 +312,58 @@ updateTotal
 
 updateTotal();
 
+function formatPrice(amount){
+return "₦" + amount.toLocaleString("en-NG");
+}
+
+function showConfirmation(orderRef, transactionId){
+
+const box = document.querySelector(".box");
+
+box.innerHTML = `
+
+<h1>PAYMENT SUCCESSFUL</h1>
+
+<p style="color:#ccc; margin-top:10px;">
+Thanks for your order! A confirmation email is on its way to you.
+</p>
+
+<div class="confirm-block">
+<p>Order Reference</p>
+<h2>${orderRef}</h2>
+</div>
+
+<div class="confirm-block">
+<p>Transaction ID</p>
+<h2>${transactionId}</h2>
+</div>
+
+<p style="color:#777; font-size:13px; margin-top:14px;">
+Save this reference number for any order enquiries.
+</p>
+
+<a href="index.html" style="display:block;">
+<button type="button" style="margin-top:20px;">BACK TO HOME</button>
+</a>
+
+`;
+
+}
+
 function payNow(){
 
 if(cart.length === 0){
-alert("Your cart is empty.");
+showToast("Your cart is empty.", "error");
 return;
 }
 
 if(delivery.value === "outside"){
 
-alert("Thanks! Since you're outside Lagos, please message us directly to arrange delivery and payment.");
+showToast("Thanks! We'll message you to arrange delivery.", "success");
 
+setTimeout(function(){
 window.location.href = "contact.html";
+}, 1800);
 
 return;
 
@@ -285,7 +376,7 @@ const phone = document.getElementById("phone").value.trim();
 const address = document.getElementById("address").value.trim();
 
 if(!firstName || !lastName || !email || !phone || !address){
-alert("Please fill in all fields before paying.");
+showToast("Please fill in all fields before paying.", "error");
 return;
 }
 
@@ -298,11 +389,13 @@ deliveryFee = 0;
 const discountAmount = Math.round(subtotal * discountRate);
 const total = subtotal + deliveryFee - discountAmount;
 
+const orderRef = "VANDAL-" + Date.now();
+
 FlutterwaveCheckout({
 
 public_key: "FLWPUBK-3b34799c31afa84f90876a8a55afa1f0-X",
 
-tx_ref: "vandal-" + Date.now(),
+tx_ref: orderRef,
 
 amount: total,
 
@@ -334,15 +427,48 @@ callback: function(response){
 
 if(response.status === "successful"){
 
-alert("Payment successful! Reference: " + response.transaction_id);
+const orderSummary = cart.map(function(item){
+let line = item.name + " (" + item.color + ", " + item.size;
+if(item.height){ line += ", " + item.height; }
+line += ") - " + formatPrice(item.price);
+return line;
+}).join("\n");
+
+emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+to_email: email,
+customer_name: firstName + " " + lastName,
+order_ref: orderRef,
+transaction_id: response.transaction_id,
+order_items: orderSummary,
+order_total: formatPrice(total),
+delivery_option: delivery.options[delivery.selectedIndex].text,
+address: address
+}).catch(function(err){
+console.error("Order email failed to send:", err);
+});
+
+// Send yourself the same order details so you can see color/size/height
+// picked, straight from your phone's email app.
+emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+to_email: SELLER_EMAIL,
+customer_name: firstName + " " + lastName + " (" + phone + ")",
+order_ref: orderRef,
+transaction_id: response.transaction_id,
+order_items: orderSummary,
+order_total: formatPrice(total),
+delivery_option: delivery.options[delivery.selectedIndex].text,
+address: address
+}).catch(function(err){
+console.error("Seller notification email failed to send:", err);
+});
 
 localStorage.removeItem("cart");
 
-window.location.href = "index.html";
+showConfirmation(orderRef, response.transaction_id);
 
 }else{
 
-alert("Payment was not completed. Please try again.");
+showToast("Payment was not completed. Please try again.", "error");
 
 }
 

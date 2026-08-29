@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VANDAL — Product</title>
+    <link rel="icon" href="VANDAL LOGO.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar nav">
+
+<div class="logo">
+<img src="VANDAL LOGO.png" alt="VANDAL Logo">
+<span>VANDAL</span>
+</div>
+
+<button class="menu-toggle" onclick="toggleMenu()">
+<span class="bars"><span></span><span></span><span></span></span>
+MENU
+</button>
+
+<ul class="nav-links" id="navLinks">
+<li><a href="index.html">Home</a></li>
+<li><a href="shop.html" class="active">Shop</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="cart.html">Cart</a></li>
+<li><a href="unreleased.html">Unreleased</a></li>
+</ul>
+
+</nav>
+
+<div id="productRoot">
+
+<div class="product-detail">
+
+<a href="shop.html" class="back-link">&larr; Back to Shop</a>
+
+<div class="product-detail-grid">
+
+<div class="product-detail-image">
+<img id="mainImage" src="" alt="">
+</div>
+
+<div class="product-detail-info">
+
+<h1 id="productName"></h1>
+<div class="price" id="productPrice"></div>
+
+<div class="detail-label">Color</div>
+<div class="color-options" id="colorSwatches"></div>
+
+<div class="detail-label">Size</div>
+<select id="sizeSelect"></select>
+
+<div id="heightWrap" style="display:none;">
+<div class="detail-label">Height (for fit)</div>
+<select id="heightSelect"></select>
+</div>
+
+<button class="add-to-cart-btn" type="button" onclick="addToCart()">ADD TO CART</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="products.js"></script>
+<script src="site.js"></script>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const productId = parseInt(params.get("id"), 10);
+const product = PRODUCTS[productId];
+
+if(!product){
+
+document.getElementById("productRoot").innerHTML =
+'<div class="product-detail"><p>Product not found. <a href="shop.html">Back to shop</a></p></div>';
+
+} else {
+
+renderProduct();
+
+}
+
+function renderProduct(){
+
+document.title = product.name + " \u2014 VANDAL";
+
+document.getElementById("mainImage").src = product.colors[0];
+document.getElementById("mainImage").alt = product.name;
+document.getElementById("productName").textContent = product.name;
+document.getElementById("productPrice").textContent = formatPrice(product.price);
+
+const swatchWrap = document.getElementById("colorSwatches");
+
+swatchWrap.innerHTML = product.colors.map(function(c, i){
+return '<div class="color' + (i === 0 ? ' selected' : '') +
+'" data-file="' + c + '" style="background:' + guessColor(c) +
+'" onclick="selectColor(this)" title="' + c.replace(".png","") + '"></div>';
+}).join("");
+
+document.getElementById("sizeSelect").innerHTML =
+getSizes(product).map(function(s){ return "<option>" + s + "</option>"; }).join("");
+
+if(needsHeight(product.name)){
+document.getElementById("heightWrap").style.display = "block";
+document.getElementById("heightSelect").innerHTML =
+HEIGHT_OPTIONS.map(function(h){ return "<option>" + h + "</option>"; }).join("");
+}
+
+}
+
+function selectColor(el){
+
+document.getElementById("mainImage").src = el.getAttribute("data-file");
+
+document.querySelectorAll("#colorSwatches .color").forEach(function(d){
+d.classList.remove("selected");
+});
+
+el.classList.add("selected");
+
+}
+
+function addToCart(){
+
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const size = document.getElementById("sizeSelect").value;
+
+const activeSwatch = document.querySelector("#colorSwatches .color.selected");
+const file = activeSwatch ? activeSwatch.getAttribute("data-file") : product.colors[0];
+const color = file.replace(".png","");
+
+const item = {
+name: product.name,
+image: file,
+size: size,
+color: color,
+price: product.price
+};
+
+if(needsHeight(product.name)){
+item.height = document.getElementById("heightSelect").value;
+}
+
+cart.push(item);
+localStorage.setItem("cart", JSON.stringify(cart));
+
+showToast(product.name + " added to cart", "success");
+
+}
+
+</script>
+
+</body>
+</html>

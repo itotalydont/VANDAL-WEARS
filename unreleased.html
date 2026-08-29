@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VANDAL — Unreleased</title>
+    <link rel="icon" href="VANDAL LOGO.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar nav">
+
+<div class="logo">
+<img src="VANDAL LOGO.png" alt="VANDAL Logo">
+<span>VANDAL</span>
+</div>
+
+<button class="menu-toggle" onclick="toggleMenu()">
+<span class="bars"><span></span><span></span><span></span></span>
+MENU
+</button>
+
+<ul class="nav-links" id="navLinks">
+<li><a href="index.html">Home</a></li>
+<li><a href="shop.html">Shop</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="cart.html">Cart</a></li>
+<li><a href="unreleased.html" class="active">Unreleased</a></li>
+</ul>
+
+</nav>
+
+<div class="gate-screen gate-inline" id="gateScreen">
+
+<div class="gate-box">
+
+<h1>UNRELEASED</h1>
+
+<p class="gate-sub">Enter access code to view exclusive pieces</p>
+
+<div class="gate-row">
+<input type="text" id="entryCode" placeholder="Access code">
+<button onclick="checkCode()">ENTER</button>
+</div>
+
+<p class="gate-msg" id="codeMsg"></p>
+
+</div>
+
+</div>
+
+<div id="unreleasedContent" style="display:none;">
+
+<div class="unreleased-header">
+<h1>UNRELEASED</h1>
+<p>Pieces not yet in the shop. You found this early.</p>
+</div>
+
+<div class="products">
+
+<div class="product-card unreleased-card">
+<div class="coming-soon-badge">COMING SOON</div>
+<div style="height:280px;background:var(--gray-100);display:flex;align-items:center;justify-content:center;color:var(--gray-500);font-size:13px;text-align:center;padding:20px;">
+Teaser image coming soon
+</div>
+<div class="product-card-info">
+<h3>PROJECT 001</h3>
+<div class="price">Reveal soon</div>
+</div>
+</div>
+
+<div class="product-card unreleased-card">
+<div class="coming-soon-badge">COMING SOON</div>
+<div style="height:280px;background:var(--gray-100);display:flex;align-items:center;justify-content:center;color:var(--gray-500);font-size:13px;text-align:center;padding:20px;">
+Teaser image coming soon
+</div>
+<div class="product-card-info">
+<h3>PROJECT 002</h3>
+<div class="price">Reveal soon</div>
+</div>
+</div>
+
+<div class="product-card unreleased-card">
+<div class="coming-soon-badge">COMING SOON</div>
+<div style="height:280px;background:var(--gray-100);display:flex;align-items:center;justify-content:center;color:var(--gray-500);font-size:13px;text-align:center;padding:20px;">
+Teaser image coming soon
+</div>
+<div class="product-card-info">
+<h3>PROJECT 003</h3>
+<div class="price">Reveal soon</div>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script src="site.js"></script>
+
+<script>
+
+const UNRELEASED_CODE = "VNDLISFREDM";
+
+function unlock(){
+sessionStorage.setItem("vandalUnreleasedUnlocked", "true");
+document.getElementById("gateScreen").style.display = "none";
+document.getElementById("unreleasedContent").style.display = "block";
+}
+
+function checkCode(){
+
+const input = document.getElementById("entryCode");
+const msg = document.getElementById("codeMsg");
+const value = input.value.trim().toUpperCase();
+
+if(value === UNRELEASED_CODE){
+unlock();
+} else {
+msg.textContent = "Incorrect code.";
+}
+
+}
+
+document.getElementById("entryCode").addEventListener("keydown", function(e){
+if(e.key === "Enter"){
+checkCode();
+}
+});
+
+if(sessionStorage.getItem("vandalUnreleasedUnlocked") === "true"){
+unlock();
+}
+
+</script>
+
+</body>
+</html>

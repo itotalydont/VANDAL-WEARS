@@ -2,118 +2,20 @@
 <html lang="en">
 
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>CHECKOUT</title>
-
-<link rel="icon" href="VANDAL LOGO.png">
-<link rel="stylesheet" href="style.css">
-
-<script src="https://checkout.flutterwave.com/v3.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VANDAL</title>
+    <link rel="icon" href="VANDAL LOGO.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 
 <style>
 
-body{
-margin:0;
-background:#090909;
-font-family:Arial;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.box{
-background:#161616;
-padding:40px;
-border-radius:20px;
-width:400px;
-}
-
-input,select{
-width:100%;
-padding:12px;
-margin-top:15px;
-background:#222;
-border:none;
-color:white;
-border-radius:10px;
-}
-
-button{
-width:100%;
-padding:14px;
-margin-top:20px;
-background:red;
-color:white;
-border:none;
-border-radius:10px;
-font-size:18px;
-cursor:pointer;
-}
-
-.promo-row{
-display:flex;
-gap:10px;
-margin-top:15px;
-}
-
-.promo-row input{
-margin-top:0;
-flex:1;
-min-width:0;
-}
-
-.promo-row button{
-width:auto;
-margin-top:0;
-padding:12px 18px;
-font-size:15px;
-white-space:nowrap;
-}
-
-.promo-row button:disabled{
-opacity:0.5;
-cursor:default;
-}
-
-#promoMsg{
-min-height:16px;
-margin-top:8px;
-font-size:14px;
-}
-
-#total{
-line-height:1.5;
-}
-
-.confirm-block{
-margin-top:18px;
-padding:14px 16px;
-background:#0d0d0d;
-border:1px solid #292929;
-border-radius:10px;
-text-align:left;
-}
-
-.confirm-block p{
-margin:0 0 4px;
-font-size:12px;
-color:#999;
-letter-spacing:0.5px;
-text-transform:uppercase;
-}
-
-.confirm-block h2{
-margin:0;
-font-size:19px;
-color:#ff0000;
-word-break:break-all;
+.hero{
+background:
+linear-gradient(rgba(255,255,255,0.78), rgba(255,255,255,0.78)),
+url("background.png") no-repeat center center;
+background-size:cover;
 }
 
 </style>
@@ -122,360 +24,139 @@ word-break:break-all;
 
 <body>
 
-<div class="box">
+<div class="gate-screen" id="lockScreen">
 
-<h1>CHECKOUT</h1>
+<div class="gate-box">
 
-<input type="text" id="firstName" placeholder="First Name">
+<h1>VANDAL</h1>
 
-<input type="text" id="lastName" placeholder="Last Name">
+<p class="gate-sub">Drop unlocks at 4:00 PM</p>
 
-<input type="email" id="email" placeholder="Email">
+<div class="gate-countdown" id="countdown">00:00:00</div>
 
-<input type="text" id="phone" placeholder="Phone Number">
-
-<input type="text" id="address" placeholder="Address">
-
-<select id="delivery">
-
-<option value="6500">
-Lagos Island (₦6,500)
-</option>
-
-<option value="5000">
-Lagos Mainland (₦5,000)
-</option>
-
-<option value="outside">
-Outside Lagos (Message Us Directly)
-</option>
-
-</select>
-
-<div class="promo-row">
-<input type="text" id="promoInput" placeholder="Discount code">
-<button id="promoBtn" onclick="applyPromo()">Apply</button>
+<div class="gate-row">
+<input type="text" id="entryCode" placeholder="Entrance code">
+<button onclick="checkCode()">ENTER</button>
 </div>
 
-<p id="promoMsg"></p>
+<p class="gate-msg" id="codeMsg"></p>
 
-<h2 id="total"></h2>
+</div>
 
-<button id="payBtn" onclick="payNow()">
-PAY NOW
+</div>
+
+<nav class="navbar nav">
+
+<div class="logo">
+<img src="VANDAL LOGO.png" alt="VANDAL Logo">
+<span>VANDAL</span>
+</div>
+
+<button class="menu-toggle" onclick="toggleMenu()">
+<span class="bars"><span></span><span></span><span></span></span>
+MENU
 </button>
 
-</div>
+<ul class="nav-links" id="navLinks">
+<li><a href="index.html" class="active">Home</a></li>
+<li><a href="shop.html">Shop</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="cart.html">Cart</a></li>
+<li><a href="unreleased.html">Unreleased</a></li>
+</ul>
+
+</nav>
+
+<section class="hero">
+
+<h1>WELCOME TO THE ATELIER</h1>
+
+<p>
+VANDALISM IS FREEDOM.
+</p>
+
+<a href="shop.html">
+<button>ENTER ATELIER</button>
+</a>
+
+</section>
 
 <script src="site.js"></script>
 
 <script>
 
-let cart =
-JSON.parse(localStorage.getItem("cart")) || [];
+// ---- Entrance lock settings ----
+const UNLOCK_HOUR = 16; // 4:00 PM, 24-hour clock, visitor's local time
+const ENTRANCE_CODE = "980378VNDL";
+// ---------------------------------
 
-let subtotal = 0;
+let countdownTimer;
 
-cart.forEach(item=>{
-subtotal += item.price;
-});
+function isPastUnlockTime(){
+return new Date().getHours() >= UNLOCK_HOUR;
+}
 
-const delivery =
-document.getElementById("delivery");
+function unlockSite(){
+sessionStorage.setItem("vandalUnlocked", "true");
+document.getElementById("lockScreen").style.display = "none";
+if(countdownTimer){
+clearInterval(countdownTimer);
+}
+}
 
-// ---- EmailJS setup ----
-// Sign up free at emailjs.com, connect an email account under
-// "Email Services", then create a template under "Email Templates"
-// using the variable names sent below (to_email, customer_name,
-// order_ref, transaction_id, order_items, order_total,
-// delivery_option, address). Paste your 3 IDs here:
-emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
-const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+function tickCountdown(){
 
-// Where YOU get notified with the full order details (color/size/height).
-// Change this if you want orders sent to a different inbox.
-const SELLER_EMAIL = "wearsvandal@gmail.com";
-// ------------------------
+const el = document.getElementById("countdown");
+const now = new Date();
+const target = new Date();
+target.setHours(UNLOCK_HOUR, 0, 0, 0);
 
-// ---- EDIT THIS: your real discount codes ----
-// value is either a percentage off (e.g. 0.10 = 10%) or the string "freeship"
-const VALID_CODES = {
-"WELCOME10": 0.10,
-"SAVE20": 0.20,
-"FREESHIP": "freeship"
-};
-// ----------------------------------------------
+const diff = target - now;
 
-let discountRate = 0;
-let freeShipping = false;
-let appliedCode = null;
-
-function applyPromo(){
-
-const input = document.getElementById("promoInput");
-const msg = document.getElementById("promoMsg");
-const code = input.value.trim().toUpperCase();
-
-if(!code){
-msg.style.color = "#ff0000";
-msg.innerText = "Enter a code first.";
+if(diff <= 0){
+unlockSite();
 return;
 }
 
-if(!VALID_CODES.hasOwnProperty(code)){
-msg.style.color = "#ff0000";
-msg.innerText = "That code isn't valid.";
-return;
+const h = Math.floor(diff / 3600000);
+const m = Math.floor((diff % 3600000) / 60000);
+const s = Math.floor((diff % 60000) / 1000);
+
+el.textContent =
+String(h).padStart(2,"0") + ":" +
+String(m).padStart(2,"0") + ":" +
+String(s).padStart(2,"0");
+
 }
 
-appliedCode = code;
-const value = VALID_CODES[code];
+function checkCode(){
 
-if(value === "freeship"){
-freeShipping = true;
-discountRate = 0;
-msg.style.color = "#2ecc71";
-msg.innerText = "Free shipping applied.";
+const input = document.getElementById("entryCode");
+const msg = document.getElementById("codeMsg");
+const value = input.value.trim().toUpperCase();
+
+if(value === ENTRANCE_CODE){
+unlockSite();
 } else {
-discountRate = value;
-freeShipping = false;
-msg.style.color = "#2ecc71";
-msg.innerText = Math.round(value * 100) + "% off applied.";
+msg.textContent = "Incorrect code.";
 }
-
-input.disabled = true;
-document.getElementById("promoBtn").disabled = true;
-
-updateTotal();
 
 }
 
-function updateTotal(){
-
-const payBtn = document.getElementById("payBtn");
-
-if(delivery.value === "outside"){
-
-document.getElementById("total").innerText =
-"Outside Lagos? Message us directly to arrange delivery.";
-
-payBtn.innerText = "MESSAGE US";
-
-return;
-
+document.getElementById("entryCode").addEventListener("keydown", function(e){
+if(e.key === "Enter"){
+checkCode();
 }
+});
 
-payBtn.innerText = "PAY NOW";
-
-let deliveryFee = Number(delivery.value);
-
-if(freeShipping){
-deliveryFee = 0;
-}
-
-const discountAmount = Math.round(subtotal * discountRate);
-
-const total = subtotal + deliveryFee - discountAmount;
-
-if(discountAmount > 0 || freeShipping){
-
-let html = "Subtotal: ₦" + subtotal.toLocaleString("en-NG") + "<br>";
-
-if(discountAmount > 0){
-html += "Discount: -₦" + discountAmount.toLocaleString("en-NG") + "<br>";
-}
-
-html += "Delivery: " + (freeShipping ? "FREE" : "₦" + deliveryFee.toLocaleString("en-NG")) + "<br>";
-
-html += "<strong>TOTAL: ₦" + total.toLocaleString("en-NG") + "</strong>";
-
-document.getElementById("total").innerHTML = html;
-
+// Once unlocked (by code or by the clock passing 4pm), stays unlocked
+// only for this browsing session — closing the tab/browser will
+// require the code again next time.
+if(sessionStorage.getItem("vandalUnlocked") === "true" || isPastUnlockTime()){
+unlockSite();
 } else {
-
-document.getElementById("total").innerText =
-"TOTAL: ₦" + total.toLocaleString("en-NG");
-
-}
-
-}
-
-delivery.addEventListener(
-"change",
-updateTotal
-);
-
-updateTotal();
-
-function formatPrice(amount){
-return "₦" + amount.toLocaleString("en-NG");
-}
-
-function showConfirmation(orderRef, transactionId){
-
-const box = document.querySelector(".box");
-
-box.innerHTML = `
-
-<h1>PAYMENT SUCCESSFUL</h1>
-
-<p style="color:#ccc; margin-top:10px;">
-Thanks for your order! A confirmation email is on its way to you.
-</p>
-
-<div class="confirm-block">
-<p>Order Reference</p>
-<h2>${orderRef}</h2>
-</div>
-
-<div class="confirm-block">
-<p>Transaction ID</p>
-<h2>${transactionId}</h2>
-</div>
-
-<p style="color:#777; font-size:13px; margin-top:14px;">
-Save this reference number for any order enquiries.
-</p>
-
-<a href="index.html" style="display:block;">
-<button type="button" style="margin-top:20px;">BACK TO HOME</button>
-</a>
-
-`;
-
-}
-
-function payNow(){
-
-if(cart.length === 0){
-showToast("Your cart is empty.", "error");
-return;
-}
-
-if(delivery.value === "outside"){
-
-showToast("Thanks! We'll message you to arrange delivery.", "success");
-
-setTimeout(function(){
-window.location.href = "contact.html";
-}, 1800);
-
-return;
-
-}
-
-const firstName = document.getElementById("firstName").value.trim();
-const lastName = document.getElementById("lastName").value.trim();
-const email = document.getElementById("email").value.trim();
-const phone = document.getElementById("phone").value.trim();
-const address = document.getElementById("address").value.trim();
-
-if(!firstName || !lastName || !email || !phone || !address){
-showToast("Please fill in all fields before paying.", "error");
-return;
-}
-
-let deliveryFee = Number(delivery.value);
-
-if(freeShipping){
-deliveryFee = 0;
-}
-
-const discountAmount = Math.round(subtotal * discountRate);
-const total = subtotal + deliveryFee - discountAmount;
-
-const orderRef = "VANDAL-" + Date.now();
-
-FlutterwaveCheckout({
-
-public_key: "FLWPUBK-3b34799c31afa84f90876a8a55afa1f0-X",
-
-tx_ref: orderRef,
-
-amount: total,
-
-currency: "NGN",
-
-payment_options: "card, banktransfer, ussd",
-
-customer:{
-email: email,
-phone_number: phone,
-name: firstName + " " + lastName
-},
-
-meta:{
-address: address,
-delivery_option: delivery.options[delivery.selectedIndex].text,
-promo_code: appliedCode || "none",
-discount_amount: discountAmount,
-cart: JSON.stringify(cart)
-},
-
-customizations:{
-title: "VANDAL",
-description: "Payment for items in cart",
-logo: "VANDAL LOGO.png"
-},
-
-callback: function(response){
-
-if(response.status === "successful"){
-
-const orderSummary = cart.map(function(item){
-let line = item.name + " (" + item.color + ", " + item.size;
-if(item.height){ line += ", " + item.height; }
-line += ") - " + formatPrice(item.price);
-return line;
-}).join("\n");
-
-emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-to_email: email,
-customer_name: firstName + " " + lastName,
-order_ref: orderRef,
-transaction_id: response.transaction_id,
-order_items: orderSummary,
-order_total: formatPrice(total),
-delivery_option: delivery.options[delivery.selectedIndex].text,
-address: address
-}).catch(function(err){
-console.error("Order email failed to send:", err);
-});
-
-// Send yourself the same order details so you can see color/size/height
-// picked, straight from your phone's email app.
-emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-to_email: SELLER_EMAIL,
-customer_name: firstName + " " + lastName + " (" + phone + ")",
-order_ref: orderRef,
-transaction_id: response.transaction_id,
-order_items: orderSummary,
-order_total: formatPrice(total),
-delivery_option: delivery.options[delivery.selectedIndex].text,
-address: address
-}).catch(function(err){
-console.error("Seller notification email failed to send:", err);
-});
-
-localStorage.removeItem("cart");
-
-showConfirmation(orderRef, response.transaction_id);
-
-}else{
-
-showToast("Payment was not completed. Please try again.", "error");
-
-}
-
-},
-
-onclose: function(){
-// user closed the payment modal without completing payment
-}
-
-});
-
+tickCountdown();
+countdownTimer = setInterval(tickCountdown, 1000);
 }
 
 </script>

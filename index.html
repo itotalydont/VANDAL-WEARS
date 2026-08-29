@@ -11,181 +11,9 @@
 
 <style>
 
-body{
-margin:0;
-background:#000000;
-font-family:Arial;
-color:rgb(255, 255, 255);
-overflow-x:hidden;
-}
-
-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 40px;
-background:#000000;
-border-bottom:2px solid rgba(95, 86, 86, 0);
-}
-
-.logo-wrap{
-display:flex;
-align-items:center;
-gap:15px;
-}
-
-.logo-wrap img{
-width:70px;
-}
-
-.logo-text{
-font-family:'Creepster',cursive;
-font-size:42px;
-color:rgb(255, 254, 254);
-letter-spacing:4px;
-}
-
-nav a{
-color:white;
-text-decoration:none;
-margin-left:20px;
-font-size:18px;
-}
-
 .hero{
-height:90vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:20px;
-}
-
-.hero h1{
-font-size:80px;
-font-family:'Creepster',cursive;
-margin-bottom:10px;
-color:rgb(255, 247, 247);
-}
-
-.hero p{
-max-width:700px;
-font-size:20px;
-color:#ccc;
-}
-
-.hero button{
-margin-top:30px;
-padding:18px 40px;
-background:rgb(222, 222, 222);
-border:none;
-border-radius:12px;
-font-size:20px;
-color:rgb(0, 0, 0);
-cursor:pointer;
-transition:0.3s;
-}
-
-.hero button:hover{
-background:#ff0000;
-transform:scale(1.05);
-}
-
-#lockScreen{
-position:fixed;
-inset:0;
-background:
-linear-gradient(rgba(0,0,0,0.78), rgba(0,0,0,0.78)),
-url("VANDAL LOGO.png") no-repeat center center;
+background:url("background.png") no-repeat center center;
 background-size:cover;
-z-index:99999;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
-}
-
-.lock-box{
-text-align:center;
-max-width:420px;
-}
-
-.lock-box h1{
-font-family:'Creepster',cursive;
-font-size:52px;
-letter-spacing:4px;
-color:#fff;
-text-shadow:0 0 20px rgba(255,0,0,0.5);
-margin-bottom:6px;
-}
-
-.lock-sub{
-color:#999;
-font-size:14px;
-letter-spacing:1px;
-text-transform:uppercase;
-margin-bottom:22px;
-}
-
-#countdown{
-font-family:Arial, Helvetica, sans-serif;
-font-size:48px;
-font-weight:bold;
-letter-spacing:3px;
-color:#ff0000;
-text-shadow:0 0 25px rgba(255,0,0,0.55);
-margin-bottom:30px;
-}
-
-.code-row{
-display:flex;
-gap:10px;
-}
-
-.code-row input{
-flex:1;
-min-width:0;
-padding:14px 16px;
-background:#161616;
-border:2px solid #292929;
-color:#fff;
-border-radius:10px;
-font-size:15px;
-outline:none;
-text-align:center;
-letter-spacing:2px;
-text-transform:uppercase;
-transition:0.2s;
-}
-
-.code-row input:focus{
-border-color:#ff0000;
-}
-
-.code-row button{
-width:auto;
-padding:14px 22px;
-margin:0;
-background:#ff0000;
-color:#fff;
-border:none;
-border-radius:10px;
-font-size:15px;
-font-weight:bold;
-cursor:pointer;
-transition:0.3s;
-}
-
-.code-row button:hover{
-background:#fff;
-color:#000;
-}
-
-#codeMsg{
-min-height:18px;
-margin-top:12px;
-font-size:13px;
 }
 
 </style>
@@ -194,38 +22,46 @@ font-size:13px;
 
 <body>
 
-<div id="lockScreen">
+<div class="gate-screen" id="lockScreen">
 
-<div class="lock-box">
+<div class="gate-box">
 
 <h1>VANDAL</h1>
 
-<p class="lock-sub">Drop unlocks at 4:00 PM</p>
+<p class="gate-sub">Drop unlocks at 4:00 PM</p>
 
-<div id="countdown">00:00:00</div>
+<div class="gate-countdown" id="countdown">00:00:00</div>
 
-<div class="code-row">
+<div class="gate-row">
 <input type="text" id="entryCode" placeholder="Entrance code">
 <button onclick="checkCode()">ENTER</button>
 </div>
 
-<p id="codeMsg"></p>
+<p class="gate-msg" id="codeMsg"></p>
 
 </div>
 
 </div>
 
-<nav>
+<nav class="navbar nav">
 
-<div class="logo-wrap">
-<img src="VANDAL LOGO.png">
-<div class="logo-text">VANDAL</div>
+<div class="logo">
+<img src="VANDAL LOGO.png" alt="VANDAL Logo">
+<span>VANDAL</span>
 </div>
 
-<div>
-<a href="shop.html">Shop</a>
-<a href="cart.html">Cart</a>
-</div>
+<button class="menu-toggle" onclick="toggleMenu()">
+<span class="bars"><span></span><span></span><span></span></span>
+MENU
+</button>
+
+<ul class="nav-links" id="navLinks">
+<li><a href="index.html" class="active">Home</a></li>
+<li><a href="shop.html">Shop</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="cart.html">Cart</a></li>
+<li><a href="unreleased.html">Unreleased</a></li>
+</ul>
 
 </nav>
 
@@ -234,7 +70,7 @@ font-size:13px;
 <h1>WELCOME TO THE ATELIER</h1>
 
 <p>
-BREAK RULES BUILD LEGACY.
+VANDALISM IS FREEDOM.
 </p>
 
 <a href="shop.html">
@@ -243,11 +79,13 @@ BREAK RULES BUILD LEGACY.
 
 </section>
 
+<script src="site.js"></script>
+
 <script>
 
 // ---- Entrance lock settings ----
 const UNLOCK_HOUR = 16; // 4:00 PM, 24-hour clock, visitor's local time
-const ENTRANCE_CODE = "109387MSCHF";
+const ENTRANCE_CODE = "980378VNDL";
 // ---------------------------------
 
 let countdownTimer;
@@ -298,7 +136,6 @@ const value = input.value.trim().toUpperCase();
 if(value === ENTRANCE_CODE){
 unlockSite();
 } else {
-msg.style.color = "#ff0000";
 msg.textContent = "Incorrect code.";
 }
 

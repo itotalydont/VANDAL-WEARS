@@ -13,17 +13,23 @@
 
 <body>
 
-    <nav class="navbar">
+    <nav class="navbar nav">
         <div class="logo">
             <img src="VANDAL LOGO.png" alt="VANDAL Logo">
             <span>VANDAL</span>
         </div>
 
-        <ul class="nav-links">
+        <button class="menu-toggle" onclick="toggleMenu()">
+            <span class="bars"><span></span><span></span><span></span></span>
+            MENU
+        </button>
+
+        <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Home</a></li>
-            <li><a href="index.html">Shop</a></li>
+            <li><a href="shop.html">Shop</a></li>
             <li><a href="contact.html" class="active">Contact</a></li>
             <li><a href="cart.html">Cart</a></li>
+            <li><a href="unreleased.html">Unreleased</a></li>
         </ul>
     </nav>
 
@@ -69,6 +75,8 @@
         </div>
 
     </main>
+
+    <script src="site.js"></script>
 
 </body>
 </html>

@@ -18,7 +18,6 @@ function showToast(message, type) {
 
   container.appendChild(toast);
 
-  // trigger the fade/slide-in on the next frame
   requestAnimationFrame(function () {
     toast.classList.add("toast-visible");
   });
@@ -30,4 +29,13 @@ function showToast(message, type) {
     }, 300);
   }, 2600);
 
+}
+
+// Toggles the mobile nav menu open/closed. Expects a <nav> containing
+// an element with id="navLinks" and a button calling toggleMenu().
+function toggleMenu() {
+  const links = document.getElementById("navLinks");
+  if (links) {
+    links.classList.toggle("nav-open");
+  }
 }

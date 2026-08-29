@@ -2,104 +2,43 @@
 <html lang="en">
 
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>VANDAL CART</title>
-
-<link rel="icon" href="VANDAL LOGO.png">
-<link rel="stylesheet" href="style.css">
-
-<style>
-
-body{
-margin:0;
-background:#000000;
-color:rgb(255, 255, 255);
-font-family:'arial'
-}
-
-nav{
-display:flex;
-justify-content:space-between;
-padding:20px 30px;
-background:#000000;
-border-bottom:2px solid rgb(255, 0, 0);
-}
-
-.logo{
-display:flex;
-align-items:center;
-gap:12px;
-}
-
-.logo img{
-width:55px;
-}
-
-.container{
-padding:30px;
-}
-
-.item{
-display:flex;
-gap:20px;
-background:#161616;
-padding:20px;
-margin-bottom:20px;
-border-radius:15px;
-}
-
-.item img{
-width:180px;
-border-radius:12px;
-}
-
-button{
-padding:10px 18px;
-background:rgb(0, 0, 0);
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;
-}
-
-.total{
-font-size:30px;
-margin-top:30px;
-}
-
-.checkout{
-margin-top:20px;
-display:inline-block;
-padding:15px 30px;
-background:rgb(255, 0, 0);
-color:white;
-text-decoration:none;
-border-radius:10px;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VANDAL CART</title>
+    <link rel="icon" href="VANDAL LOGO.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<nav>
+<nav class="navbar nav">
 
 <div class="logo">
-<img src="VANDAL LOGO.png">
-<h1>VANDAL</h1>
+<img src="VANDAL LOGO.png" alt="VANDAL Logo">
+<span>VANDAL</span>
 </div>
 
-<a href="shop.html" style="color:white;">
-Back To Shop
-</a>
+<button class="menu-toggle" onclick="toggleMenu()">
+<span class="bars"><span></span><span></span><span></span></span>
+MENU
+</button>
+
+<ul class="nav-links" id="navLinks">
+<li><a href="index.html">Home</a></li>
+<li><a href="shop.html">Shop</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="cart.html" class="active">Cart</a></li>
+<li><a href="unreleased.html">Unreleased</a></li>
+</ul>
 
 </nav>
 
-<div class="container" id="cart-container"></div>
+<div class="cart-container" id="cart-container"></div>
+
+<script src="site.js"></script>
 
 <script>
 
@@ -109,11 +48,17 @@ JSON.parse(localStorage.getItem("cart")) || [];
 const container =
 document.getElementById("cart-container");
 
-let total = 0;
-
 function renderCart(){
 
 container.innerHTML = "";
+
+if(cart.length === 0){
+container.innerHTML =
+'<div class="empty-cart">Your cart is empty. <a href="shop.html">Continue shopping</a></div>';
+return;
+}
+
+let total = 0;
 
 cart.forEach((item,index)=>{
 
@@ -121,11 +66,11 @@ total += item.price;
 
 container.innerHTML += `
 
-<div class="item">
+<div class="cart-item">
 
-<img src="${item.image}">
+<img src="${item.image}" loading="lazy">
 
-<div>
+<div class="cart-item-info">
 
 <h2>${item.name}</h2>
 
@@ -135,13 +80,13 @@ ${item.height ? `<p>Height: ${item.height}</p>` : ""}
 
 <p>Color: ${item.color}</p>
 
-<h3>₦${item.price}</h3>
-
-<button onclick="removeItem(${index})">
-REMOVE
-</button>
+<h3>₦${item.price.toLocaleString("en-NG")}</h3>
 
 </div>
+
+<button class="remove-btn" onclick="removeItem(${index})">
+REMOVE
+</button>
 
 </div>
 
@@ -151,13 +96,11 @@ REMOVE
 
 container.innerHTML += `
 
-<div class="total">
-
-TOTAL: ₦${total}
-
+<div class="cart-total">
+TOTAL: ₦${total.toLocaleString("en-NG")}
 </div>
 
-<a href="checkout.html" class="checkout">
+<a href="checkout.html" class="checkout-btn">
 CHECKOUT
 </a>
 
@@ -174,7 +117,7 @@ localStorage.setItem(
 JSON.stringify(cart)
 );
 
-location.reload();
+renderCart();
 
 }
 

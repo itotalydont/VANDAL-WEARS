@@ -7,6 +7,8 @@
     <title>VANDAL</title>
     <link rel="icon" href="VANDAL LOGO.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 
 <style>
@@ -47,7 +49,6 @@ background-size:cover;
 
 <div class="logo">
 <img src="VANDAL LOGO.png" alt="VANDAL Logo">
-<span>VANDAL</span>
 </div>
 
 <button class="menu-toggle" onclick="toggleMenu()">
@@ -84,14 +85,16 @@ VANDALISM IS FREEDOM.
 <script>
 
 // ---- Entrance lock settings ----
-const UNLOCK_HOUR = 16; // 4:00 PM, 24-hour clock, visitor's local time
+const LOCK_START_HOUR = 4; // 4:00 AM - lock turns on
+const UNLOCK_HOUR = 16; // 4:00 PM - lock turns off
 const ENTRANCE_CODE = "980378VNDL";
 // ---------------------------------
 
 let countdownTimer;
 
-function isPastUnlockTime(){
-return new Date().getHours() >= UNLOCK_HOUR;
+function isCurrentlyLocked(){
+const hour = new Date().getHours();
+return hour >= LOCK_START_HOUR && hour < UNLOCK_HOUR;
 }
 
 function unlockSite(){
@@ -150,7 +153,9 @@ checkCode();
 // Once unlocked (by code or by the clock passing 4pm), stays unlocked
 // only for this browsing session — closing the tab/browser will
 // require the code again next time.
-if(sessionStorage.getItem("vandalUnlocked") === "true" || isPastUnlockTime()){
+// Locked only between 4am and 4pm. Outside that window (4pm-4am),
+// or once already unlocked this session, skip the gate entirely.
+if(sessionStorage.getItem("vandalUnlocked") === "true" || !isCurrentlyLocked()){
 unlockSite();
 } else {
 tickCountdown();

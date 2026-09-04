@@ -94,10 +94,10 @@ a{
 
 .navbar{
     display:flex;
-    justify-content:space-between;
+    justify-content:flex-end;
     align-items:center;
     padding:18px 30px;
-    background:var(--ink);
+    background:#000000;
     border-bottom:1px solid #000;
     position:sticky;
     top:0;
@@ -108,6 +108,10 @@ a{
     display:flex;
     align-items:center;
     gap:12px;
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
 }
 
 .logo img{
@@ -119,10 +123,6 @@ a{
     font-size:28px;
     letter-spacing:2px;
     color:var(--white);
-}
-
-.nav{
-    position:relative;
 }
 
 .menu-toggle{
@@ -312,10 +312,10 @@ a{
 }
 
 .swatch-preview .dot{
-    width:14px;
-    height:14px;
-    border-radius:4px;
-    border:1px solid var(--gray-300);
+    width:18px;
+    height:18px;
+    border-radius:5px;
+    border:1.5px solid var(--gray-500);
 }
 
 /* =========================
@@ -360,18 +360,19 @@ a{
 ========================= */
 
 .color{
-    width:26px;
-    height:26px;
-    border-radius:6px;
-    border:1px solid var(--gray-300);
+    width:36px;
+    height:36px;
+    border-radius:8px;
+    border:2px solid var(--gray-500);
     cursor:pointer;
     transition:0.15s;
+    box-shadow:0 2px 6px rgba(0,0,0,0.15);
 }
 
 .color:hover, .color.selected{
-    transform:scale(1.1);
+    transform:scale(1.12);
     border-color:var(--red-bright);
-    box-shadow:0 0 0 2px rgba(226,0,26,0.15);
+    box-shadow:0 0 0 3px rgba(226,0,26,0.2);
 }
 
 .color-options{
@@ -806,6 +807,15 @@ footer{
 
 @media(max-width:768px){
 
+    .navbar{
+        justify-content:flex-start;
+    }
+
+    .nav-links{
+        left:0;
+        right:auto;
+    }
+
     .hero h1{
         font-size:2.4rem;
     }
@@ -816,8 +826,25 @@ footer{
     }
 
     .products{
-        grid-template-columns:1fr;
-        padding:20px;
+        grid-template-columns:repeat(2, 1fr);
+        gap:14px;
+        padding:16px;
+    }
+
+    .product-card img{
+        height:150px;
+    }
+
+    .product-card-info{
+        padding:10px 12px 14px;
+    }
+
+    .product-card-info h3{
+        font-size:13px;
+    }
+
+    .product-card-info .price{
+        font-size:13px;
     }
 
     .contact-grid{

@@ -43,20 +43,6 @@ colors:[
 },
 
 {
-name:"FEM POLO",
-price:23000,
-colors:[
-"FEM POLO RED.png",
-"FEM POLO BLUE.png",
-"FEM POLO GRAY.png",
-"FEM POLO PINK.png",
-"FEM POLO WHITE.png",
-"FEM POLO BLACK.png",
-"FEM POLO LIGHT GRAY.png"
-]
-},
-
-{
 name:"KOM TEE",
 price:20000,
 colors:[

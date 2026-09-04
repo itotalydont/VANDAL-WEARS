@@ -811,6 +811,10 @@ footer{
         justify-content:flex-start;
     }
 
+    .menu-toggle{
+        margin-right:14px;
+    }
+
     .nav-links{
         left:0;
         right:auto;

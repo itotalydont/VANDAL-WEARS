@@ -802,6 +802,150 @@ footer{
 }
 
 /* =========================
+   STICKERS ADD-ON (cart page)
+========================= */
+
+.sticker-section{
+    max-width:1000px;
+    margin:0 auto 30px;
+    padding:0 20px;
+}
+
+.sticker-section h2{
+    font-size:20px;
+    margin-bottom:6px;
+}
+
+.sticker-note{
+    color:var(--gray-500);
+    font-size:14px;
+    margin-bottom:16px;
+}
+
+.sticker-note strong{
+    color:var(--ink);
+}
+
+.sticker-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
+    gap:14px;
+}
+
+.sticker-tile{
+    position:relative;
+    border:2px solid var(--gray-200);
+    border-radius:12px;
+    background:var(--white);
+    cursor:pointer;
+    text-align:center;
+    padding:10px;
+    transition:0.15s;
+}
+
+.sticker-tile:hover{
+    border-color:var(--gray-500);
+}
+
+.sticker-tile.selected{
+    border-color:var(--red-bright);
+    box-shadow:0 0 0 3px rgba(226,0,26,0.15);
+}
+
+.sticker-tile img{
+    width:100%;
+    height:70px;
+    object-fit:contain;
+    margin-bottom:8px;
+}
+
+.sticker-fallback{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    height:70px;
+    background:var(--off-white);
+    border-radius:8px;
+    margin-bottom:8px;
+    color:var(--gray-500);
+    font-size:11px;
+    padding:6px;
+    text-align:center;
+}
+
+.sticker-tile-name{
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink);
+}
+
+.sticker-tile-price{
+    font-size:11px;
+    color:var(--gray-500);
+    margin-top:2px;
+}
+
+.sticker-tile.selected .sticker-tile-price{
+    color:var(--red-bright);
+    font-weight:700;
+}
+
+.sticker-check{
+    position:absolute;
+    top:8px;
+    right:8px;
+    min-width:20px;
+    height:20px;
+    padding:0 5px;
+    border-radius:10px;
+    background:var(--red-bright);
+    color:#fff;
+    font-size:12px;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.sticker-qty-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-top:10px;
+}
+
+.sticker-qty-btn{
+    width:26px;
+    height:26px;
+    padding:0;
+    margin:0;
+    border-radius:6px;
+    background:var(--off-white);
+    border:1px solid var(--gray-300);
+    color:var(--ink);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+}
+
+.sticker-qty-btn:hover{
+    background:var(--gray-100);
+}
+
+.sticker-qty-btn:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+}
+
+.sticker-qty-count{
+    min-width:16px;
+    text-align:center;
+    font-weight:700;
+    font-size:14px;
+}
+
+/* =========================
    MOBILE
 ========================= */
 

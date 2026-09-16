@@ -18,7 +18,6 @@
 
 <div class="logo">
 <img src="VANDAL LOGO.png" alt="VANDAL Logo">
-<span>VANDAL</span>
 </div>
 
 <button class="menu-toggle" onclick="toggleMenu()">
@@ -38,6 +37,12 @@ MENU
 
 <div class="cart-container" id="cart-container"></div>
 
+<div class="sticker-section" id="stickerSection" style="display:none;">
+<h2>Add Free Stickers</h2>
+<p class="sticker-note">Pick up to <strong>3 free</strong> stickers. Each one after that is <strong>₦150</strong>.</p>
+<div class="sticker-grid" id="stickerGrid"></div>
+</div>
+
 <script src="site.js"></script>
 
 <script>
@@ -48,6 +53,72 @@ JSON.parse(localStorage.getItem("cart")) || [];
 const container =
 document.getElementById("cart-container");
 
+function renderStickers(){
+
+const section = document.getElementById("stickerSection");
+
+if(cart.length === 0){
+section.style.display = "none";
+return;
+}
+
+section.style.display = "block";
+
+const selections = getStickerSelections();
+const totalCount = getTotalStickerCount(selections);
+
+const grid = document.getElementById("stickerGrid");
+
+grid.innerHTML = getStickerVariants().map(function(v){
+
+const qty = selections[v.key] || 0;
+const nextIsFree = totalCount < FREE_STICKER_LIMIT;
+
+return `
+
+<div class="sticker-tile${qty > 0 ? " selected" : ""}">
+
+${qty > 0 ? `<div class="sticker-check">${qty}</div>` : ""}
+
+<img src="${v.image}" alt="${v.label}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+<div class="sticker-fallback">${v.label}</div>
+
+<div class="sticker-tile-name">${v.label}</div>
+<div class="sticker-tile-price">${qty > 0 || nextIsFree ? "FREE" : "+₦150"}${qty > 0 ? " next" : ""}</div>
+
+<div class="sticker-qty-row">
+<button type="button" class="sticker-qty-btn" onclick="changeStickerQty('${v.key}', -1)" ${qty === 0 ? "disabled" : ""}>&minus;</button>
+<span class="sticker-qty-count">${qty}</span>
+<button type="button" class="sticker-qty-btn" onclick="changeStickerQty('${v.key}', 1)">+</button>
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+function changeStickerQty(key, delta){
+
+const selections = getStickerSelections();
+const current = selections[key] || 0;
+const next = Math.max(0, current + delta);
+
+if(next === 0){
+delete selections[key];
+} else {
+selections[key] = next;
+}
+
+saveStickerSelections(selections);
+
+renderStickers();
+renderCart();
+
+}
+
 function renderCart(){
 
 container.innerHTML = "";
@@ -55,6 +126,7 @@ container.innerHTML = "";
 if(cart.length === 0){
 container.innerHTML =
 '<div class="empty-cart">Your cart is empty. <a href="shop.html">Continue shopping</a></div>';
+renderStickers();
 return;
 }
 
@@ -94,10 +166,22 @@ REMOVE
 
 });
 
-container.innerHTML += `
+const selections = getStickerSelections();
+const totalStickerCount = getTotalStickerCount(selections);
+const stickerFee = getStickerCost(selections);
+
+let totalHtml = "";
+
+if(totalStickerCount > 0){
+totalHtml += `<div style="text-align:right; color:#666; font-size:14px; margin-top:10px;">`;
+totalHtml += `Stickers (${totalStickerCount}): ${stickerFee > 0 ? "₦" + stickerFee.toLocaleString("en-NG") : "FREE"}`;
+totalHtml += `</div>`;
+}
+
+totalHtml += `
 
 <div class="cart-total">
-TOTAL: ₦${total.toLocaleString("en-NG")}
+TOTAL: ₦${(total + stickerFee).toLocaleString("en-NG")}
 </div>
 
 <a href="checkout.html" class="checkout-btn">
@@ -105,6 +189,10 @@ CHECKOUT
 </a>
 
 `;
+
+container.innerHTML += totalHtml;
+
+renderStickers();
 
 }
 

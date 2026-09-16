@@ -145,6 +145,10 @@ cart.forEach(item=>{
 subtotal += item.price;
 });
 
+const stickerSelections = getStickerSelections();
+const totalStickerCount = getTotalStickerCount(stickerSelections);
+const stickerFee = getStickerCost(stickerSelections);
+
 const delivery =
 document.getElementById("delivery");
 
@@ -248,11 +252,15 @@ deliveryFee = 0;
 
 const discountAmount = Math.round(subtotal * discountRate);
 
-const total = subtotal + deliveryFee - discountAmount;
+const total = subtotal + stickerFee + deliveryFee - discountAmount;
 
-if(discountAmount > 0 || freeShipping){
+if(discountAmount > 0 || freeShipping || stickerFee > 0){
 
 let html = "Subtotal: ₦" + subtotal.toLocaleString("en-NG") + "<br>";
+
+if(stickerFee > 0){
+html += "Stickers (" + totalStickerCount + "): ₦" + stickerFee.toLocaleString("en-NG") + "<br>";
+}
 
 if(discountAmount > 0){
 html += "Discount: -₦" + discountAmount.toLocaleString("en-NG") + "<br>";
@@ -355,7 +363,7 @@ deliveryFee = 0;
 }
 
 const discountAmount = Math.round(subtotal * discountRate);
-const total = subtotal + deliveryFee - discountAmount;
+const total = subtotal + stickerFee + deliveryFee - discountAmount;
 
 const orderRef = "VANDAL-" + Date.now();
 
@@ -387,6 +395,16 @@ address: address,
 delivery_option: delivery.options[delivery.selectedIndex].text,
 promo_code: appliedCode || "none",
 discount_amount: discountAmount,
+stickers: (function(){
+const counts = stickerSelections;
+const variants = getStickerVariants();
+return Object.keys(counts).map(function(key){
+const v = variants.find(function(x){ return x.key === key; });
+const label = v ? v.label : key;
+return counts[key] > 1 ? label + " x" + counts[key] : label;
+}).join(", ") || "none";
+})(),
+sticker_fee: stickerFee,
 cart: JSON.stringify(cart)
 },
 
@@ -400,12 +418,23 @@ callback: function(response){
 
 if(response.status === "successful"){
 
+const stickerVariants = getStickerVariants();
+
+const stickerSummary = Object.keys(stickerSelections).map(function(key){
+const v = stickerVariants.find(function(x){ return x.key === key; });
+const label = v ? v.label : key;
+const qty = stickerSelections[key];
+return qty > 1 ? label + " x" + qty : label;
+}).join(", ");
+
 const orderSummary = cart.map(function(item){
 let line = item.name + " (" + item.color + ", " + item.size;
 if(item.height){ line += ", " + item.height; }
 line += ") - " + formatPrice(item.price);
 return line;
-}).join("\n");
+}).join("\n") + (totalStickerCount > 0
+? "\n\nStickers: " + stickerSummary + " (" + (stickerFee > 0 ? formatPrice(stickerFee) + " charged" : "all free") + ")"
+: "");
 
 try{
 emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
@@ -442,6 +471,7 @@ console.error("EmailJS unavailable, skipping seller email:", err);
 }
 
 localStorage.removeItem("cart");
+localStorage.removeItem("vandalStickers");
 
 showConfirmation(orderRef, response.transaction_id);
 

@@ -43,6 +43,7 @@ a{
     color:inherit;
 }
 
+
 /* =========================
    TOAST NOTIFICATIONS
 ========================= */
@@ -87,6 +88,7 @@ a{
 .toast.toast-success{
     border-left-color:#2ecc71;
 }
+
 
 /* =========================
    NAVBAR (shared across pages)
@@ -206,6 +208,7 @@ a{
     color:var(--red-bright);
 }
 
+
 /* =========================
    HERO
 ========================= */
@@ -253,6 +256,7 @@ a{
     background:var(--ink);
     transform:scale(1.03);
 }
+
 
 /* =========================
    PRODUCTS GRID (shop)
@@ -318,6 +322,7 @@ a{
     border:1.5px solid var(--gray-500);
 }
 
+
 /* =========================
    SEARCH BAR
 ========================= */
@@ -355,6 +360,7 @@ a{
     font-size:18px;
 }
 
+
 /* =========================
    COLOR SWATCHES (product page)
 ========================= */
@@ -369,7 +375,8 @@ a{
     box-shadow:0 2px 6px rgba(0,0,0,0.15);
 }
 
-.color:hover, .color.selected{
+.color:hover,
+.color.selected{
     transform:scale(1.12);
     border-color:var(--red-bright);
     box-shadow:0 0 0 3px rgba(226,0,26,0.2);
@@ -391,6 +398,7 @@ select{
     border:1px solid var(--gray-200);
     border-radius:10px;
 }
+
 
 /* =========================
    BUTTONS (site-wide default)
@@ -417,6 +425,7 @@ button:disabled{
     color:var(--gray-500);
     cursor:not-allowed;
 }
+
 
 /* =========================
    PRODUCT DETAIL PAGE
@@ -454,6 +463,72 @@ button:disabled{
     background:var(--gray-100);
 }
 
+.main-image-wrap{
+    position:relative;
+}
+
+.image-fallback{
+    display:none;
+    position:absolute;
+    inset:0;
+    align-items:center;
+    justify-content:center;
+    background:var(--gray-100);
+    border:1px solid var(--gray-200);
+    border-radius:16px;
+    color:var(--gray-500);
+    font-size:14px;
+}
+
+.view-thumbs{
+    display:flex;
+    gap:12px;
+    margin:14px 0;
+}
+
+.view-thumb{
+    width:110px;
+    height:110px;
+    border:2px solid var(--gray-200);
+    border-radius:10px;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    background:var(--white);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.15s;
+}
+
+.view-thumb:hover{
+    border-color:var(--gray-500);
+}
+
+.view-thumb.selected{
+    border-color:var(--ink);
+}
+
+.view-thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.view-thumb-label{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    background:rgba(0,0,0,0.55);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    text-align:center;
+    padding:3px 0;
+}
+
 .product-detail-info h1{
     font-size:28px;
     margin-bottom:8px;
@@ -479,6 +554,7 @@ button:disabled{
 .add-to-cart-btn{
     margin-top:28px;
 }
+
 
 /* =========================
    CART
@@ -558,6 +634,7 @@ button:disabled{
     color:var(--red-bright);
 }
 
+
 /* =========================
    CONTACT PAGE
 ========================= */
@@ -607,6 +684,7 @@ button:disabled{
     color:var(--red-bright);
 }
 
+
 /* =========================
    FOOTER
 ========================= */
@@ -618,6 +696,7 @@ footer{
     margin-top:60px;
     color:var(--gray-500);
 }
+
 
 /* =========================
    CHECKOUT
@@ -672,9 +751,9 @@ footer{
     border-bottom:1px solid var(--gray-100);
 }
 
+
 /* =========================
    GATED ZONE
-   (used by the entrance lock and the Unreleased zone)
 ========================= */
 
 .gate-screen{
@@ -764,6 +843,7 @@ footer{
     color:var(--red-bright);
 }
 
+
 /* =========================
    UNRELEASED ZONE CONTENT
 ========================= */
@@ -800,6 +880,7 @@ footer{
     border-radius:6px;
     z-index:2;
 }
+
 
 /* =========================
    STICKERS ADD-ON (cart page)
@@ -945,11 +1026,17 @@ footer{
     font-size:14px;
 }
 
+
 /* =========================
    MOBILE
 ========================= */
 
 @media(max-width:768px){
+
+    .view-thumb{
+        width:80px;
+        height:80px;
+    }
 
     .navbar{
         justify-content:flex-start;
@@ -1037,5 +1124,175 @@ footer{
 
     .logo span{
         font-size:22px;
+    }
+}
+
+
+/* =========================
+   INTRO — FLOATING IMAGE
+========================= */
+
+/*
+   intro.png is split into two halves in index.html.
+   Both halves use the exact same animation so they
+   continue to look like one complete image.
+*/
+
+.intro-half{
+    animation:introFloat 3.8s ease-in-out infinite;
+}
+
+/* Gentle floating movement */
+@keyframes introFloat{
+
+    0%{
+        top:0;
+    }
+
+    50%{
+        top:-18px;
+    }
+
+    100%{
+        top:0;
+    }
+}
+
+/*
+   Once TAP TO ENTER is pressed:
+   - stop the floating animation
+   - return image to its normal vertical position
+   - existing door animation takes over
+*/
+
+#tapToEnter.open .intro-half{
+    animation:none;
+    top:0;
+}
+
+
+/* Accessibility:
+   removes floating movement for users who have
+   reduced-motion enabled on their device.
+*/
+
+@media (prefers-reduced-motion: reduce){
+
+    .intro-half{
+        animation:none;
+    }
+}
+
+
+/* =========================
+   CURRENCY SELECTOR
+========================= */
+
+#vandalCurrencyBar{
+    position:fixed;
+    left:20px;
+    bottom:20px;
+    z-index:9999;
+}
+
+.currency-button{
+    width:auto;
+    min-width:95px;
+    height:48px;
+    padding:0 16px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+
+    background:#fff;
+    color:#141414;
+
+    border:1px solid #e2e2e2;
+    border-radius:0;
+
+    font-family:Georgia, "Times New Roman", serif;
+    font-size:20px;
+    font-weight:400;
+
+    cursor:pointer;
+
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+
+.currency-button:hover{
+    background:#fff;
+    color:#141414;
+}
+
+.currency-arrow{
+    width:0;
+    height:0;
+
+    border-left:7px solid transparent;
+    border-right:7px solid transparent;
+    border-top:7px solid #555;
+}
+
+.currency-menu{
+    position:absolute;
+    left:0;
+    bottom:56px;
+
+    width:95px;
+
+    background:#fff;
+    border:1px solid #e2e2e2;
+
+    display:none;
+
+    box-shadow:0 4px 14px rgba(0,0,0,0.12);
+}
+
+.currency-menu.currency-open{
+    display:block;
+}
+
+.currency-menu button{
+    width:100%;
+    padding:11px 16px;
+
+    background:#fff;
+    color:#141414;
+
+    border:none;
+    border-radius:0;
+
+    text-align:left;
+
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:14px;
+
+    cursor:pointer;
+}
+
+.currency-menu button:hover{
+    background:#f6f6f6;
+    color:#e2001a;
+}
+
+@media(max-width:600px){
+
+    #vandalCurrencyBar{
+        left:12px;
+        bottom:12px;
+    }
+
+    .currency-button{
+        min-width:85px;
+        height:44px;
+        padding:0 13px;
+        font-size:18px;
+    }
+
+    .currency-menu{
+        width:85px;
+        bottom:52px;
     }
 }

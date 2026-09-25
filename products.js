@@ -88,6 +88,7 @@ colors:[
 "MISCHIEF SWEATS BLUE.png",
 "MISCHIEF SWEATS GRAY.png",
 "MISCHIEF SWEATS PINK.png",
+"MISCHIEF SWEATS BLACK.png",
 "MISCHIEF SWEATS WHITE.png"
 ]
 },
@@ -121,6 +122,7 @@ name:"FEM FOLDOVER SWEATS",
 price:28000,
 colors:[
 "FEM FOLDOVER SWEATS RED.png",
+"FEM FOLDOVER SWEATS BLACK.png",
 "FEM FOLDOVER SWEATS GRAY.png",
 "FEM FOLDOVER SWEATS BLUE.png",
 "FEM FOLDOVER SWEATS WHITE.png",
@@ -137,7 +139,6 @@ colors:[
 "beanie-blue.png",
 "beanie-gray.png",
 "beanie-pink.png",
-"beanie-black.png",
 "beanie-white.png"
 ]
 }
@@ -145,7 +146,13 @@ colors:[
 ];
 
 function formatPrice(amount){
-return "₦" + amount.toLocaleString("en-NG");
+
+    if(typeof formatVandalPrice === "function"){
+        return formatVandalPrice(amount);
+    }
+
+    return "₦" + amount.toLocaleString("en-NG");
+
 }
 
 function guessColor(file){

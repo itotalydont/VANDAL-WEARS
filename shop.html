@@ -50,6 +50,10 @@ MENU
 const container = document.getElementById("products");
 
 function renderProducts(){
+    window.addEventListener(
+    "vandalCurrencyChanged",
+    renderProducts
+);
 
 const query =
 document.getElementById("searchInput").value.trim().toLowerCase();

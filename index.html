@@ -4,165 +4,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>VANDAL</title>
+
     <link rel="icon" href="VANDAL LOGO.png">
     <link rel="stylesheet" href="style.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 
 <style>
 
-.hero{
-background:url("background.png") no-repeat center center;
-background-size:cover;
+/* =========================
+   HOMEPAGE BACKGROUND
+========================= */
+
+.hero {
+    background-image: url("background.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+
+/* =========================
+   TAP TO ENTER SCREEN
+========================= */
+
+#tapToEnter {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 200000;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+
+/* =========================
+   INTRO IMAGE
+========================= */
+
+.intro-half {
+    position: absolute;
+    top: 0;
+
+    width: 50%;
+    height: 100%;
+
+    background-image: url("intro.png");
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+
+    transition:
+        transform 0.85s
+        cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+
+.intro-left {
+    left: 0;
+    background-position: 0% 0%;
+}
+
+
+.intro-right {
+    right: 0;
+    background-position: 100% 0%;
+}
+
+
+/* =========================
+   OPENING ANIMATION
+========================= */
+
+#tapToEnter.open .intro-left {
+    transform: translateX(-100%);
+}
+
+
+#tapToEnter.open .intro-right {
+    transform: translateX(100%);
+}
+
+
+/* =========================
+   TAP TO ENTER TEXT
+========================= */
+
+#tapText {
+    position: absolute;
+
+    left: 50%;
+    bottom: 14%;
+
+    transform: translateX(-50%);
+
+    font-size: 13px;
+    letter-spacing: 4px;
+
+    color: #000;
+
+    z-index: 2;
+
+    transition: opacity 0.25s ease;
+
+    white-space: nowrap;
+}
+
+
+#tapText.hidden {
+    opacity: 0;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+    .hero {
+        min-height: calc(100svh - 80px);
+
+        background-image: url("background.png");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
+
+
+    #tapToEnter {
+        width: 100vw;
+        height: 100svh;
+
+        background: #fff;
+    }
+
+
+    .intro-half {
+        height: 100svh;
+
+        background-size: 200vw 100svh;
+    }
+
+
+    .intro-left {
+        background-position: left center;
+    }
+
+
+    .intro-right {
+        background-position: right center;
+    }
+
+
+    #tapText {
+        bottom: 10%;
+
+        font-size: 11px;
+        letter-spacing: 3px;
+
+        color: #000;
+    }
+
+}
+
+
+/* =========================
+   SMALL PHONES
+========================= */
+
+@media (max-width: 480px) {
+
+    .hero {
+        min-height: calc(100svh - 70px);
+
+        background-position: center center;
+        background-size: cover;
+    }
+
+
+    #tapText {
+        bottom: 8%;
+
+        font-size: 10px;
+        letter-spacing: 2.5px;
+
+        color: #000;
+    }
+
 }
 
 </style>
 
 </head>
 
+
 <body>
 
-<div class="gate-screen" id="lockScreen">
 
-<div class="gate-box">
+<!-- =========================
+     TAP TO ENTER
+========================= -->
 
-<h1>VANDAL</h1>
+<div id="tapToEnter">
 
-<p class="gate-sub">Drop unlocks at 4:00 PM</p>
+    <div class="intro-half intro-left"></div>
 
-<div class="gate-countdown" id="countdown">00:00:00</div>
+    <div class="intro-half intro-right"></div>
 
-<div class="gate-row">
-<input type="text" id="entryCode" placeholder="Entrance code">
-<button onclick="checkCode()">ENTER</button>
-</div>
-
-<p class="gate-msg" id="codeMsg"></p>
+    <div id="tapText">
+        TAP TO ENTER
+    </div>
 
 </div>
 
-</div>
+
+
+<!-- =========================
+     NAVIGATION
+========================= -->
 
 <nav class="navbar nav">
 
-<div class="logo">
-<img src="VANDAL LOGO.png" alt="VANDAL Logo">
-</div>
+    <div class="logo">
 
-<button class="menu-toggle" onclick="toggleMenu()">
-<span class="bars"><span></span><span></span><span></span></span>
-MENU
-</button>
+        <img
+            src="VANDAL LOGO.png"
+            alt="VANDAL Logo"
+        >
 
-<ul class="nav-links" id="navLinks">
-<li><a href="index.html" class="active">Home</a></li>
-<li><a href="shop.html">Shop</a></li>
-<li><a href="contact.html">Contact</a></li>
-<li><a href="cart.html">Cart</a></li>
-<li><a href="unreleased.html">Unreleased</a></li>
-</ul>
+    </div>
+
+
+    <button
+        class="menu-toggle"
+        onclick="toggleMenu()"
+    >
+
+        <span class="bars">
+            <span></span>
+            <span></span>
+            <span></span>
+        </span>
+
+        MENU
+
+    </button>
+
+
+    <ul
+        class="nav-links"
+        id="navLinks"
+    >
+
+        <li>
+            <a
+                href="index.html"
+                class="active"
+            >
+                Home
+            </a>
+        </li>
+
+        <li>
+            <a href="shop.html">
+                Shop
+            </a>
+        </li>
+
+        <li>
+            <a href="contact.html">
+                Contact
+            </a>
+        </li>
+
+        <li>
+            <a href="cart.html">
+                Cart
+            </a>
+        </li>
+
+        <li>
+            <a href="unreleased.html">
+                Unreleased
+            </a>
+        </li>
+
+    </ul>
 
 </nav>
 
+
+
+<!-- =========================
+     HERO
+========================= -->
+
 <section class="hero">
 
-<h1>WELCOME TO THE ATELIER</h1>
+    <h1>
+        WELCOME TO THE ATELIER
+    </h1>
 
-<p>
-VANDALISM IS FREEDOM.
-</p>
+    <p>
+        VANDALISM IS FREEDOM.
+    </p>
 
-<a href="shop.html">
-<button>ENTER ATELIER</button>
-</a>
+    <a href="shop.html">
+
+        <button>
+            ENTER ATELIER
+        </button>
+
+    </a>
 
 </section>
 
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
 <script src="site.js"></script>
+
 
 <script>
 
-// ---- Entrance lock settings ----
-const LOCK_START_HOUR = 4; // 4:00 AM - lock turns on
-const UNLOCK_HOUR = 16; // 4:00 PM - lock turns off
-const ENTRANCE_CODE = "980378VNDL";
-// ---------------------------------
+(function () {
 
-let countdownTimer;
+    const splash =
+        document.getElementById("tapToEnter");
 
-function isCurrentlyLocked(){
-const hour = new Date().getHours();
-return hour >= LOCK_START_HOUR && hour < UNLOCK_HOUR;
-}
+    const tapText =
+        document.getElementById("tapText");
 
-function unlockSite(){
-sessionStorage.setItem("vandalUnlocked", "true");
-document.getElementById("lockScreen").style.display = "none";
-if(countdownTimer){
-clearInterval(countdownTimer);
-}
-}
+    let hasPlayed = false;
 
-function tickCountdown(){
 
-const el = document.getElementById("countdown");
-const now = new Date();
-const target = new Date();
-target.setHours(UNLOCK_HOUR, 0, 0, 0);
+    function openDoors() {
 
-const diff = target - now;
+        if (hasPlayed) {
+            return;
+        }
 
-if(diff <= 0){
-unlockSite();
-return;
-}
+        hasPlayed = true;
 
-const h = Math.floor(diff / 3600000);
-const m = Math.floor((diff % 3600000) / 60000);
-const s = Math.floor((diff % 60000) / 1000);
+        tapText.classList.add("hidden");
 
-el.textContent =
-String(h).padStart(2,"0") + ":" +
-String(m).padStart(2,"0") + ":" +
-String(s).padStart(2,"0");
+        splash.classList.add("open");
 
-}
 
-function checkCode(){
+        setTimeout(function () {
 
-const input = document.getElementById("entryCode");
-const msg = document.getElementById("codeMsg");
-const value = input.value.trim().toUpperCase();
+            splash.style.display = "none";
 
-if(value === ENTRANCE_CODE){
-unlockSite();
-} else {
-msg.textContent = "Incorrect code.";
-}
+        }, 900);
 
-}
+    }
 
-document.getElementById("entryCode").addEventListener("keydown", function(e){
-if(e.key === "Enter"){
-checkCode();
-}
-});
 
-// Once unlocked (by code or by the clock passing 4pm), stays unlocked
-// only for this browsing session — closing the tab/browser will
-// require the code again next time.
-// Locked only between 4am and 4pm. Outside that window (4pm-4am),
-// or once already unlocked this session, skip the gate entirely.
-if(sessionStorage.getItem("vandalUnlocked") === "true" || !isCurrentlyLocked()){
-unlockSite();
-} else {
-tickCountdown();
-countdownTimer = setInterval(tickCountdown, 1000);
-}
+    splash.addEventListener(
+        "click",
+        openDoors
+    );
+
+
+    splash.addEventListener(
+        "touchstart",
+        openDoors,
+        {
+            passive: true
+        }
+    );
+
+})();
 
 </script>
 
+
 </body>
+
 </html>

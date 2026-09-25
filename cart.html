@@ -39,7 +39,10 @@ MENU
 
 <div class="sticker-section" id="stickerSection" style="display:none;">
 <h2>Add Free Stickers</h2>
-<p class="sticker-note">Pick up to <strong>3 free</strong> stickers. Each one after that is <strong>₦150</strong>.</p>
+<p class="sticker-note">
+Pick up to <strong>3 free</strong> stickers.
+Each one after that is <strong id="stickerUnitPrice"></strong>.
+</p>
 <div class="sticker-grid" id="stickerGrid"></div>
 </div>
 
@@ -53,6 +56,7 @@ JSON.parse(localStorage.getItem("cart")) || [];
 const container =
 document.getElementById("cart-container");
 
+
 function renderStickers(){
 
 const section = document.getElementById("stickerSection");
@@ -63,6 +67,14 @@ return;
 }
 
 section.style.display = "block";
+
+const stickerUnitPrice =
+document.getElementById("stickerUnitPrice");
+
+if(stickerUnitPrice){
+stickerUnitPrice.textContent =
+formatVandalPrice(STICKER_PRICE);
+}
 
 const selections = getStickerSelections();
 const totalCount = getTotalStickerCount(selections);
@@ -84,12 +96,31 @@ ${qty > 0 ? `<div class="sticker-check">${qty}</div>` : ""}
 <div class="sticker-fallback">${v.label}</div>
 
 <div class="sticker-tile-name">${v.label}</div>
-<div class="sticker-tile-price">${qty > 0 || nextIsFree ? "FREE" : "+₦150"}${qty > 0 ? " next" : ""}</div>
+
+<div class="sticker-tile-price">
+${qty > 0 || nextIsFree ? "FREE" : "+" + formatVandalPrice(STICKER_PRICE)}
+${qty > 0 ? " next" : ""}
+</div>
 
 <div class="sticker-qty-row">
-<button type="button" class="sticker-qty-btn" onclick="changeStickerQty('${v.key}', -1)" ${qty === 0 ? "disabled" : ""}>&minus;</button>
+
+<button
+type="button"
+class="sticker-qty-btn"
+onclick="changeStickerQty('${v.key}', -1)"
+${qty === 0 ? "disabled" : ""}>
+&minus;
+</button>
+
 <span class="sticker-qty-count">${qty}</span>
-<button type="button" class="sticker-qty-btn" onclick="changeStickerQty('${v.key}', 1)">+</button>
+
+<button
+type="button"
+class="sticker-qty-btn"
+onclick="changeStickerQty('${v.key}', 1)">
++
+</button>
+
 </div>
 
 </div>
@@ -99,6 +130,7 @@ ${qty > 0 ? `<div class="sticker-check">${qty}</div>` : ""}
 }).join("");
 
 }
+
 
 function changeStickerQty(key, delta){
 
@@ -119,14 +151,18 @@ renderCart();
 
 }
 
+
 function renderCart(){
 
 container.innerHTML = "";
 
 if(cart.length === 0){
+
 container.innerHTML =
 '<div class="empty-cart">Your cart is empty. <a href="shop.html">Continue shopping</a></div>';
+
 renderStickers();
+
 return;
 }
 
@@ -134,7 +170,7 @@ let total = 0;
 
 cart.forEach((item,index)=>{
 
-total += item.price;
+total += Number(item.price);
 
 container.innerHTML += `
 
@@ -152,7 +188,7 @@ ${item.height ? `<p>Height: ${item.height}</p>` : ""}
 
 <p>Color: ${item.color}</p>
 
-<h3>₦${item.price.toLocaleString("en-NG")}</h3>
+<h3>${formatVandalPrice(item.price)}</h3>
 
 </div>
 
@@ -166,22 +202,45 @@ REMOVE
 
 });
 
+
 const selections = getStickerSelections();
-const totalStickerCount = getTotalStickerCount(selections);
-const stickerFee = getStickerCost(selections);
+
+const totalStickerCount =
+getTotalStickerCount(selections);
+
+const stickerFee =
+getStickerCost(selections);
 
 let totalHtml = "";
 
+
 if(totalStickerCount > 0){
-totalHtml += `<div style="text-align:right; color:#666; font-size:14px; margin-top:10px;">`;
-totalHtml += `Stickers (${totalStickerCount}): ${stickerFee > 0 ? "₦" + stickerFee.toLocaleString("en-NG") : "FREE"}`;
+
+totalHtml += `
+<div style="
+text-align:right;
+color:#666;
+font-size:14px;
+margin-top:10px;
+">
+`;
+
+totalHtml += `
+Stickers (${totalStickerCount}):
+${stickerFee > 0
+? formatVandalPrice(stickerFee)
+: "FREE"}
+`;
+
 totalHtml += `</div>`;
+
 }
+
 
 totalHtml += `
 
 <div class="cart-total">
-TOTAL: ₦${(total + stickerFee).toLocaleString("en-NG")}
+TOTAL: ${formatVandalPrice(total + stickerFee)}
 </div>
 
 <a href="checkout.html" class="checkout-btn">
@@ -196,6 +255,7 @@ renderStickers();
 
 }
 
+
 function removeItem(index){
 
 cart.splice(index,1);
@@ -208,6 +268,18 @@ JSON.stringify(cart)
 renderCart();
 
 }
+
+
+// UPDATE CART IMMEDIATELY WHEN CURRENCY CHANGES
+window.addEventListener(
+"vandalCurrencyChanged",
+function(){
+
+renderCart();
+
+}
+);
+
 
 renderCart();
 

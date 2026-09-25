@@ -45,16 +45,32 @@ MENU
 <div class="product-detail-grid">
 
 <div class="product-detail-image">
+<div class="main-image-wrap">
 <img id="mainImage" src="" alt="">
+<div class="image-fallback" id="imageFallback">Image coming soon</div>
+</div>
 </div>
 
 <div class="product-detail-info">
 
 <h1 id="productName"></h1>
 <div class="price" id="productPrice"></div>
-
 <div class="detail-label">Color</div>
 <div class="color-options" id="colorSwatches"></div>
+
+<div class="view-thumbs" id="viewThumbs">
+
+<div class="view-thumb selected" id="thumbFrontWrap" onclick="selectView('front')">
+<img id="thumbFront" src="" alt="Front view" onerror="this.style.display='none';">
+<span class="view-thumb-label">FRONT</span>
+</div>
+
+<div class="view-thumb" id="thumbBackWrap" onclick="selectView('back')">
+<img id="thumbBack" src="" alt="Back view" onerror="this.style.display='none';">
+<span class="view-thumb-label">BACK</span>
+</div>
+
+</div>
 
 <div class="detail-label">Size</div>
 <select id="sizeSelect"></select>
@@ -83,6 +99,116 @@ const params = new URLSearchParams(window.location.search);
 const productId = parseInt(params.get("id"), 10);
 const product = PRODUCTS[productId];
 
+let activeColorFile = null;
+let activeView = "front";
+
+function isBeanie(){
+return product && product.name.toUpperCase() === "BEANIE";
+}
+
+function getBackImage(frontFile){
+return frontFile.replace(/\.png$/i, " BACK.png");
+}
+
+function showMainImage(src){
+
+const img = document.getElementById("mainImage");
+const fallback = document.getElementById("imageFallback");
+
+fallback.style.display = "none";
+img.style.display = "block";
+
+img.onerror = function(){
+img.style.display = "none";
+fallback.style.display = "flex";
+};
+
+img.src = src;
+
+}
+
+function updateViewThumbs(){
+
+activeView = "front";
+
+if(isBeanie()){
+showMainImage(activeColorFile);
+return;
+}
+
+const frontThumb = document.getElementById("thumbFront");
+const backThumb = document.getElementById("thumbBack");
+
+frontThumb.style.display = "block";
+backThumb.style.display = "block";
+
+frontThumb.src = activeColorFile;
+backThumb.src = getBackImage(activeColorFile);
+
+document.getElementById("thumbFrontWrap").classList.add("selected");
+document.getElementById("thumbBackWrap").classList.remove("selected");
+
+showMainImage(activeColorFile);
+
+}
+
+function selectView(view){
+
+if(isBeanie()) return;
+
+activeView = view;
+
+document.getElementById("thumbFrontWrap").classList.toggle("selected", view === "front");
+document.getElementById("thumbBackWrap").classList.toggle("selected", view === "back");
+
+showMainImage(
+view === "back"
+? getBackImage(activeColorFile)
+: activeColorFile
+);
+
+}
+
+function renderColorSwatches(){
+
+const swatchWrap = document.getElementById("colorSwatches");
+
+swatchWrap.innerHTML = product.colors.map(function(c){
+
+return '<div class="color' +
+(c === activeColorFile ? ' selected' : '') +
+'" data-file="' + c +
+'" onclick="selectColor(this)" title="' +
+c.replace(".png","") + '">' +
+
+'<img src="' + c +
+'" alt="' + c.replace(".png","") + '">' +
+
+'</div>';
+
+}).join("");
+
+}
+
+function selectColor(el){
+
+activeColorFile = el.getAttribute("data-file");
+
+document.querySelectorAll("#colorSwatches .color").forEach(function(d){
+d.classList.remove("selected");
+});
+
+el.classList.add("selected");
+
+if(isBeanie()){
+showMainImage(activeColorFile);
+return;
+}
+
+updateViewThumbs();
+
+}
+
 if(!product){
 
 document.getElementById("productRoot").innerHTML =
@@ -98,39 +224,40 @@ function renderProduct(){
 
 document.title = product.name + " \u2014 VANDAL";
 
-document.getElementById("mainImage").src = product.colors[0];
 document.getElementById("mainImage").alt = product.name;
 document.getElementById("productName").textContent = product.name;
 document.getElementById("productPrice").textContent = formatPrice(product.price);
 
-const swatchWrap = document.getElementById("colorSwatches");
+activeColorFile = product.colors[0];
 
-swatchWrap.innerHTML = product.colors.map(function(c, i){
-return '<div class="color' + (i === 0 ? ' selected' : '') +
-'" data-file="' + c + '" style="background:' + guessColor(c) +
-'" onclick="selectColor(this)" title="' + c.replace(".png","") + '"></div>';
-}).join("");
+if(isBeanie()){
+
+document.getElementById("viewThumbs").style.display = "none";
+
+} else {
+
+document.getElementById("viewThumbs").style.display = "";
+
+}
+
+renderColorSwatches();
+updateViewThumbs();
 
 document.getElementById("sizeSelect").innerHTML =
-getSizes(product).map(function(s){ return "<option>" + s + "</option>"; }).join("");
+getSizes(product).map(function(s){
+return "<option>" + s + "</option>";
+}).join("");
 
 if(needsHeight(product.name)){
+
 document.getElementById("heightWrap").style.display = "block";
+
 document.getElementById("heightSelect").innerHTML =
-HEIGHT_OPTIONS.map(function(h){ return "<option>" + h + "</option>"; }).join("");
-}
+HEIGHT_OPTIONS.map(function(h){
+return "<option>" + h + "</option>";
+}).join("");
 
 }
-
-function selectColor(el){
-
-document.getElementById("mainImage").src = el.getAttribute("data-file");
-
-document.querySelectorAll("#colorSwatches .color").forEach(function(d){
-d.classList.remove("selected");
-});
-
-el.classList.add("selected");
 
 }
 
@@ -139,14 +266,11 @@ function addToCart(){
 const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const size = document.getElementById("sizeSelect").value;
-
-const activeSwatch = document.querySelector("#colorSwatches .color.selected");
-const file = activeSwatch ? activeSwatch.getAttribute("data-file") : product.colors[0];
-const color = file.replace(".png","");
+const color = activeColorFile.replace(".png","");
 
 const item = {
 name: product.name,
-image: file,
+image: activeColorFile,
 size: size,
 color: color,
 price: product.price
@@ -157,6 +281,7 @@ item.height = document.getElementById("heightSelect").value;
 }
 
 cart.push(item);
+
 localStorage.setItem("cart", JSON.stringify(cart));
 
 showToast(product.name + " added to cart", "success");

@@ -12,7 +12,6 @@
 <link rel="stylesheet" href="style.css">
 
 <script src="https://checkout.flutterwave.com/v3.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
@@ -77,6 +76,36 @@ color:var(--red-bright);
 word-break:break-all;
 }
 
+/* LIVE SHIPPING */
+
+.shipping-box{
+margin-top:14px;
+text-align:left;
+}
+
+#getRatesBtn{
+width:100%;
+margin-top:10px;
+}
+
+#shippingStatus{
+min-height:18px;
+margin:8px 0 0;
+font-size:14px;
+}
+
+#delivery{
+width:100%;
+margin-top:10px;
+}
+
+.shipping-note{
+margin:7px 0 0;
+font-size:12px;
+color:#777;
+line-height:1.4;
+}
+
 </style>
 
 </head>
@@ -89,42 +118,96 @@ word-break:break-all;
 
 <h1>CHECKOUT</h1>
 
-<input type="text" id="firstName" placeholder="First Name">
+<input
+type="text"
+id="firstName"
+placeholder="First Name"
+>
 
-<input type="text" id="lastName" placeholder="Last Name">
+<input
+type="text"
+id="lastName"
+placeholder="Last Name"
+>
 
-<input type="email" id="email" placeholder="Email">
+<input
+type="email"
+id="email"
+placeholder="Email"
+>
 
-<input type="text" id="phone" placeholder="Phone Number">
+<input
+type="text"
+id="phone"
+placeholder="Phone Number"
+>
 
-<input type="text" id="address" placeholder="Address">
+<input
+type="text"
+id="address"
+placeholder="Full Delivery Address"
+>
 
-<select id="delivery">
 
-<option value="6500">
-Lagos Island (₦6,500)
-</option>
+<!-- LIVE SHIPBUBBLE SHIPPING -->
 
-<option value="5000">
-Lagos Mainland (₦5,000)
-</option>
+<div class="shipping-box">
 
-<option value="outside">
-Outside Lagos (Message Us Directly)
+<button
+type="button"
+id="getRatesBtn"
+onclick="getShippingRates()"
+>
+GET SHIPPING RATES
+</button>
+
+<p id="shippingStatus">
+Enter your details and full delivery address, then get shipping rates.
+</p>
+
+<select id="delivery" disabled>
+
+<option value="">
+Select a shipping option
 </option>
 
 </select>
 
+<p class="shipping-note">
+Shipping prices are live courier quotes.
+If you change your address, get fresh rates.
+</p>
+
+</div>
+
+
+<!-- PROMO CODE -->
+
 <div class="promo-row">
-<input type="text" id="promoInput" placeholder="Discount code">
-<button id="promoBtn" onclick="applyPromo()">Apply</button>
+
+<input
+type="text"
+id="promoInput"
+placeholder="Discount code"
+>
+
+<button
+id="promoBtn"
+onclick="applyPromo()"
+>
+Apply
+</button>
+
 </div>
 
 <p id="promoMsg"></p>
 
 <h2 id="total"></h2>
 
-<button id="payBtn" onclick="payNow()">
+<button
+id="payBtn"
+onclick="payNow()"
+>
 PAY NOW
 </button>
 
@@ -132,360 +215,1410 @@ PAY NOW
 
 </div>
 
+
 <script src="site.js"></script>
 
 <script>
+
+/* =========================
+   CART
+========================= */
 
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
 let subtotal = 0;
 
-cart.forEach(item=>{
-subtotal += item.price;
+cart.forEach(function(item){
+
+const quantity =
+Number(item.quantity || item.qty || 1);
+
+subtotal +=
+Number(item.price || 0) * quantity;
+
 });
 
-const stickerSelections = getStickerSelections();
-const totalStickerCount = getTotalStickerCount(stickerSelections);
-const stickerFee = getStickerCost(stickerSelections);
+
+/* =========================
+   STICKERS
+========================= */
+
+const stickerSelections =
+getStickerSelections();
+
+const totalStickerCount =
+getTotalStickerCount(stickerSelections);
+
+const stickerFee =
+getStickerCost(stickerSelections);
+
+
+/* =========================
+   SHIPPING VARIABLES
+========================= */
 
 const delivery =
 document.getElementById("delivery");
 
-// ---- EmailJS setup ----
-// Sign up free at emailjs.com, connect an email account under
-// "Email Services", then create a template under "Email Templates"
-// using the variable names sent below (to_email, customer_name,
-// order_ref, transaction_id, order_items, order_total,
-// delivery_option, address). Paste your 3 IDs here:
-// If EmailJS's script failed to load (ad blocker, network issue, etc),
-// this stays safe instead of crashing the rest of checkout.
+const shippingStatus =
+document.getElementById("shippingStatus");
+
+const getRatesBtn =
+document.getElementById("getRatesBtn");
+
+let selectedShippingFee = 0;
+
+let selectedCourier = null;
+
+let shippingRequestToken = null;
+
+let shippingRatesLoaded = false;
+
+
+/* =========================
+   EMAILJS
+========================= */
+
 try{
-emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" });
+
+emailjs.init({
+publicKey: "YOUR_EMAILJS_PUBLIC_KEY"
+});
+
 }catch(err){
-console.error("EmailJS failed to initialize:", err);
+
+console.error(
+"EmailJS failed to initialize:",
+err
+);
+
 }
-const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
 
-// Where YOU get notified with the full order details (color/size/height).
-// Change this if you want orders sent to a different inbox.
-const SELLER_EMAIL = "wearsvandal@gmail.com";
-// ------------------------
+const EMAILJS_SERVICE_ID =
+"YOUR_EMAILJS_SERVICE_ID";
 
-// ---- EDIT THIS: your real discount codes ----
-// value is either a percentage off (e.g. 0.10 = 10%) or the string "freeship"
+const EMAILJS_TEMPLATE_ID =
+"YOUR_EMAILJS_TEMPLATE_ID";
+
+const SELLER_EMAIL =
+"wearsvandal@gmail.com";
+
+
+/* =========================
+   DISCOUNT CODES
+========================= */
+
 const VALID_CODES = {
+
 "2010803": 0.10,
+
 "C3739H": 0.15,
+
 "EMFRAO": "freeship",
+
 "UTOTY876": 0.05
+
 };
-// ----------------------------------------------
 
 let discountRate = 0;
+
 let freeShipping = false;
+
 let appliedCode = null;
+
+
+/* =========================
+   APPLY PROMO
+========================= */
 
 function applyPromo(){
 
-const input = document.getElementById("promoInput");
-const msg = document.getElementById("promoMsg");
-const code = input.value.trim().toUpperCase();
+const input =
+document.getElementById("promoInput");
+
+const msg =
+document.getElementById("promoMsg");
+
+const code =
+input.value.trim().toUpperCase();
+
 
 if(!code){
+
 msg.style.color = "#ff0000";
-msg.innerText = "Enter a code first.";
+
+msg.innerText =
+"Enter a code first.";
+
 return;
+
 }
+
 
 if(!VALID_CODES.hasOwnProperty(code)){
+
 msg.style.color = "#ff0000";
-msg.innerText = "That code isn't valid.";
+
+msg.innerText =
+"That code isn't valid.";
+
 return;
+
 }
+
 
 appliedCode = code;
-const value = VALID_CODES[code];
+
+const value =
+VALID_CODES[code];
+
 
 if(value === "freeship"){
+
 freeShipping = true;
+
 discountRate = 0;
+
 msg.style.color = "#2ecc71";
-msg.innerText = "Free shipping applied.";
-} else {
+
+msg.innerText =
+"Free shipping applied.";
+
+}else{
+
 discountRate = value;
+
 freeShipping = false;
+
 msg.style.color = "#2ecc71";
-msg.innerText = Math.round(value * 100) + "% off applied.";
+
+msg.innerText =
+Math.round(value * 100) +
+"% off applied.";
+
 }
 
+
 input.disabled = true;
-document.getElementById("promoBtn").disabled = true;
+
+document.getElementById(
+"promoBtn"
+).disabled = true;
 
 updateTotal();
 
 }
+
+
+/* =========================
+   UPDATE TOTAL
+========================= */
 
 function updateTotal(){
 
-const payBtn = document.getElementById("payBtn");
+const discountAmount =
+Math.round(
+subtotal * discountRate
+);
 
-if(delivery.value === "outside"){
+const deliveryFee =
+freeShipping
+? 0
+: selectedShippingFee;
 
-document.getElementById("total").innerText =
-"Outside Lagos? Message us directly to arrange delivery.";
+const total =
+subtotal +
+stickerFee +
+deliveryFee -
+discountAmount;
 
-payBtn.innerText = "MESSAGE US";
+
+let html =
+"Subtotal: ₦" +
+subtotal.toLocaleString("en-NG") +
+"<br>";
+
+
+if(stickerFee > 0){
+
+html +=
+"Stickers (" +
+totalStickerCount +
+"): ₦" +
+stickerFee.toLocaleString("en-NG") +
+"<br>";
+
+}
+
+
+if(discountAmount > 0){
+
+html +=
+"Discount: -₦" +
+discountAmount.toLocaleString("en-NG") +
+"<br>";
+
+}
+
+
+if(selectedCourier){
+
+html +=
+"Shipping: " +
+(
+freeShipping
+? "FREE"
+: "₦" +
+deliveryFee.toLocaleString("en-NG")
+) +
+"<br>";
+
+}else{
+
+html +=
+"Shipping: Not selected<br>";
+
+}
+
+
+html +=
+"<strong>TOTAL: ₦" +
+total.toLocaleString("en-NG") +
+"</strong>";
+
+
+document.getElementById(
+"total"
+).innerHTML = html;
+
+}
+
+
+/* =========================
+   RESET SHIPPING
+========================= */
+
+function resetShippingRates(message){
+
+shippingRatesLoaded = false;
+
+selectedShippingFee = 0;
+
+selectedCourier = null;
+
+shippingRequestToken = null;
+
+
+delivery.innerHTML =
+'<option value="">Select a shipping option</option>';
+
+delivery.disabled = true;
+
+
+if(message){
+
+shippingStatus.style.color =
+"#666";
+
+shippingStatus.innerText =
+message;
+
+}
+
+updateTotal();
+
+}
+
+
+/* =========================
+   RESET RATE IF DETAILS CHANGE
+========================= */
+
+[
+"firstName",
+"lastName",
+"email",
+"phone",
+"address"
+].forEach(function(id){
+
+document
+.getElementById(id)
+.addEventListener(
+"input",
+function(){
+
+if(
+shippingRatesLoaded ||
+selectedCourier
+){
+
+resetShippingRates(
+"Details changed. Get fresh shipping rates."
+);
+
+}
+
+}
+);
+
+});
+
+
+/* =========================
+   GET SHIPBUBBLE RATES
+========================= */
+
+async function getShippingRates(){
+
+if(cart.length === 0){
+
+showToast(
+"Your cart is empty.",
+"error"
+);
 
 return;
 
 }
 
-payBtn.innerText = "PAY NOW";
 
-let deliveryFee = Number(delivery.value);
+const firstName =
+document
+.getElementById("firstName")
+.value
+.trim();
 
-if(freeShipping){
-deliveryFee = 0;
+const lastName =
+document
+.getElementById("lastName")
+.value
+.trim();
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+const phone =
+document
+.getElementById("phone")
+.value
+.trim();
+
+const address =
+document
+.getElementById("address")
+.value
+.trim();
+
+
+if(
+!firstName ||
+!lastName ||
+!email ||
+!phone ||
+!address
+){
+
+showToast(
+"Fill in your name, email, phone and full delivery address first.",
+"error"
+);
+
+return;
+
 }
 
-const discountAmount = Math.round(subtotal * discountRate);
 
-const total = subtotal + stickerFee + deliveryFee - discountAmount;
+resetShippingRates();
 
-if(discountAmount > 0 || freeShipping || stickerFee > 0){
 
-let html = "Subtotal: ₦" + subtotal.toLocaleString("en-NG") + "<br>";
+getRatesBtn.disabled = true;
 
-if(stickerFee > 0){
-html += "Stickers (" + totalStickerCount + "): ₦" + stickerFee.toLocaleString("en-NG") + "<br>";
+getRatesBtn.innerText =
+"GETTING RATES...";
+
+
+shippingStatus.style.color =
+"#666";
+
+shippingStatus.innerText =
+"Checking your address and available couriers...";
+
+
+try{
+
+
+const response =
+await fetch(
+"/api/shipping",
+{
+
+method: "POST",
+
+headers:{
+
+"Content-Type":
+"application/json"
+
+},
+
+body: JSON.stringify({
+
+name:
+firstName +
+" " +
+lastName,
+
+email: email,
+
+phone: phone,
+
+address: address,
+
+cart: cart
+
+})
+
+}
+);
+
+
+const data =
+await response.json();
+
+
+if(
+!response.ok ||
+!data.success
+){
+
+const errorMessage =
+
+data.shipbubble?.message ||
+
+data.message ||
+
+"Unable to retrieve shipping rates.";
+
+
+throw new Error(
+errorMessage
+);
+
 }
 
-if(discountAmount > 0){
-html += "Discount: -₦" + discountAmount.toLocaleString("en-NG") + "<br>";
-}
 
-html += "Delivery: " + (freeShipping ? "FREE" : "₦" + deliveryFee.toLocaleString("en-NG")) + "<br>";
+if(
+!Array.isArray(data.couriers) ||
+data.couriers.length === 0
+){
 
-html += "<strong>TOTAL: ₦" + total.toLocaleString("en-NG") + "</strong>";
-
-document.getElementById("total").innerHTML = html;
-
-} else {
-
-document.getElementById("total").innerText =
-"TOTAL: ₦" + total.toLocaleString("en-NG");
+throw new Error(
+"No courier is currently available for this address."
+);
 
 }
 
+
+shippingRequestToken =
+data.request_token || null;
+
+
+delivery.innerHTML =
+'<option value="">Choose a courier</option>';
+
+
+data.couriers.forEach(
+function(courier,index){
+
+const fee =
+Number(courier.total);
+
+
+if(!Number.isFinite(fee)){
+
+return;
+
 }
+
+
+const option =
+document.createElement(
+"option"
+);
+
+
+option.value =
+String(index);
+
+
+option.dataset.fee =
+String(fee);
+
+
+option.dataset.name =
+courier.courier_name ||
+"Courier";
+
+
+option.dataset.service =
+courier.service_type ||
+courier.service_code ||
+"";
+
+
+let label =
+
+(
+courier.courier_name ||
+"Courier"
+)
+
++
+
+" — ₦"
+
++
+
+fee.toLocaleString(
+"en-NG"
+);
+
+
+if(courier.delivery_eta){
+
+label +=
+" — " +
+courier.delivery_eta;
+
+}
+
+
+option.textContent =
+label;
+
+
+delivery.appendChild(
+option
+);
+
+});
+
+
+if(
+delivery.options.length <= 1
+){
+
+throw new Error(
+"No usable courier prices were returned."
+);
+
+}
+
+
+shippingRatesLoaded = true;
+
+delivery.disabled = false;
+
+
+shippingStatus.style.color =
+"#2ecc71";
+
+
+shippingStatus.innerText =
+"Shipping rates found. Choose a courier below.";
+
+
+}catch(error){
+
+
+resetShippingRates();
+
+
+shippingStatus.style.color =
+"#ff0000";
+
+
+shippingStatus.innerText =
+error.message;
+
+
+showToast(
+error.message,
+"error"
+);
+
+
+}finally{
+
+
+getRatesBtn.disabled = false;
+
+
+getRatesBtn.innerText =
+"GET SHIPPING RATES";
+
+
+}
+
+}
+
+
+/* =========================
+   SELECT COURIER
+========================= */
 
 delivery.addEventListener(
 "change",
-updateTotal
-);
+function(){
+
+const option =
+delivery.options[
+delivery.selectedIndex
+];
+
+
+if(
+!delivery.value ||
+!option
+){
+
+selectedShippingFee = 0;
+
+selectedCourier = null;
 
 updateTotal();
 
-function formatPrice(amount){
-return "₦" + amount.toLocaleString("en-NG");
+return;
+
 }
 
-function showConfirmation(orderRef, transactionId){
 
-const box = document.querySelector(".checkout-box");
+selectedShippingFee =
+Number(
+option.dataset.fee || 0
+);
+
+
+selectedCourier = {
+
+name:
+option.dataset.name ||
+"Courier",
+
+service:
+option.dataset.service ||
+"",
+
+fee:
+selectedShippingFee
+
+};
+
+
+updateTotal();
+
+}
+);
+
+
+updateTotal();
+
+
+/* =========================
+   FORMAT PRICE
+========================= */
+
+function formatPrice(amount){
+
+return "₦" +
+Number(amount)
+.toLocaleString("en-NG");
+
+}
+
+
+/* =========================
+   PAYMENT SUCCESS PAGE
+========================= */
+
+function showConfirmation(
+orderRef,
+transactionId
+){
+
+const box =
+document.querySelector(
+".checkout-box"
+);
+
 
 box.innerHTML = `
 
-<h1>PAYMENT SUCCESSFUL</h1>
+<h1>
+PAYMENT SUCCESSFUL
+</h1>
 
-<p style="color:#666; margin-top:10px;">
-Thanks for your order! A confirmation email is on its way to you.
+<p
+style="
+color:#666;
+margin-top:10px;
+"
+>
+
+Thanks for your order!
+A confirmation email is on its way to you.
+
 </p>
 
-<div class="confirm-block">
-<p>Order Reference</p>
-<h2>${orderRef}</h2>
-</div>
 
 <div class="confirm-block">
-<p>Transaction ID</p>
-<h2>${transactionId}</h2>
-</div>
 
-<p style="color:#999; font-size:13px; margin-top:14px;">
-Save this reference number for any order enquiries.
+<p>
+Order Reference
 </p>
 
-<a href="index.html" style="display:block;">
-<button type="button" style="margin-top:20px;">BACK TO HOME</button>
+<h2>
+${orderRef}
+</h2>
+
+</div>
+
+
+<div class="confirm-block">
+
+<p>
+Transaction ID
+</p>
+
+<h2>
+${transactionId}
+</h2>
+
+</div>
+
+
+<p
+style="
+color:#999;
+font-size:13px;
+margin-top:14px;
+"
+>
+
+Save this reference number
+for any order enquiries.
+
+</p>
+
+
+<a
+href="index.html"
+style="display:block;"
+>
+
+<button
+type="button"
+style="margin-top:20px;"
+>
+
+BACK TO HOME
+
+</button>
+
 </a>
 
 `;
 
 }
 
+
+/* =========================
+   PAY NOW
+========================= */
+
 function payNow(){
 
 if(cart.length === 0){
-showToast("Your cart is empty.", "error");
-return;
-}
 
-if(delivery.value === "outside"){
-
-showToast("Thanks! We'll message you to arrange delivery.", "success");
-
-setTimeout(function(){
-window.location.href = "contact.html";
-}, 1800);
+showToast(
+"Your cart is empty.",
+"error"
+);
 
 return;
 
 }
 
-const firstName = document.getElementById("firstName").value.trim();
-const lastName = document.getElementById("lastName").value.trim();
-const email = document.getElementById("email").value.trim();
-const phone = document.getElementById("phone").value.trim();
-const address = document.getElementById("address").value.trim();
 
-if(!firstName || !lastName || !email || !phone || !address){
-showToast("Please fill in all fields before paying.", "error");
+const firstName =
+document
+.getElementById("firstName")
+.value
+.trim();
+
+const lastName =
+document
+.getElementById("lastName")
+.value
+.trim();
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+const phone =
+document
+.getElementById("phone")
+.value
+.trim();
+
+const address =
+document
+.getElementById("address")
+.value
+.trim();
+
+
+if(
+!firstName ||
+!lastName ||
+!email ||
+!phone ||
+!address
+){
+
+showToast(
+"Please fill in all fields before paying.",
+"error"
+);
+
 return;
+
 }
 
-let deliveryFee = Number(delivery.value);
 
-if(freeShipping){
-deliveryFee = 0;
-}
+if(
+!shippingRatesLoaded ||
+!selectedCourier ||
+!delivery.value
+){
 
-const discountAmount = Math.round(subtotal * discountRate);
-const total = subtotal + stickerFee + deliveryFee - discountAmount;
+showToast(
+"Get shipping rates and choose a courier before paying.",
+"error"
+);
 
-const orderRef = "VANDAL-" + Date.now();
-
-if(typeof FlutterwaveCheckout === "undefined"){
-showToast("Payment system failed to load. Check your connection and reload the page.", "error");
 return;
+
 }
+
+
+const deliveryFee =
+freeShipping
+? 0
+: selectedShippingFee;
+
+
+const discountAmount =
+Math.round(
+subtotal * discountRate
+);
+
+
+const total =
+
+subtotal +
+
+stickerFee +
+
+deliveryFee -
+
+discountAmount;
+
+
+const orderRef =
+"VANDAL-" +
+Date.now();
+
+
+if(
+typeof FlutterwaveCheckout ===
+"undefined"
+){
+
+showToast(
+"Payment system failed to load. Check your connection and reload the page.",
+"error"
+);
+
+return;
+
+}
+
+
+const deliveryLabel =
+
+selectedCourier.name +
+
+(
+selectedCourier.service
+? " - " +
+selectedCourier.service
+: ""
+)
+
++
+
+" (" +
+
+(
+freeShipping
+? "FREE"
+: formatPrice(
+selectedShippingFee
+)
+)
+
++
+
+")";
+
 
 FlutterwaveCheckout({
 
-public_key: "FLWPUBK-3b34799c31afa84f90876a8a55afa1f0-X",
 
-tx_ref: orderRef,
+public_key:
+"FLWPUBK-3b34799c31afa84f90876a8a55afa1f0-X",
 
-amount: total,
 
-currency: "NGN",
+tx_ref:
+orderRef,
 
-payment_options: "card, banktransfer, ussd",
+
+amount:
+total,
+
+
+currency:
+"NGN",
+
+
+payment_options:
+"card, banktransfer, ussd",
+
 
 customer:{
-email: email,
-phone_number: phone,
-name: firstName + " " + lastName
+
+email:
+email,
+
+phone_number:
+phone,
+
+name:
+firstName +
+" " +
+lastName
+
 },
+
 
 meta:{
-address: address,
-delivery_option: delivery.options[delivery.selectedIndex].text,
-promo_code: appliedCode || "none",
-discount_amount: discountAmount,
-stickers: (function(){
-const counts = stickerSelections;
-const variants = getStickerVariants();
-return Object.keys(counts).map(function(key){
-const v = variants.find(function(x){ return x.key === key; });
-const label = v ? v.label : key;
-return counts[key] > 1 ? label + " x" + counts[key] : label;
-}).join(", ") || "none";
+
+address:
+address,
+
+delivery_option:
+deliveryLabel,
+
+shipping_request_token:
+shippingRequestToken ||
+"none",
+
+shipping_fee_quoted:
+selectedShippingFee,
+
+shipping_fee_charged:
+deliveryFee,
+
+promo_code:
+appliedCode ||
+"none",
+
+discount_amount:
+discountAmount,
+
+stickers:
+(function(){
+
+const counts =
+stickerSelections;
+
+const variants =
+getStickerVariants();
+
+return Object
+.keys(counts)
+.map(function(key){
+
+const v =
+variants.find(
+function(x){
+
+return x.key === key;
+
+}
+);
+
+const label =
+v
+? v.label
+: key;
+
+return counts[key] > 1
+
+? label +
+" x" +
+counts[key]
+
+: label;
+
+})
+.join(", ")
+
+|| "none";
+
 })(),
-sticker_fee: stickerFee,
-cart: JSON.stringify(cart)
+
+sticker_fee:
+stickerFee,
+
+cart:
+JSON.stringify(cart)
+
 },
+
 
 customizations:{
-title: "VANDAL",
-description: "Payment for items in cart",
-logo: "VANDAL LOGO.png"
+
+title:
+"VANDAL",
+
+description:
+"Payment for items in cart",
+
+logo:
+"VANDAL LOGO.png"
+
 },
 
-callback: function(response){
 
-if(response.status === "successful"){
+callback:
+function(response){
 
-const stickerVariants = getStickerVariants();
 
-const stickerSummary = Object.keys(stickerSelections).map(function(key){
-const v = stickerVariants.find(function(x){ return x.key === key; });
-const label = v ? v.label : key;
-const qty = stickerSelections[key];
-return qty > 1 ? label + " x" + qty : label;
-}).join(", ");
+if(
+response.status ===
+"successful"
+){
 
-const orderSummary = cart.map(function(item){
-let line = item.name + " (" + item.color + ", " + item.size;
-if(item.height){ line += ", " + item.height; }
-line += ") - " + formatPrice(item.price);
+
+const stickerVariants =
+getStickerVariants();
+
+
+const stickerSummary =
+
+Object
+.keys(stickerSelections)
+.map(function(key){
+
+const v =
+stickerVariants.find(
+function(x){
+
+return x.key === key;
+
+}
+);
+
+const label =
+v
+? v.label
+: key;
+
+const qty =
+stickerSelections[key];
+
+return qty > 1
+
+? label +
+" x" +
+qty
+
+: label;
+
+})
+.join(", ");
+
+
+const orderSummary =
+
+cart
+.map(function(item){
+
+const qty =
+Number(
+item.quantity ||
+item.qty ||
+1
+);
+
+let line =
+
+item.name +
+
+" (" +
+
+item.color +
+
+", " +
+
+item.size;
+
+
+if(item.height){
+
+line +=
+", " +
+item.height;
+
+}
+
+
+line += ")";
+
+
+if(qty > 1){
+
+line +=
+" x" +
+qty;
+
+}
+
+
+line +=
+" - " +
+formatPrice(
+Number(
+item.price || 0
+) *
+qty
+);
+
+
 return line;
-}).join("\n") + (totalStickerCount > 0
-? "\n\nStickers: " + stickerSummary + " (" + (stickerFee > 0 ? formatPrice(stickerFee) + " charged" : "all free") + ")"
-: "");
+
+})
+.join("\n")
+
++
+
+(
+totalStickerCount > 0
+
+?
+
+"\n\nStickers: " +
+
+stickerSummary +
+
+" (" +
+
+(
+stickerFee > 0
+
+? formatPrice(
+stickerFee
+) +
+" charged"
+
+: "all free"
+)
+
++
+
+")"
+
+:
+
+""
+);
+
 
 try{
-emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-to_email: email,
-customer_name: firstName + " " + lastName,
-order_ref: orderRef,
-transaction_id: response.transaction_id,
-order_items: orderSummary,
-order_total: formatPrice(total),
-delivery_option: delivery.options[delivery.selectedIndex].text,
-address: address
-}).catch(function(err){
-console.error("Order email failed to send:", err);
-});
-}catch(err){
-console.error("EmailJS unavailable, skipping customer email:", err);
+
+emailjs.send(
+
+EMAILJS_SERVICE_ID,
+
+EMAILJS_TEMPLATE_ID,
+
+{
+
+to_email:
+email,
+
+customer_name:
+firstName +
+" " +
+lastName,
+
+order_ref:
+orderRef,
+
+transaction_id:
+response.transaction_id,
+
+order_items:
+orderSummary,
+
+order_total:
+formatPrice(total),
+
+delivery_option:
+deliveryLabel,
+
+address:
+address
+
 }
+
+)
+.catch(function(err){
+
+console.error(
+"Order email failed to send:",
+err
+);
+
+});
+
+}catch(err){
+
+console.error(
+"EmailJS unavailable, skipping customer email:",
+err
+);
+
+}
+
 
 try{
-emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-to_email: SELLER_EMAIL,
-customer_name: firstName + " " + lastName + " (" + phone + ")",
-order_ref: orderRef,
-transaction_id: response.transaction_id,
-order_items: orderSummary,
-order_total: formatPrice(total),
-delivery_option: delivery.options[delivery.selectedIndex].text,
-address: address
-}).catch(function(err){
-console.error("Seller notification email failed to send:", err);
-});
-}catch(err){
-console.error("EmailJS unavailable, skipping seller email:", err);
+
+emailjs.send(
+
+EMAILJS_SERVICE_ID,
+
+EMAILJS_TEMPLATE_ID,
+
+{
+
+to_email:
+SELLER_EMAIL,
+
+customer_name:
+firstName +
+" " +
+lastName +
+" (" +
+phone +
+")",
+
+order_ref:
+orderRef,
+
+transaction_id:
+response.transaction_id,
+
+order_items:
+orderSummary,
+
+order_total:
+formatPrice(total),
+
+delivery_option:
+deliveryLabel,
+
+address:
+address
+
 }
 
-localStorage.removeItem("cart");
-localStorage.removeItem("vandalStickers");
+)
+.catch(function(err){
 
-showConfirmation(orderRef, response.transaction_id);
+console.error(
+"Seller notification email failed to send:",
+err
+);
+
+});
+
+}catch(err){
+
+console.error(
+"EmailJS unavailable, skipping seller email:",
+err
+);
+
+}
+
+
+localStorage.removeItem(
+"cart"
+);
+
+localStorage.removeItem(
+"vandalStickers"
+);
+
+
+showConfirmation(
+orderRef,
+response.transaction_id
+);
+
 
 }else{
 
-showToast("Payment was not completed. Please try again.", "error");
+
+showToast(
+"Payment was not completed. Please try again.",
+"error"
+);
+
 
 }
 
 },
 
-onclose: function(){
-// user closed the payment modal without completing payment
+
+onclose:
+function(){
+
+// User closed the payment window.
+
 }
+
 
 });
 
@@ -494,4 +1627,5 @@ onclose: function(){
 </script>
 
 </body>
+
 </html>

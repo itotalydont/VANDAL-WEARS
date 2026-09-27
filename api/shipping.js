@@ -29,13 +29,7 @@ export default async function handler(req, res) {
   };
 
   try {
-    const {
-      name,
-      email,
-      phone,
-      address,
-      cart
-    } = req.body || {};
+    const { name, email, phone, address, cart } = req.body || {};
 
     // -----------------------------
     // 1. CHECK CUSTOMER INFORMATION
@@ -44,8 +38,7 @@ export default async function handler(req, res) {
     if (!name || !email || !phone || !address) {
       return res.status(400).json({
         success: false,
-        message:
-          "Customer name, email, phone number and shipping address are required."
+        message: "Please enter your name, email, phone number and delivery address."
       });
     }
 
@@ -57,7 +50,7 @@ export default async function handler(req, res) {
     }
 
     // -----------------------------
-    // 2. PRODUCT SHIPPING WEIGHTS
+    // 2. VANDAL PRODUCT WEIGHTS
     // -----------------------------
 
     const productWeights = {
@@ -77,7 +70,7 @@ export default async function handler(req, res) {
     };
 
     // -----------------------------
-    // 3. BUILD SHIPBUBBLE ITEMS
+    // 3. BUILD PACKAGE ITEMS
     // -----------------------------
 
     const packageItems = cart.map((item) => {
@@ -93,9 +86,7 @@ export default async function handler(req, res) {
       const price = Number(item.price || 0);
 
       if (!Number.isFinite(price) || price <= 0) {
-        throw new Error(
-          `Invalid price for ${item.name}.`
-        );
+        throw new Error(`Invalid price for ${item.name}.`);
       }
 
       return {
@@ -134,16 +125,17 @@ export default async function handler(req, res) {
     ) {
       return res.status(422).json({
         success: false,
-        message: "We could not validate the delivery address.",
+        message:
+          receiverData.message ||
+          "Shipbubble could not validate the delivery address.",
         shipbubble: receiverData
       });
     }
 
-    const receiverAddressCode =
-      receiverData.data.address_code;
+    const receiverAddressCode = receiverData.data.address_code;
 
     // -----------------------------
-    // 5. VALIDATE VANDAL PICKUP ADDRESS
+    // 5. VALIDATE VANDAL ADDRESS
     // -----------------------------
 
     const senderResponse = await fetch(
@@ -175,22 +167,81 @@ export default async function handler(req, res) {
       });
     }
 
-    const senderAddressCode =
-      senderData.data.address_code;
+    const senderAddressCode = senderData.data.address_code;
 
     // -----------------------------
-    // 6. PICKUP DATE
-    // Use tomorrow to avoid same-day cutoff issues.
+    // 6. GET CURRENT SHIPBUBBLE
+    //    PACKAGE CATEGORIES
+    // -----------------------------
+
+    const categoryResponse = await fetch(
+      "https://api.shipbubble.com/v1/shipping/labels/categories",
+      {
+        method: "GET",
+        headers
+      }
+    );
+
+    const categoryData = await categoryResponse.json();
+
+    if (
+      !categoryResponse.ok ||
+      categoryData.status !== "success" ||
+      !Array.isArray(categoryData.data)
+    ) {
+      return res.status(500).json({
+        success: false,
+        message: "Unable to retrieve Shipbubble package categories.",
+        shipbubble: categoryData
+      });
+    }
+
+    // Find Fashion wears directly from Shipbubble
+    const fashionCategory = categoryData.data.find((item) => {
+      const categoryName = String(item.category || "")
+        .trim()
+        .toLowerCase();
+
+      return (
+        categoryName === "fashion wears" ||
+        categoryName.includes("fashion")
+      );
+    });
+
+    if (!fashionCategory) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "Shipbubble did not return a Fashion wears package category.",
+        available_categories: categoryData.data
+      });
+    }
+
+    const categoryId = Number(fashionCategory.category_id);
+
+    if (!Number.isFinite(categoryId)) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "Shipbubble returned an invalid Fashion wears category ID."
+      });
+    }
+
+    // -----------------------------
+    // 7. SET PICKUP DATE
     // -----------------------------
 
     const pickupDate = new Date();
-    pickupDate.setDate(pickupDate.getDate() + 1);
+
+    pickupDate.setDate(
+      pickupDate.getDate() + 1
+    );
 
     const pickupDateString =
       pickupDate.toISOString().split("T")[0];
 
     // -----------------------------
-    // 7. ASK SHIPBUBBLE FOR LIVE RATES
+    // 8. FETCH LIVE SHIPPING RATES
     // -----------------------------
 
     const rateResponse = await fetch(
@@ -201,13 +252,12 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           sender_address_code: senderAddressCode,
 
-          // Shipbubble spells this field "reciever"
+          // Shipbubble's Rates API spells this field "reciever"
           reciever_address_code: receiverAddressCode,
 
           pickup_date: pickupDateString,
 
-          // Fashion wears
-          category_id: 98246239,
+          category_id: categoryId,
 
           package_items: packageItems,
 
@@ -222,16 +272,27 @@ export default async function handler(req, res) {
 
     const rateData = await rateResponse.json();
 
-    if (!rateResponse.ok || rateData.status !== "success") {
-      return res.status(rateResponse.status || 400).json({
+    if (
+      !rateResponse.ok ||
+      rateData.status !== "success"
+    ) {
+      return res.status(
+        rateResponse.status || 400
+      ).json({
         success: false,
-        message: "Shipbubble could not retrieve shipping rates.",
-        shipbubble: rateData
+        message:
+          rateData.message ||
+          "Shipbubble could not calculate shipping rates.",
+        shipbubble: rateData,
+        category_used: {
+          category: fashionCategory.category,
+          category_id: categoryId
+        }
       });
     }
 
     // -----------------------------
-    // 8. SEND RATES BACK TO CHECKOUT
+    // 9. SEND RATES TO CHECKOUT
     // -----------------------------
 
     return res.status(200).json({
@@ -246,19 +307,27 @@ export default async function handler(req, res) {
         city: receiverData.data.city
       },
 
+      category_used: {
+        category: fashionCategory.category,
+        category_id: categoryId
+      },
+
       request_token: rateData.data.request_token,
 
-      couriers: rateData.data.couriers,
+      couriers: rateData.data.couriers || [],
 
       cheapest_courier:
-        rateData.data.cheapest_courier,
+        rateData.data.cheapest_courier || null,
 
       fastest_courier:
-        rateData.data.fastest_courier
+        rateData.data.fastest_courier || null
     });
 
   } catch (error) {
-    console.error("VANDAL shipping error:", error);
+    console.error(
+      "VANDAL shipping error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,

@@ -10,10 +10,21 @@
     <link rel="icon" href="VANDAL LOGO.png">
     <link rel="stylesheet" href="style.css">
 
+    <!-- Load the intro first because it is the first thing visitors see -->
+    <link
+        rel="preload"
+        as="image"
+        href="intro.png"
+        fetchpriority="high"
+    >
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Creepster&display=swap"
+        rel="stylesheet"
+    >
 
 <style>
 
@@ -22,10 +33,20 @@
 ========================= */
 
 .hero {
-    background-image: url("background.png");
+    background-image: none;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
+}
+
+
+/*
+   Don't make the phone download/render the large
+   homepage background while the intro is still open.
+*/
+
+body.intro-complete .hero {
+    background-image: url("background.png");
 }
 
 
@@ -35,11 +56,37 @@
 
 #tapToEnter {
     position: fixed;
+
     inset: 0;
+
+    width: 100%;
+
+    height: 100dvh;
+    min-height: 100vh;
+
     background: #fff;
+
     z-index: 200000;
+
     overflow: hidden;
+
     cursor: pointer;
+
+    touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
+
+    contain: layout paint;
+}
+
+
+/*
+   Once the intro is finished,
+   completely remove it from display.
+*/
+
+#tapToEnter.is-hidden {
+    display: none;
 }
 
 
@@ -49,29 +96,43 @@
 
 .intro-half {
     position: absolute;
-    top: 0;
+
+    inset-block: 0;
 
     width: 50%;
     height: 100%;
 
     background-image: url("intro.png");
+
     background-size: 200% 100%;
+
     background-repeat: no-repeat;
 
+    /*
+       Keep animation on the GPU where possible.
+       This is much easier on mobile devices.
+    */
+
+    will-change: transform;
+
+    transform: translate3d(0, 0, 0);
+
     transition:
-        transform 0.85s
+        transform 0.72s
         cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 
 .intro-left {
     left: 0;
+
     background-position: 0% 0%;
 }
 
 
 .intro-right {
     right: 0;
+
     background-position: 100% 0%;
 }
 
@@ -81,12 +142,12 @@
 ========================= */
 
 #tapToEnter.open .intro-left {
-    transform: translateX(-100%);
+    transform: translate3d(-100%, 0, 0);
 }
 
 
 #tapToEnter.open .intro-right {
-    transform: translateX(100%);
+    transform: translate3d(100%, 0, 0);
 }
 
 
@@ -103,6 +164,7 @@
     transform: translateX(-50%);
 
     font-size: 13px;
+
     letter-spacing: 4px;
 
     color: #000;
@@ -129,25 +191,33 @@
     .hero {
         min-height: calc(100svh - 80px);
 
-        background-image: url("background.png");
         background-repeat: no-repeat;
+
         background-position: center center;
+
         background-size: cover;
     }
 
 
     #tapToEnter {
-        width: 100vw;
-        height: 100svh;
+        height: 100dvh;
+
+        min-height: 100svh;
 
         background: #fff;
     }
 
 
-    .intro-half {
-        height: 100svh;
+    /*
+       Keep the same two-door appearance,
+       but don't create a 200vw x 100svh
+       rendering surface.
+    */
 
-        background-size: 200vw 100svh;
+    .intro-half {
+        height: 100%;
+
+        background-size: 200% 100%;
     }
 
 
@@ -165,6 +235,7 @@
         bottom: 10%;
 
         font-size: 11px;
+
         letter-spacing: 3px;
 
         color: #000;
@@ -183,6 +254,7 @@
         min-height: calc(100svh - 70px);
 
         background-position: center center;
+
         background-size: cover;
     }
 
@@ -191,6 +263,7 @@
         bottom: 8%;
 
         font-size: 10px;
+
         letter-spacing: 2.5px;
 
         color: #000;
@@ -235,6 +308,7 @@
         <img
             src="VANDAL LOGO.png"
             alt="VANDAL Logo"
+            decoding="async"
         >
 
     </div>
@@ -262,36 +336,50 @@
     >
 
         <li>
+
             <a
                 href="index.html"
                 class="active"
             >
                 Home
             </a>
+
         </li>
 
+
         <li>
+
             <a href="shop.html">
                 Shop
             </a>
+
         </li>
 
+
         <li>
+
             <a href="contact.html">
                 Contact
             </a>
+
         </li>
 
+
         <li>
+
             <a href="cart.html">
                 Cart
             </a>
+
         </li>
 
+
         <li>
+
             <a href="unreleased.html">
                 Unreleased
             </a>
+
         </li>
 
     </ul>
@@ -313,6 +401,7 @@
     <p>
         VANDALISM IS FREEDOM.
     </p>
+
 
     <a href="shop.html">
 
@@ -338,49 +427,254 @@
 (function () {
 
     const splash =
-        document.getElementById("tapToEnter");
+        document.getElementById(
+            "tapToEnter"
+        );
+
 
     const tapText =
-        document.getElementById("tapText");
+        document.getElementById(
+            "tapText"
+        );
+
+
+    /*
+       If for some reason the intro
+       element doesn't exist, don't
+       block the homepage.
+    */
+
+    if (!splash) {
+
+        document.body.classList.add(
+            "intro-complete"
+        );
+
+        return;
+    }
+
 
     let hasPlayed = false;
 
+    let removalTimer = null;
+
+
+
+    /* =========================
+       FINISH INTRO
+    ========================= */
+
+    function finishIntro() {
+
+        if (!splash) {
+            return;
+        }
+
+
+        splash.classList.add(
+            "is-hidden"
+        );
+
+
+        splash.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        /*
+           Now that the intro is gone,
+           allow the homepage background
+           to load.
+        */
+
+        document.body.classList.add(
+            "intro-complete"
+        );
+
+
+        if (removalTimer) {
+
+            clearTimeout(
+                removalTimer
+            );
+
+        }
+
+    }
+
+
+
+    /* =========================
+       OPEN DOORS
+    ========================= */
 
     function openDoors() {
+
+        /*
+           Prevent double taps from
+           playing the animation twice.
+        */
 
         if (hasPlayed) {
             return;
         }
 
+
         hasPlayed = true;
 
-        tapText.classList.add("hidden");
 
-        splash.classList.add("open");
+        if (tapText) {
+
+            tapText.classList.add(
+                "hidden"
+            );
+
+        }
 
 
-        setTimeout(function () {
+        splash.classList.add(
+            "open"
+        );
 
-            splash.style.display = "none";
 
-        }, 900);
+        /*
+           Door animation is 0.72s.
+           Remove splash immediately
+           afterwards.
+        */
+
+        removalTimer =
+            setTimeout(
+                finishIntro,
+                760
+            );
 
     }
 
 
-    splash.addEventListener(
-        "click",
-        openDoors
-    );
 
+    /* =========================
+       PHONE / MOUSE / STYLUS
+    ========================= */
+
+    /*
+       Pointer events handle touch,
+       mouse and stylus.
+
+       This avoids running separate
+       click AND touchstart handlers
+       on mobile.
+    */
 
     splash.addEventListener(
-        "touchstart",
+        "pointerup",
         openDoors,
         {
             passive: true
         }
     );
+
+
+
+    /* =========================
+       KEYBOARD ACCESSIBILITY
+    ========================= */
+
+    splash.setAttribute(
+        "role",
+        "button"
+    );
+
+
+    splash.setAttribute(
+        "tabindex",
+        "0"
+    );
+
+
+    splash.setAttribute(
+        "aria-label",
+        "Enter VANDAL"
+    );
+
+
+    splash.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Enter" ||
+                event.key === " "
+            ) {
+
+                event.preventDefault();
+
+                openDoors();
+
+            }
+
+        }
+    );
+
+
+
+    /* =========================
+       SAFETY FALLBACK
+    ========================= */
+
+    /*
+       IMPORTANT:
+
+       If a slow/older phone has trouble
+       with the intro for any reason,
+       it will NEVER be allowed to block
+       the website permanently.
+
+       After 8 seconds the website is
+       automatically revealed.
+    */
+
+    setTimeout(
+        function () {
+
+            if (!hasPlayed) {
+
+                finishIntro();
+
+            }
+
+        },
+        8000
+    );
+
+
+
+    /* =========================
+       IMAGE FAILURE FALLBACK
+    ========================= */
+
+    /*
+       If intro.png cannot load,
+       don't leave the visitor staring
+       at a blank white screen.
+    */
+
+    const introPreload =
+        new Image();
+
+
+    introPreload.onerror =
+        function () {
+
+            finishIntro();
+
+        };
+
+
+    introPreload.src =
+        "intro.png";
+
 
 })();
 

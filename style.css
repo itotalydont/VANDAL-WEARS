@@ -1,52 +1,22 @@
-/* =========================
-   VANDAL — DESIGN SYSTEM
-   White / Gray base, Red accent
-========================= */
+:root{--white:#ffffff;--off-white:#f6f6f6;--gray-100:#efefef;--gray-200:#e2e2e2;--gray-300:#cfcfcf;--gray-500:#8a8a8a;--gray-700:#4a4a4a;--ink:#141414;--red:#e2001a;--red-bright:#ff0000;}
 
-:root{
-    --white:#ffffff;
-    --off-white:#f6f6f6;
-    --gray-100:#efefef;
-    --gray-200:#e2e2e2;
-    --gray-300:#cfcfcf;
-    --gray-500:#8a8a8a;
-    --gray-700:#4a4a4a;
-    --ink:#141414;
-    --red:#e2001a;
-    --red-bright:#ff0000;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth;}
 
 body{
     background:var(--white);
     color:var(--ink);
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:Arial,Helvetica,sans-serif;
     overflow-x:hidden;
     overflow-wrap:break-word;
 }
 
-img{
-    max-width:100%;
-    height:auto;
-}
-
-a{
-    color:inherit;
-}
+img{max-width:100%;height:auto;}
+a{color:inherit;}
 
 
-/* =========================
-   TOAST NOTIFICATIONS
-========================= */
+/* TOASTS */
 
 #toast-container{
     position:fixed;
@@ -68,38 +38,27 @@ a{
     padding:14px 20px;
     border-radius:8px;
     font-size:14px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
     opacity:0;
     transform:translateY(10px);
-    transition:opacity 0.25s ease, transform 0.25s ease;
-    max-width:min(90vw, 360px);
+    transition:opacity .25s ease,transform .25s ease;
+    max-width:min(90vw,360px);
     text-align:center;
 }
 
-.toast.toast-visible{
-    opacity:1;
-    transform:translateY(0);
-}
-
-.toast.toast-error{
-    border-left-color:#ff4444;
-}
-
-.toast.toast-success{
-    border-left-color:#2ecc71;
-}
+.toast.toast-visible{opacity:1;transform:translateY(0);}
+.toast.toast-error{border-left-color:#ff4444;}
+.toast.toast-success{border-left-color:#2ecc71;}
 
 
-/* =========================
-   NAVBAR (shared across pages)
-========================= */
+/* NAVBAR */
 
 .navbar{
     display:flex;
     justify-content:flex-end;
     align-items:center;
     padding:18px 30px;
-    background:#000000;
+    background:#000;
     border-bottom:1px solid #000;
     position:sticky;
     top:0;
@@ -113,15 +72,13 @@ a{
     position:absolute;
     left:50%;
     top:50%;
-    transform:translate(-50%, -50%);
+    transform:translate(-50%,-50%);
 }
 
-.logo img{
-    height:48px;
-}
+.logo img{height:48px;}
 
 .logo span{
-    font-family:'Creepster', cursive;
+    font-family:'Creepster',cursive;
     font-size:28px;
     letter-spacing:2px;
     color:var(--white);
@@ -137,11 +94,11 @@ a{
     cursor:pointer;
     font-size:14px;
     font-weight:bold;
-    letter-spacing:0.5px;
+    letter-spacing:.5px;
     display:flex;
     align-items:center;
     gap:8px;
-    transition:0.2s;
+    transition:.2s;
 }
 
 .menu-toggle:hover{
@@ -169,7 +126,7 @@ a{
     background:var(--white);
     border:1px solid var(--gray-200);
     border-radius:0 0 12px 12px;
-    box-shadow:0 12px 28px rgba(0,0,0,0.10);
+    box-shadow:0 12px 28px rgba(0,0,0,.10);
     list-style:none;
     display:none;
     flex-direction:column;
@@ -178,17 +135,9 @@ a{
     z-index:1001;
 }
 
-.nav-links.nav-open{
-    display:flex;
-}
-
-.nav-links li{
-    border-top:1px solid var(--gray-100);
-}
-
-.nav-links li:first-child{
-    border-top:none;
-}
+.nav-links.nav-open{display:flex;}
+.nav-links li{border-top:1px solid var(--gray-100);}
+.nav-links li:first-child{border-top:none;}
 
 .nav-links a{
     display:block;
@@ -196,7 +145,7 @@ a{
     color:var(--ink);
     text-decoration:none;
     font-weight:700;
-    transition:0.2s;
+    transition:.2s;
 }
 
 .nav-links a:hover{
@@ -204,14 +153,10 @@ a{
     color:var(--red-bright);
 }
 
-.nav-links a.active{
-    color:var(--red-bright);
-}
+.nav-links a.active{color:var(--red-bright);}
 
 
-/* =========================
-   HERO
-========================= */
+/* HERO */
 
 .hero{
     height:90vh;
@@ -225,7 +170,7 @@ a{
 }
 
 .hero h1{
-    font-family:'Creepster', cursive;
+    font-family:'Creepster',cursive;
     font-size:4.5rem;
     letter-spacing:3px;
     color:var(--ink);
@@ -248,7 +193,7 @@ a{
     font-size:18px;
     color:#fff;
     cursor:pointer;
-    transition:0.25s;
+    transition:.25s;
     font-weight:bold;
 }
 
@@ -258,9 +203,7 @@ a{
 }
 
 
-/* =========================
-   PRODUCTS GRID (shop)
-========================= */
+/* PRODUCTS */
 
 .products{
     display:grid;
@@ -274,7 +217,7 @@ a{
     border:1px solid var(--gray-200);
     border-radius:14px;
     overflow:hidden;
-    transition:0.2s;
+    transition:.2s;
     text-decoration:none;
     color:var(--ink);
     display:block;
@@ -283,7 +226,7 @@ a{
 .product-card:hover{
     transform:translateY(-6px);
     border-color:var(--red-bright);
-    box-shadow:0 14px 30px rgba(0,0,0,0.08);
+    box-shadow:0 14px 30px rgba(0,0,0,.08);
 }
 
 .product-card img{
@@ -294,9 +237,7 @@ a{
     display:block;
 }
 
-.product-card-info{
-    padding:16px 18px 20px;
-}
+.product-card-info{padding:16px 18px 20px;}
 
 .product-card-info h3{
     font-size:16px;
@@ -323,13 +264,9 @@ a{
 }
 
 
-/* =========================
-   SEARCH BAR
-========================= */
+/* SEARCH */
 
-.search-wrap{
-    padding:25px 30px 0;
-}
+.search-wrap{padding:25px 30px 0;}
 
 .search-wrap input{
     width:100%;
@@ -340,12 +277,10 @@ a{
     border-radius:10px;
     font-size:16px;
     outline:none;
-    transition:0.2s;
+    transition:.2s;
 }
 
-.search-wrap input::placeholder{
-    color:var(--gray-500);
-}
+.search-wrap input::placeholder{color:var(--gray-500);}
 
 .search-wrap input:focus{
     border-color:var(--red-bright);
@@ -361,9 +296,7 @@ a{
 }
 
 
-/* =========================
-   COLOR SWATCHES (product page)
-========================= */
+/* COLOR OPTIONS */
 
 .color{
     width:36px;
@@ -371,15 +304,15 @@ a{
     border-radius:8px;
     border:2px solid var(--gray-500);
     cursor:pointer;
-    transition:0.15s;
-    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+    transition:.15s;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
 }
 
 .color:hover,
 .color.selected{
     transform:scale(1.12);
     border-color:var(--red-bright);
-    box-shadow:0 0 0 3px rgba(226,0,26,0.2);
+    box-shadow:0 0 0 3px rgba(226,0,26,.2);
 }
 
 .color-options{
@@ -400,9 +333,7 @@ select{
 }
 
 
-/* =========================
-   BUTTONS (site-wide default)
-========================= */
+/* BUTTONS */
 
 button{
     width:100%;
@@ -413,12 +344,10 @@ button{
     color:white;
     font-weight:bold;
     cursor:pointer;
-    transition:0.2s;
+    transition:.2s;
 }
 
-button:hover{
-    background:var(--ink);
-}
+button:hover{background:var(--ink);}
 
 button:disabled{
     background:var(--gray-200);
@@ -427,9 +356,7 @@ button:disabled{
 }
 
 
-/* =========================
-   PRODUCT DETAIL PAGE
-========================= */
+/* PRODUCT DETAIL */
 
 .product-detail{
     max-width:1000px;
@@ -446,9 +373,7 @@ button:disabled{
     font-weight:600;
 }
 
-.back-link:hover{
-    color:var(--red-bright);
-}
+.back-link:hover{color:var(--red-bright);}
 
 .product-detail-grid{
     display:grid;
@@ -463,9 +388,7 @@ button:disabled{
     background:var(--gray-100);
 }
 
-.main-image-wrap{
-    position:relative;
-}
+.main-image-wrap{position:relative;}
 
 .image-fallback{
     display:none;
@@ -498,16 +421,11 @@ button:disabled{
     display:flex;
     align-items:center;
     justify-content:center;
-    transition:0.15s;
+    transition:.15s;
 }
 
-.view-thumb:hover{
-    border-color:var(--gray-500);
-}
-
-.view-thumb.selected{
-    border-color:var(--ink);
-}
+.view-thumb:hover{border-color:var(--gray-500);}
+.view-thumb.selected{border-color:var(--ink);}
 
 .view-thumb img{
     width:100%;
@@ -520,11 +438,11 @@ button:disabled{
     bottom:0;
     left:0;
     right:0;
-    background:rgba(0,0,0,0.55);
+    background:rgba(0,0,0,.55);
     color:#fff;
     font-size:10px;
     font-weight:700;
-    letter-spacing:0.5px;
+    letter-spacing:.5px;
     text-align:center;
     padding:3px 0;
 }
@@ -544,21 +462,17 @@ button:disabled{
 .detail-label{
     font-size:13px;
     text-transform:uppercase;
-    letter-spacing:0.5px;
+    letter-spacing:.5px;
     color:var(--gray-500);
     margin-top:20px;
     margin-bottom:8px;
     font-weight:700;
 }
 
-.add-to-cart-btn{
-    margin-top:28px;
-}
+.add-to-cart-btn{margin-top:28px;}
 
 
-/* =========================
-   CART
-========================= */
+/* CART */
 
 .cart-container{
     max-width:1000px;
@@ -617,12 +531,10 @@ button:disabled{
     text-decoration:none;
     border-radius:10px;
     font-weight:bold;
-    transition:0.2s;
+    transition:.2s;
 }
 
-.checkout-btn:hover{
-    background:var(--ink);
-}
+.checkout-btn:hover{background:var(--ink);}
 
 .empty-cart{
     text-align:center;
@@ -630,14 +542,10 @@ button:disabled{
     padding:60px 20px;
 }
 
-.empty-cart a{
-    color:var(--red-bright);
-}
+.empty-cart a{color:var(--red-bright);}
 
 
-/* =========================
-   CONTACT PAGE
-========================= */
+/* CONTACT */
 
 .contact-page{
     max-width:1200px;
@@ -667,7 +575,7 @@ button:disabled{
     border:1px solid var(--gray-200);
     padding:30px;
     border-radius:14px;
-    transition:0.2s;
+    transition:.2s;
 }
 
 .contact-card:hover{
@@ -680,14 +588,10 @@ button:disabled{
     text-decoration:none;
 }
 
-.contact-card a:hover{
-    color:var(--red-bright);
-}
+.contact-card a:hover{color:var(--red-bright);}
 
 
-/* =========================
-   FOOTER
-========================= */
+/* FOOTER */
 
 footer{
     text-align:center;
@@ -698,9 +602,7 @@ footer{
 }
 
 
-/* =========================
-   CHECKOUT
-========================= */
+/* CHECKOUT */
 
 .checkout-page{
     min-height:80vh;
@@ -719,9 +621,7 @@ footer{
     max-width:400px;
 }
 
-.checkout-box h1{
-    margin-bottom:10px;
-}
+.checkout-box h1{margin-bottom:10px;}
 
 .checkout-box input,
 .checkout-box select{
@@ -752,15 +652,13 @@ footer{
 }
 
 
-/* =========================
-   GATED ZONE
-========================= */
+/* GATED ZONE */
 
 .gate-screen{
     position:fixed;
     inset:0;
     background:
-        linear-gradient(rgba(255,255,255,0.90), rgba(255,255,255,0.90)),
+        linear-gradient(rgba(255,255,255,.90),rgba(255,255,255,.90)),
         url("VANDAL LOGO.png") no-repeat center center;
     background-size:cover;
     z-index:99999;
@@ -823,12 +721,10 @@ footer{
     text-align:center;
     letter-spacing:2px;
     text-transform:uppercase;
-    transition:0.2s;
+    transition:.2s;
 }
 
-.gate-row input:focus{
-    border-color:var(--red-bright);
-}
+.gate-row input:focus{border-color:var(--red-bright);}
 
 .gate-row button{
     width:auto;
@@ -844,9 +740,7 @@ footer{
 }
 
 
-/* =========================
-   UNRELEASED ZONE CONTENT
-========================= */
+/* UNRELEASED */
 
 .unreleased-header{
     text-align:center;
@@ -863,9 +757,7 @@ footer{
     margin-top:8px;
 }
 
-.unreleased-card{
-    position:relative;
-}
+.unreleased-card{position:relative;}
 
 .coming-soon-badge{
     position:absolute;
@@ -875,16 +767,14 @@ footer{
     color:#fff;
     font-size:11px;
     font-weight:bold;
-    letter-spacing:0.5px;
+    letter-spacing:.5px;
     padding:5px 10px;
     border-radius:6px;
     z-index:2;
 }
 
 
-/* =========================
-   STICKERS ADD-ON (cart page)
-========================= */
+/* STICKERS */
 
 .sticker-section{
     max-width:1000px;
@@ -903,13 +793,11 @@ footer{
     margin-bottom:16px;
 }
 
-.sticker-note strong{
-    color:var(--ink);
-}
+.sticker-note strong{color:var(--ink);}
 
 .sticker-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
+    grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
     gap:14px;
 }
 
@@ -921,16 +809,14 @@ footer{
     cursor:pointer;
     text-align:center;
     padding:10px;
-    transition:0.15s;
+    transition:.15s;
 }
 
-.sticker-tile:hover{
-    border-color:var(--gray-500);
-}
+.sticker-tile:hover{border-color:var(--gray-500);}
 
 .sticker-tile.selected{
     border-color:var(--red-bright);
-    box-shadow:0 0 0 3px rgba(226,0,26,0.15);
+    box-shadow:0 0 0 3px rgba(226,0,26,.15);
 }
 
 .sticker-tile img{
@@ -1010,12 +896,10 @@ footer{
     cursor:pointer;
 }
 
-.sticker-qty-btn:hover{
-    background:var(--gray-100);
-}
+.sticker-qty-btn:hover{background:var(--gray-100);}
 
 .sticker-qty-btn:disabled{
-    opacity:0.4;
+    opacity:.4;
     cursor:not-allowed;
 }
 
@@ -1027,9 +911,7 @@ footer{
 }
 
 
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:768px){
 
@@ -1061,7 +943,7 @@ footer{
     }
 
     .products{
-        grid-template-columns:repeat(2, 1fr);
+        grid-template-columns:repeat(2,1fr);
         gap:14px;
         padding:16px;
     }
@@ -1128,55 +1010,37 @@ footer{
 }
 
 
-/* =========================
-   INTRO — FLOATING IMAGE
-========================= */
+/* INTRO FLOATING IMAGE */
 
 /*
-   intro.png is split into two halves in index.html.
-   Both halves use the exact same animation so they
-   continue to look like one complete image.
+   IMPORTANT MOBILE CHANGE:
+   We animate translate rather than top.
+   This is significantly easier for the browser to render.
 */
 
 .intro-half{
     animation:introFloat 3.8s ease-in-out infinite;
+    backface-visibility:hidden;
 }
 
-/* Gentle floating movement */
 @keyframes introFloat{
 
-    0%{
-        top:0;
+    0%,
+    100%{
+        translate:0 0;
     }
 
     50%{
-        top:-18px;
-    }
-
-    100%{
-        top:0;
+        translate:0 -12px;
     }
 }
-
-/*
-   Once TAP TO ENTER is pressed:
-   - stop the floating animation
-   - return image to its normal vertical position
-   - existing door animation takes over
-*/
 
 #tapToEnter.open .intro-half{
     animation:none;
-    top:0;
+    translate:0 0;
 }
 
-
-/* Accessibility:
-   removes floating movement for users who have
-   reduced-motion enabled on their device.
-*/
-
-@media (prefers-reduced-motion: reduce){
+@media(prefers-reduced-motion:reduce){
 
     .intro-half{
         animation:none;
@@ -1184,9 +1048,7 @@ footer{
 }
 
 
-/* =========================
-   CURRENCY SELECTOR
-========================= */
+/* CURRENCY SELECTOR */
 
 #vandalCurrencyBar{
     position:fixed;
@@ -1212,13 +1074,13 @@ footer{
     border:1px solid #e2e2e2;
     border-radius:0;
 
-    font-family:Georgia, "Times New Roman", serif;
+    font-family:Georgia,"Times New Roman",serif;
     font-size:20px;
     font-weight:400;
 
     cursor:pointer;
 
-    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
 }
 
 .currency-button:hover{
@@ -1247,7 +1109,7 @@ footer{
 
     display:none;
 
-    box-shadow:0 4px 14px rgba(0,0,0,0.12);
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
 }
 
 .currency-menu.currency-open{
@@ -1266,7 +1128,7 @@ footer{
 
     text-align:left;
 
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:Arial,Helvetica,sans-serif;
     font-size:14px;
 
     cursor:pointer;
@@ -1294,5 +1156,57 @@ footer{
     .currency-menu{
         width:85px;
         bottom:52px;
+    }
+}
+
+
+/* MOBILE PERFORMANCE */
+
+@media(max-width:768px){
+
+    /*
+       Don't make mobile browsers immediately render
+       sections that aren't currently visible.
+    */
+
+    footer,
+    .contact-grid,
+    .sticker-section{
+        content-visibility:auto;
+        contain-intrinsic-size:1px 700px;
+    }
+
+
+    /*
+       Hover effects aren't useful on normal phones
+       and can create unnecessary rendering work.
+    */
+
+    .product-card,
+    .contact-card{
+        box-shadow:none;
+    }
+
+    .product-card:hover,
+    .contact-card:hover{
+        transform:none;
+    }
+}
+
+
+/* REDUCED MOTION */
+
+@media(prefers-reduced-motion:reduce){
+
+    html{
+        scroll-behavior:auto;
+    }
+
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.01ms !important;
     }
 }

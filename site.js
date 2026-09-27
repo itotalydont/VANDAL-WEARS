@@ -910,3 +910,69 @@ if (
     createCurrencySelector();
 
 }
+
+
+// =========================
+// MOBILE PAGE RESTORE SAFETY
+// =========================
+//
+// Some mobile browsers keep a page in memory
+// when the visitor goes to another page and
+// then presses Back.
+//
+// When that happens, this makes sure temporary
+// menus do not remain stuck open.
+//
+
+window.addEventListener(
+    "pageshow",
+    function (event) {
+
+        // Only run this special cleanup when
+        // the browser restored the page from
+        // its back/forward cache.
+
+        if (!event.persisted) {
+            return;
+        }
+
+
+        // =========================
+        // CLOSE MOBILE NAV MENU
+        // =========================
+
+        const navLinks =
+            document.getElementById(
+                "navLinks"
+            );
+
+
+        if (navLinks) {
+
+            navLinks.classList.remove(
+                "nav-open"
+            );
+
+        }
+
+
+        // =========================
+        // CLOSE CURRENCY MENU
+        // =========================
+
+        const currencyMenu =
+            document.getElementById(
+                "currencyMenu"
+            );
+
+
+        if (currencyMenu) {
+
+            currencyMenu.classList.remove(
+                "currency-open"
+            );
+
+        }
+
+    }
+);

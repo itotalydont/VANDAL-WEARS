@@ -76,8 +76,6 @@ color:var(--red-bright);
 word-break:break-all;
 }
 
-/* LIVE SHIPPING */
-
 .shipping-box{
 margin-top:14px;
 text-align:left;
@@ -99,11 +97,13 @@ width:100%;
 margin-top:10px;
 }
 
-.shipping-note{
+.shipping-note,
+.checkout-note{
 margin:7px 0 0;
 font-size:12px;
 color:#777;
-line-height:1.4;
+line-height:1.5;
+text-align:left;
 }
 
 </style>
@@ -148,16 +148,22 @@ id="address"
 placeholder="Full Delivery Address"
 >
 
-<p style="font-size:12px;color:#777;line-height:1.5;margin:8px 0 0;text-align:left;">
-<strong>Important:</strong> Please enter your complete and correct delivery address. Incorrect or incomplete addresses may cause delivery delays or additional courier charges.
+<p class="checkout-note">
+<strong>IMPORTANT:</strong>
+Please enter your complete and correct delivery address.
+Incorrect or incomplete addresses may cause delivery delays
+or additional courier charges.
 </p>
 
-<p style="font-size:12px;color:#777;line-height:1.5;margin:8px 0 0;text-align:left;">
-<strong>MADE TO ORDER:</strong> Production time is separate from courier delivery time. Any courier delivery estimate shown below begins after your order has been completed and dispatched.
+<p class="checkout-note">
+<strong>MADE TO ORDER:</strong>
+Production time is separate from courier delivery time.
+Any courier delivery estimate shown below begins after your
+order has been completed and dispatched.
 </p>
 
 
-<!-- LIVE SHIPBUBBLE SHIPPING -->
+<!-- SHIPPING -->
 
 <div class="shipping-box">
 
@@ -189,7 +195,7 @@ If you change your address, get fresh rates.
 </div>
 
 
-<!-- PROMO CODE -->
+<!-- PROMO -->
 
 <div class="promo-row">
 
@@ -200,6 +206,7 @@ placeholder="Discount code"
 >
 
 <button
+type="button"
 id="promoBtn"
 onclick="applyPromo()"
 >
@@ -213,6 +220,7 @@ Apply
 <h2 id="total"></h2>
 
 <button
+type="button"
 id="payBtn"
 onclick="payNow()"
 >
@@ -233,17 +241,24 @@ PAY NOW
 ========================= */
 
 let cart =
-JSON.parse(localStorage.getItem("cart")) || [];
+JSON.parse(
+localStorage.getItem("cart")
+) || [];
 
 let subtotal = 0;
 
 cart.forEach(function(item){
 
 const quantity =
-Number(item.quantity || item.qty || 1);
+Number(
+item.quantity ||
+item.qty ||
+1
+);
 
 subtotal +=
-Number(item.price || 0) * quantity;
+Number(item.price || 0) *
+quantity;
 
 });
 
@@ -256,24 +271,34 @@ const stickerSelections =
 getStickerSelections();
 
 const totalStickerCount =
-getTotalStickerCount(stickerSelections);
+getTotalStickerCount(
+stickerSelections
+);
 
 const stickerFee =
-getStickerCost(stickerSelections);
+getStickerCost(
+stickerSelections
+);
 
 
 /* =========================
-   SHIPPING VARIABLES
+   SHIPPING
 ========================= */
 
 const delivery =
-document.getElementById("delivery");
+document.getElementById(
+"delivery"
+);
 
 const shippingStatus =
-document.getElementById("shippingStatus");
+document.getElementById(
+"shippingStatus"
+);
 
 const getRatesBtn =
-document.getElementById("getRatesBtn");
+document.getElementById(
+"getRatesBtn"
+);
 
 let selectedShippingFee = 0;
 
@@ -291,14 +316,15 @@ let shippingRatesLoaded = false;
 try{
 
 emailjs.init({
-publicKey: "YOUR_EMAILJS_PUBLIC_KEY"
+publicKey:
+"YOUR_EMAILJS_PUBLIC_KEY"
 });
 
-}catch(err){
+}catch(error){
 
 console.error(
 "EmailJS failed to initialize:",
-err
+error
 );
 
 }
@@ -314,7 +340,7 @@ const SELLER_EMAIL =
 
 
 /* =========================
-   DISCOUNT CODES
+   PROMO CODES
 ========================= */
 
 const VALID_CODES = {
@@ -337,24 +363,208 @@ let appliedCode = null;
 
 
 /* =========================
+   CURRENCY HELPERS
+========================= */
+
+/*
+Products use the VANDAL conversion
+already inside site.js.
+
+Shipping is converted without the
+extra 5% product markup.
+*/
+
+function convertShippingFromNaira(
+amount,
+currency
+){
+
+const ngnAmount =
+Number(amount) || 0;
+
+if(currency === "NGN"){
+
+return ngnAmount;
+
+}
+
+const rate =
+VANDAL_FX_RATES[currency] || 1;
+
+return Number(
+(ngnAmount * rate)
+.toFixed(2)
+);
+
+}
+
+
+function formatCheckoutMoney(
+amount,
+currency
+){
+
+const number =
+Number(amount) || 0;
+
+if(currency === "NGN"){
+
+return (
+"₦" +
+Math.round(number)
+.toLocaleString("en-NG")
+);
+
+}
+
+return (
+VANDAL_CURRENCY_SYMBOLS[currency] +
+number.toLocaleString(
+undefined,
+{
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+}
+)
+);
+
+}
+
+
+/* =========================
+   CALCULATE CHECKOUT
+========================= */
+
+function getCheckoutAmounts(){
+
+const currency =
+getVandalCurrency();
+
+
+/* PRODUCT SUBTOTAL */
+
+let productSubtotal;
+
+if(currency === "NGN"){
+
+productSubtotal =
+subtotal;
+
+}else{
+
+productSubtotal =
+convertFromNaira(
+subtotal,
+currency
+);
+
+}
+
+
+/* PRODUCT DISCOUNT */
+
+const discountAmount =
+Number(
+(
+productSubtotal *
+discountRate
+).toFixed(2)
+);
+
+
+/* STICKERS */
+
+const paidStickerCount =
+Math.max(
+0,
+totalStickerCount - 3
+);
+
+const stickerAmount =
+currency === "NGN"
+
+? paidStickerCount * 200
+
+: paidStickerCount * 1;
+
+
+/* SHIPPING */
+
+const shippingAmount =
+freeShipping
+
+? 0
+
+: convertShippingFromNaira(
+selectedShippingFee,
+currency
+);
+
+
+/* FINAL TOTAL */
+
+const total =
+Number(
+(
+productSubtotal +
+stickerAmount +
+shippingAmount -
+discountAmount
+).toFixed(2)
+);
+
+
+return {
+
+currency:
+currency,
+
+productSubtotal:
+productSubtotal,
+
+discountAmount:
+discountAmount,
+
+stickerAmount:
+stickerAmount,
+
+shippingAmount:
+shippingAmount,
+
+total:
+total
+
+};
+
+}
+
+
+/* =========================
    APPLY PROMO
 ========================= */
 
 function applyPromo(){
 
 const input =
-document.getElementById("promoInput");
+document.getElementById(
+"promoInput"
+);
 
 const msg =
-document.getElementById("promoMsg");
+document.getElementById(
+"promoMsg"
+);
 
 const code =
-input.value.trim().toUpperCase();
+input.value
+.trim()
+.toUpperCase();
 
 
 if(!code){
 
-msg.style.color = "#ff0000";
+msg.style.color =
+"#ff0000";
 
 msg.innerText =
 "Enter a code first.";
@@ -364,9 +574,14 @@ return;
 }
 
 
-if(!VALID_CODES.hasOwnProperty(code)){
+if(
+!VALID_CODES.hasOwnProperty(
+code
+)
+){
 
-msg.style.color = "#ff0000";
+msg.style.color =
+"#ff0000";
 
 msg.innerText =
 "That code isn't valid.";
@@ -376,43 +591,56 @@ return;
 }
 
 
-appliedCode = code;
+appliedCode =
+code;
 
 const value =
 VALID_CODES[code];
 
 
-if(value === "freeship"){
+if(
+value === "freeship"
+){
 
-freeShipping = true;
+freeShipping =
+true;
 
-discountRate = 0;
+discountRate =
+0;
 
-msg.style.color = "#2ecc71";
+msg.style.color =
+"#2ecc71";
 
 msg.innerText =
 "Free shipping applied.";
 
 }else{
 
-discountRate = value;
+discountRate =
+value;
 
-freeShipping = false;
+freeShipping =
+false;
 
-msg.style.color = "#2ecc71";
+msg.style.color =
+"#2ecc71";
 
 msg.innerText =
-Math.round(value * 100) +
+Math.round(
+value * 100
+) +
 "% off applied.";
 
 }
 
 
-input.disabled = true;
+input.disabled =
+true;
 
 document.getElementById(
 "promoBtn"
-).disabled = true;
+).disabled =
+true;
 
 updateTotal();
 
@@ -420,51 +648,71 @@ updateTotal();
 
 
 /* =========================
-   UPDATE TOTAL
+   DISPLAY TOTAL
 ========================= */
 
 function updateTotal(){
 
-const discountAmount =
-Math.round(
-subtotal * discountRate
-);
+const amounts =
+getCheckoutAmounts();
 
-const deliveryFee =
-freeShipping
-? 0
-: selectedShippingFee;
-
-const total =
-subtotal +
-stickerFee +
-deliveryFee -
-discountAmount;
+const currency =
+amounts.currency;
 
 
 let html =
-"Subtotal: ₦" +
-subtotal.toLocaleString("en-NG") +
+
+"Subtotal: " +
+
+formatCheckoutMoney(
+amounts.productSubtotal,
+currency
+)
+
++
+
 "<br>";
 
 
-if(stickerFee > 0){
+if(
+amounts.stickerAmount > 0
+){
 
 html +=
+
 "Stickers (" +
+
 totalStickerCount +
-"): ₦" +
-stickerFee.toLocaleString("en-NG") +
+
+"): " +
+
+formatCheckoutMoney(
+amounts.stickerAmount,
+currency
+)
+
++
+
 "<br>";
 
 }
 
 
-if(discountAmount > 0){
+if(
+amounts.discountAmount > 0
+){
 
 html +=
-"Discount: -₦" +
-discountAmount.toLocaleString("en-NG") +
+
+"Discount: -" +
+
+formatCheckoutMoney(
+amounts.discountAmount,
+currency
+)
+
++
+
 "<br>";
 
 }
@@ -473,13 +721,22 @@ discountAmount.toLocaleString("en-NG") +
 if(selectedCourier){
 
 html +=
+
 "Shipping: " +
+
 (
 freeShipping
+
 ? "FREE"
-: "₦" +
-deliveryFee.toLocaleString("en-NG")
-) +
+
+: formatCheckoutMoney(
+amounts.shippingAmount,
+currency
+)
+)
+
++
+
 "<br>";
 
 }else{
@@ -491,37 +748,67 @@ html +=
 
 
 html +=
-"<strong>TOTAL: ₦" +
-total.toLocaleString("en-NG") +
+
+"<strong>TOTAL: " +
+
+formatCheckoutMoney(
+amounts.total,
+currency
+)
+
++
+
 "</strong>";
 
 
 document.getElementById(
 "total"
-).innerHTML = html;
+).innerHTML =
+html;
 
 }
+
+
+/* =========================
+   LISTEN FOR CURRENCY CHANGE
+========================= */
+
+window.addEventListener(
+"vandalCurrencyChanged",
+function(){
+
+updateTotal();
+
+}
+);
 
 
 /* =========================
    RESET SHIPPING
 ========================= */
 
-function resetShippingRates(message){
+function resetShippingRates(
+message
+){
 
-shippingRatesLoaded = false;
+shippingRatesLoaded =
+false;
 
-selectedShippingFee = 0;
+selectedShippingFee =
+0;
 
-selectedCourier = null;
+selectedCourier =
+null;
 
-shippingRequestToken = null;
+shippingRequestToken =
+null;
 
 
 delivery.innerHTML =
 '<option value="">Select a shipping option</option>';
 
-delivery.disabled = true;
+delivery.disabled =
+true;
 
 
 if(message){
@@ -540,7 +827,7 @@ updateTotal();
 
 
 /* =========================
-   RESET RATE IF DETAILS CHANGE
+   DETAILS CHANGED
 ========================= */
 
 [
@@ -549,7 +836,9 @@ updateTotal();
 "email",
 "phone",
 "address"
-].forEach(function(id){
+]
+.forEach(
+function(id){
 
 document
 .getElementById(id)
@@ -571,16 +860,19 @@ resetShippingRates(
 }
 );
 
-});
+}
+);
 
 
 /* =========================
-   GET SHIPBUBBLE RATES
+   GET SHIPPING RATES
 ========================= */
 
 async function getShippingRates(){
 
-if(cart.length === 0){
+if(
+cart.length === 0
+){
 
 showToast(
 "Your cart is empty.",
@@ -594,31 +886,41 @@ return;
 
 const firstName =
 document
-.getElementById("firstName")
+.getElementById(
+"firstName"
+)
 .value
 .trim();
 
 const lastName =
 document
-.getElementById("lastName")
+.getElementById(
+"lastName"
+)
 .value
 .trim();
 
 const email =
 document
-.getElementById("email")
+.getElementById(
+"email"
+)
 .value
 .trim();
 
 const phone =
 document
-.getElementById("phone")
+.getElementById(
+"phone"
+)
 .value
 .trim();
 
 const address =
 document
-.getElementById("address")
+.getElementById(
+"address"
+)
 .value
 .trim();
 
@@ -643,12 +945,11 @@ return;
 
 resetShippingRates();
 
-
-getRatesBtn.disabled = true;
+getRatesBtn.disabled =
+true;
 
 getRatesBtn.innerText =
 "GETTING RATES...";
-
 
 shippingStatus.style.color =
 "#666";
@@ -659,35 +960,38 @@ shippingStatus.innerText =
 
 try{
 
-
 const response =
 await fetch(
 "/api/shipping",
 {
 
-method: "POST",
+method:
+"POST",
 
 headers:{
-
 "Content-Type":
 "application/json"
-
 },
 
-body: JSON.stringify({
+body:
+JSON.stringify({
 
 name:
 firstName +
 " " +
 lastName,
 
-email: email,
+email:
+email,
 
-phone: phone,
+phone:
+phone,
 
-address: address,
+address:
+address,
 
-cart: cart
+cart:
+cart
 
 })
 
@@ -695,8 +999,38 @@ cart: cart
 );
 
 
-const data =
-await response.json();
+/*
+Read as text first.
+
+This prevents the old:
+Unexpected token '<'
+JSON crash.
+*/
+
+const responseText =
+await response.text();
+
+let data;
+
+try{
+
+data =
+JSON.parse(
+responseText
+);
+
+}catch(error){
+
+console.error(
+"Shipping API returned non-JSON:",
+responseText
+);
+
+throw new Error(
+"Shipping service returned an invalid response. Please try again."
+);
+
+}
 
 
 if(
@@ -704,24 +1038,23 @@ if(
 !data.success
 ){
 
-const errorMessage =
-
-data.shipbubble?.message ||
+throw new Error(
 
 data.message ||
 
-"Unable to retrieve shipping rates.";
+data.shipbubble?.message ||
 
+"Unable to retrieve shipping rates."
 
-throw new Error(
-errorMessage
 );
 
 }
 
 
 if(
-!Array.isArray(data.couriers) ||
+!Array.isArray(
+data.couriers
+) ||
 data.couriers.length === 0
 ){
 
@@ -733,7 +1066,8 @@ throw new Error(
 
 
 shippingRequestToken =
-data.request_token || null;
+data.request_token ||
+null;
 
 
 delivery.innerHTML =
@@ -741,13 +1075,22 @@ delivery.innerHTML =
 
 
 data.couriers.forEach(
-function(courier,index){
+function(
+courier,
+index
+){
 
 const fee =
-Number(courier.total);
+Number(
+courier.total
+);
 
 
-if(!Number.isFinite(fee)){
+if(
+!Number.isFinite(
+fee
+)
+){
 
 return;
 
@@ -788,16 +1131,20 @@ courier.courier_name ||
 
 +
 
-" — ₦"
+" — " +
 
-+
-
-fee.toLocaleString(
-"en-NG"
+formatCheckoutMoney(
+convertShippingFromNaira(
+fee,
+getVandalCurrency()
+),
+getVandalCurrency()
 );
 
 
-if(courier.delivery_eta){
+if(
+courier.delivery_eta
+){
 
 label +=
 " — " +
@@ -814,7 +1161,8 @@ delivery.appendChild(
 option
 );
 
-});
+}
+);
 
 
 if(
@@ -828,14 +1176,14 @@ throw new Error(
 }
 
 
-shippingRatesLoaded = true;
+shippingRatesLoaded =
+true;
 
-delivery.disabled = false;
-
+delivery.disabled =
+false;
 
 shippingStatus.style.color =
 "#2ecc71";
-
 
 shippingStatus.innerText =
 "Shipping rates found. Choose a courier below.";
@@ -843,33 +1191,32 @@ shippingStatus.innerText =
 
 }catch(error){
 
-
 resetShippingRates();
-
 
 shippingStatus.style.color =
 "#ff0000";
 
-
 shippingStatus.innerText =
 error.message;
-
 
 showToast(
 error.message,
 "error"
 );
 
+console.error(
+"Shipping error:",
+error
+);
+
 
 }finally{
 
-
-getRatesBtn.disabled = false;
-
+getRatesBtn.disabled =
+false;
 
 getRatesBtn.innerText =
 "GET SHIPPING RATES";
-
 
 }
 
@@ -895,9 +1242,11 @@ if(
 !option
 ){
 
-selectedShippingFee = 0;
+selectedShippingFee =
+0;
 
-selectedCourier = null;
+selectedCourier =
+null;
 
 updateTotal();
 
@@ -908,7 +1257,8 @@ return;
 
 selectedShippingFee =
 Number(
-option.dataset.fee || 0
+option.dataset.fee ||
+0
 );
 
 
@@ -934,24 +1284,8 @@ updateTotal();
 );
 
 
-updateTotal();
-
-
 /* =========================
-   FORMAT PRICE
-========================= */
-
-function formatPrice(amount){
-
-return "₦" +
-Number(amount)
-.toLocaleString("en-NG");
-
-}
-
-
-/* =========================
-   PAYMENT SUCCESS PAGE
+   SUCCESS PAGE
 ========================= */
 
 function showConfirmation(
@@ -977,12 +1311,22 @@ color:#666;
 margin-top:10px;
 "
 >
-
 Thanks for your order!
-A confirmation email is on its way to you.
-
+Your payment has been verified.
 </p>
 
+<p
+style="
+color:#666;
+font-size:13px;
+line-height:1.5;
+"
+>
+Your VANDAL order is made to order.
+Courier delivery time begins after
+production is complete and your order
+has been dispatched.
+</p>
 
 <div class="confirm-block">
 
@@ -996,7 +1340,6 @@ ${orderRef}
 
 </div>
 
-
 <div class="confirm-block">
 
 <p>
@@ -1009,7 +1352,6 @@ ${transactionId}
 
 </div>
 
-
 <p
 style="
 color:#999;
@@ -1017,12 +1359,9 @@ font-size:13px;
 margin-top:14px;
 "
 >
-
 Save this reference number
 for any order enquiries.
-
 </p>
-
 
 <a
 href="index.html"
@@ -1033,9 +1372,7 @@ style="display:block;"
 type="button"
 style="margin-top:20px;"
 >
-
 BACK TO HOME
-
 </button>
 
 </a>
@@ -1051,7 +1388,9 @@ BACK TO HOME
 
 function payNow(){
 
-if(cart.length === 0){
+if(
+cart.length === 0
+){
 
 showToast(
 "Your cart is empty.",
@@ -1065,31 +1404,41 @@ return;
 
 const firstName =
 document
-.getElementById("firstName")
+.getElementById(
+"firstName"
+)
 .value
 .trim();
 
 const lastName =
 document
-.getElementById("lastName")
+.getElementById(
+"lastName"
+)
 .value
 .trim();
 
 const email =
 document
-.getElementById("email")
+.getElementById(
+"email"
+)
 .value
 .trim();
 
 const phone =
 document
-.getElementById("phone")
+.getElementById(
+"phone"
+)
 .value
 .trim();
 
 const address =
 document
-.getElementById("address")
+.getElementById(
+"address"
+)
 .value
 .trim();
 
@@ -1128,34 +1477,6 @@ return;
 }
 
 
-const deliveryFee =
-freeShipping
-? 0
-: selectedShippingFee;
-
-
-const discountAmount =
-Math.round(
-subtotal * discountRate
-);
-
-
-const total =
-
-subtotal +
-
-stickerFee +
-
-deliveryFee -
-
-discountAmount;
-
-
-const orderRef =
-"VANDAL-" +
-Date.now();
-
-
 if(
 typeof FlutterwaveCheckout ===
 "undefined"
@@ -1171,14 +1492,46 @@ return;
 }
 
 
+const amounts =
+getCheckoutAmounts();
+
+const currency =
+amounts.currency;
+
+const total =
+amounts.total;
+
+
+if(
+!Number.isFinite(total) ||
+total <= 0
+){
+
+showToast(
+"Invalid order total.",
+"error"
+);
+
+return;
+
+}
+
+
+const orderRef =
+"VANDAL-" +
+Date.now();
+
+
 const deliveryLabel =
 
 selectedCourier.name +
 
 (
 selectedCourier.service
+
 ? " - " +
 selectedCourier.service
+
 : ""
 )
 
@@ -1188,9 +1541,12 @@ selectedCourier.service
 
 (
 freeShipping
+
 ? "FREE"
-: formatPrice(
-selectedShippingFee
+
+: formatCheckoutMoney(
+amounts.shippingAmount,
+currency
 )
 )
 
@@ -1215,11 +1571,15 @@ total,
 
 
 currency:
-"NGN",
+currency,
 
 
 payment_options:
-"card, banktransfer, ussd",
+currency === "NGN"
+
+? "card, banktransfer, ussd"
+
+: "card",
 
 
 customer:{
@@ -1250,66 +1610,37 @@ shipping_request_token:
 shippingRequestToken ||
 "none",
 
-shipping_fee_quoted:
+shipping_fee_quoted_ngn:
 selectedShippingFee,
 
 shipping_fee_charged:
-deliveryFee,
+amounts.shippingAmount,
+
+payment_currency:
+currency,
 
 promo_code:
 appliedCode ||
 "none",
 
 discount_amount:
-discountAmount,
+amounts.discountAmount,
 
 stickers:
-(function(){
-
-const counts =
-stickerSelections;
-
-const variants =
-getStickerVariants();
-
-return Object
-.keys(counts)
-.map(function(key){
-
-const v =
-variants.find(
-function(x){
-
-return x.key === key;
-
-}
-);
-
-const label =
-v
-? v.label
-: key;
-
-return counts[key] > 1
-
-? label +
-" x" +
-counts[key]
-
-: label;
-
-})
-.join(", ")
-
-|| "none";
-
-})(),
+JSON.stringify(
+stickerSelections
+),
 
 sticker_fee:
-stickerFee,
+amounts.stickerAmount,
 
 cart:
-JSON.stringify(cart)
+JSON.stringify(
+cart
+),
+
+made_to_order:
+"yes"
 
 },
 
@@ -1320,7 +1651,7 @@ title:
 "VANDAL",
 
 description:
-"Payment for items in cart",
+"Payment for VANDAL order",
 
 logo:
 "VANDAL LOGO.png"
@@ -1329,10 +1660,13 @@ logo:
 
 
 callback:
-async function(response){
+async function(
+response
+){
 
 if(
-response.status !== "successful" ||
+response.status !==
+"successful" ||
 !response.transaction_id
 ){
 
@@ -1345,10 +1679,6 @@ return;
 
 }
 
-
-/* =========================
-   VERIFY PAYMENT
-========================= */
 
 showToast(
 "Payment received. Verifying payment...",
@@ -1363,13 +1693,16 @@ await fetch(
 "/api/verify-payment",
 {
 
-method: "POST",
+method:
+"POST",
 
 headers:{
-"Content-Type": "application/json"
+"Content-Type":
+"application/json"
 },
 
-body: JSON.stringify({
+body:
+JSON.stringify({
 
 transaction_id:
 response.transaction_id,
@@ -1378,7 +1711,10 @@ tx_ref:
 orderRef,
 
 expected_amount:
-total
+total,
+
+expected_currency:
+currency
 
 })
 
@@ -1386,8 +1722,30 @@ total
 );
 
 
-const verifyData =
-await verifyResponse.json();
+const verifyText =
+await verifyResponse.text();
+
+let verifyData;
+
+try{
+
+verifyData =
+JSON.parse(
+verifyText
+);
+
+}catch(error){
+
+console.error(
+"Verification returned non-JSON:",
+verifyText
+);
+
+throw new Error(
+"Payment verification service returned an invalid response."
+);
+
+}
 
 
 if(
@@ -1404,59 +1762,14 @@ verifyData.message ||
 
 
 /* =========================
-   PAYMENT VERIFIED
-========================= */
-
-const stickerVariants =
-getStickerVariants();
-
-
-const stickerSummary =
-
-Object
-.keys(stickerSelections)
-.map(function(key){
-
-const v =
-stickerVariants.find(
-function(x){
-
-return x.key === key;
-
-}
-);
-
-
-const label =
-v
-? v.label
-: key;
-
-
-const qty =
-stickerSelections[key];
-
-
-return qty > 1
-
-? label +
-" x" +
-qty
-
-: label;
-
-})
-.join(", ");
-
-
-/* =========================
-   ORDER SUMMARY
+   BUILD ORDER SUMMARY
 ========================= */
 
 const orderSummary =
 
 cart
-.map(function(item){
+.map(
+function(item){
 
 const qty =
 Number(
@@ -1465,30 +1778,42 @@ item.qty ||
 1
 );
 
-
 let line =
-
-item.name +
-
-" (" +
-
-item.color +
-
-", " +
-
-item.size;
+item.name;
 
 
-if(item.height){
+if(
+item.color ||
+item.size ||
+item.height
+){
 
-line +=
-", " +
-item.height;
+const details = [];
 
+if(item.color){
+details.push(
+item.color
+);
 }
 
+if(item.size){
+details.push(
+item.size
+);
+}
 
-line += ")";
+if(item.height){
+details.push(
+item.height
+);
+}
+
+line +=
+" (" +
+details.join(", ") +
+")";
+
+}
 
 
 if(qty > 1){
@@ -1500,58 +1825,14 @@ qty;
 }
 
 
-line +=
-" - " +
-formatPrice(
-Number(
-item.price || 0
-) *
-qty
-);
-
-
 return line;
 
-})
-.join("\n")
-
-+
-
-(
-totalStickerCount > 0
-
-?
-
-"\n\nStickers: " +
-
-stickerSummary +
-
-" (" +
-
-(
-stickerFee > 0
-
-? formatPrice(
-stickerFee
-) +
-" charged"
-
-: "all free"
+}
 )
-
-+
-
-")"
-
-:
-
-""
-);
+.join("\n");
 
 
-/* =========================
-   CUSTOMER EMAIL
-========================= */
+/* CUSTOMER EMAIL */
 
 try{
 
@@ -1581,7 +1862,10 @@ order_items:
 orderSummary,
 
 order_total:
-formatPrice(total),
+formatCheckoutMoney(
+total,
+currency
+),
 
 delivery_option:
 deliveryLabel,
@@ -1592,28 +1876,28 @@ address
 }
 
 )
-.catch(function(err){
+.catch(
+function(error){
 
 console.error(
-"Order email failed to send:",
-err
+"Customer email failed:",
+error
 );
 
-});
+}
+);
 
-}catch(err){
+}catch(error){
 
 console.error(
-"EmailJS unavailable, skipping customer email:",
-err
+"EmailJS unavailable:",
+error
 );
 
 }
 
 
-/* =========================
-   VANDAL EMAIL
-========================= */
+/* SELLER EMAIL */
 
 try{
 
@@ -1646,7 +1930,10 @@ order_items:
 orderSummary,
 
 order_total:
-formatPrice(total),
+formatCheckoutMoney(
+total,
+currency
+),
 
 delivery_option:
 deliveryLabel,
@@ -1657,29 +1944,28 @@ address
 }
 
 )
-.catch(function(err){
+.catch(
+function(error){
 
 console.error(
-"Seller notification email failed to send:",
-err
+"Seller email failed:",
+error
 );
 
-});
+}
+);
 
-}catch(err){
+}catch(error){
 
 console.error(
-"EmailJS unavailable, skipping seller email:",
-err
+"EmailJS unavailable:",
+error
 );
 
 }
 
 
-/* =========================
-   CLEAR CART ONLY AFTER
-   VERIFIED PAYMENT
-========================= */
+/* CLEAR CART */
 
 localStorage.removeItem(
 "cart"
@@ -1690,9 +1976,7 @@ localStorage.removeItem(
 );
 
 
-/* =========================
-   SHOW SUCCESS
-========================= */
+/* SUCCESS */
 
 showConfirmation(
 orderRef,
@@ -1707,9 +1991,8 @@ console.error(
 error
 );
 
-
 showToast(
-"Your payment was received, but we could not verify it automatically. Please do not pay again. Contact VANDAL with your transaction reference.",
+"Your payment may have been received, but verification failed. Do not pay again. Contact VANDAL with your transaction reference.",
 "error"
 );
 
@@ -1721,7 +2004,7 @@ showToast(
 onclose:
 function(){
 
-// User closed the payment window.
+// Customer closed payment window.
 
 }
 
@@ -1729,6 +2012,13 @@ function(){
 });
 
 }
+
+
+/* =========================
+   INITIAL DISPLAY
+========================= */
+
+updateTotal();
 
 </script>
 

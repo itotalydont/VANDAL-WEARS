@@ -28,7 +28,7 @@ export default async function handler(req, res) {
             Authorization: `Bearer ${process.env.SHIPBUBBLE_API_KEY}`
           },
           body: JSON.stringify({
-            name: "VANDAL",
+            name: "Valntine Ashia",
             email: "wearsvandal@gmail.com",
             phone: "+2349034982665",
             address:

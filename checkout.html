@@ -1,33 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>CHECKOUT</title>
-
 <link rel="icon" href="VANDAL LOGO.png">
 <link rel="stylesheet" href="style.css">
-
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
-
 .promo-row{
 display:flex;
 gap:10px;
 margin-top:15px;
 }
-
 .promo-row input{
 margin-top:0;
 flex:1;
 min-width:0;
 }
-
 .promo-row button{
 width:auto;
 margin-top:0;
@@ -35,23 +27,19 @@ padding:12px 18px;
 font-size:15px;
 white-space:nowrap;
 }
-
 .promo-row button:disabled{
 opacity:0.5;
 cursor:default;
 }
-
 #promoMsg{
 min-height:16px;
 margin-top:8px;
 font-size:14px;
 }
-
 #total{
 line-height:1.5;
 margin-top:15px;
 }
-
 .confirm-block{
 margin-top:18px;
 padding:14px 16px;
@@ -60,7 +48,6 @@ border:1px solid var(--gray-200);
 border-radius:10px;
 text-align:left;
 }
-
 .confirm-block p{
 margin:0 0 4px;
 font-size:12px;
@@ -68,35 +55,29 @@ color:var(--gray-500);
 letter-spacing:0.5px;
 text-transform:uppercase;
 }
-
 .confirm-block h2{
 margin:0;
 font-size:19px;
 color:var(--red-bright);
 word-break:break-all;
 }
-
 .shipping-box{
 margin-top:14px;
 text-align:left;
 }
-
 #getRatesBtn{
 width:100%;
 margin-top:10px;
 }
-
 #shippingStatus{
 min-height:18px;
 margin:8px 0 0;
 font-size:14px;
 }
-
 #delivery{
 width:100%;
 margin-top:10px;
 }
-
 .shipping-note,
 .checkout-note{
 margin:7px 0 0;
@@ -106,11 +87,109 @@ line-height:1.5;
 text-align:left;
 }
 
-</style>
+/* =========================
+   KEEP UP WITH VANDAL POPUP
+========================= */
 
+#vandalKeepUpPopup{
+position:fixed;
+right:20px;
+bottom:20px;
+width:min(340px,calc(100vw - 40px));
+padding:18px 48px 18px 18px;
+background:#111;
+color:#fff;
+border:1px solid #333;
+border-left:4px solid #ff0000;
+border-radius:12px;
+box-shadow:0 14px 36px rgba(0,0,0,.28);
+z-index:999999;
+opacity:0;
+visibility:hidden;
+transform:translate3d(0,20px,0);
+transition:opacity .28s ease,transform .28s ease,visibility .28s ease;
+}
+#vandalKeepUpPopup.show{
+opacity:1;
+visibility:visible;
+transform:translate3d(0,0,0);
+}
+#vandalKeepUpPopup h3{
+margin:0 0 6px;
+font-size:15px;
+letter-spacing:.8px;
+}
+#vandalKeepUpPopup p{
+margin:0 0 11px;
+color:#ccc;
+font-size:13px;
+line-height:1.45;
+}
+#vandalKeepUpPopup a{
+color:#fff;
+font-size:12px;
+font-weight:800;
+letter-spacing:.7px;
+text-decoration:none;
+}
+#vandalKeepUpPopup a:hover{
+color:#ff0000;
+}
+#vandalKeepUpClose{
+position:absolute;
+top:10px;
+right:10px;
+width:28px;
+height:28px;
+padding:0;
+margin:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:transparent;
+color:#aaa;
+border:0;
+border-radius:50%;
+font-size:20px;
+line-height:1;
+}
+#vandalKeepUpClose:hover{
+background:#222;
+color:#fff;
+}
+@media(max-width:600px){
+#vandalKeepUpPopup{
+left:12px;
+right:12px;
+bottom:70px;
+width:auto;
+}
+}
+</style>
 </head>
 
 <body>
+
+<!-- KEEP UP WITH VANDAL POPUP -->
+<div id="vandalKeepUpPopup" role="status" aria-live="polite" aria-hidden="true">
+<button
+type="button"
+id="vandalKeepUpClose"
+aria-label="Close"
+onclick="hideVandalKeepUpPopup()"
+>&times;</button>
+
+<h3>KEEP UP WITH VANDAL</h3>
+
+<p>
+Stay tapped in for upcoming drops, updates and more.
+</p>
+
+<a href="contact.html">
+KEEP UP &rarr;
+</a>
+</div>
+
 
 <div class="checkout-page">
 
@@ -1285,6 +1364,84 @@ updateTotal();
 
 
 /* =========================
+   KEEP UP WITH VANDAL POPUP
+========================= */
+
+let vandalKeepUpTimer = null;
+
+
+function showVandalKeepUpPopup(){
+
+const popup =
+document.getElementById(
+"vandalKeepUpPopup"
+);
+
+if(!popup){
+return;
+}
+
+if(vandalKeepUpTimer){
+
+clearTimeout(
+vandalKeepUpTimer
+);
+
+}
+
+popup.classList.add(
+"show"
+);
+
+popup.setAttribute(
+"aria-hidden",
+"false"
+);
+
+vandalKeepUpTimer =
+setTimeout(
+hideVandalKeepUpPopup,
+7000
+);
+
+}
+
+
+function hideVandalKeepUpPopup(){
+
+const popup =
+document.getElementById(
+"vandalKeepUpPopup"
+);
+
+if(!popup){
+return;
+}
+
+popup.classList.remove(
+"show"
+);
+
+popup.setAttribute(
+"aria-hidden",
+"true"
+);
+
+if(vandalKeepUpTimer){
+
+clearTimeout(
+vandalKeepUpTimer
+);
+
+vandalKeepUpTimer =
+null;
+
+}
+
+}
+
+
+/* =========================
    SUCCESS PAGE
 ========================= */
 
@@ -1984,6 +2141,11 @@ response.transaction_id
 );
 
 
+/* SHOW KEEP UP WITH VANDAL POPUP */
+
+showVandalKeepUpPopup();
+
+
 }catch(error){
 
 console.error(
@@ -2023,5 +2185,4 @@ updateTotal();
 </script>
 
 </body>
-
 </html>

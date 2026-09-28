@@ -1,25 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
 <title>CHECKOUT</title>
-<link rel="icon" href="VANDAL LOGO.png">
-<link rel="stylesheet" href="style.css">
+
+<link
+rel="icon"
+href="VANDAL LOGO.png"
+>
+
+<link
+rel="stylesheet"
+href="style.css"
+>
+
 <script src="https://checkout.flutterwave.com/v3.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
+
 <style>
+
 .promo-row{
 display:flex;
 gap:10px;
 margin-top:15px;
 }
+
 .promo-row input{
 margin-top:0;
 flex:1;
 min-width:0;
 }
+
 .promo-row button{
 width:auto;
 margin-top:0;
@@ -27,19 +47,23 @@ padding:12px 18px;
 font-size:15px;
 white-space:nowrap;
 }
+
 .promo-row button:disabled{
 opacity:0.5;
 cursor:default;
 }
+
 #promoMsg{
 min-height:16px;
 margin-top:8px;
 font-size:14px;
 }
+
 #total{
 line-height:1.5;
 margin-top:15px;
 }
+
 .confirm-block{
 margin-top:18px;
 padding:14px 16px;
@@ -48,6 +72,7 @@ border:1px solid var(--gray-200);
 border-radius:10px;
 text-align:left;
 }
+
 .confirm-block p{
 margin:0 0 4px;
 font-size:12px;
@@ -55,29 +80,35 @@ color:var(--gray-500);
 letter-spacing:0.5px;
 text-transform:uppercase;
 }
+
 .confirm-block h2{
 margin:0;
 font-size:19px;
 color:var(--red-bright);
 word-break:break-all;
 }
+
 .shipping-box{
 margin-top:14px;
 text-align:left;
 }
+
 #getRatesBtn{
 width:100%;
 margin-top:10px;
 }
+
 #shippingStatus{
 min-height:18px;
 margin:8px 0 0;
 font-size:14px;
 }
+
 #delivery{
 width:100%;
 margin-top:10px;
 }
+
 .shipping-note,
 .checkout-note{
 margin:7px 0 0;
@@ -86,6 +117,7 @@ color:#777;
 line-height:1.5;
 text-align:left;
 }
+
 
 /* =========================
    KEEP UP WITH VANDAL POPUP
@@ -107,24 +139,31 @@ z-index:999999;
 opacity:0;
 visibility:hidden;
 transform:translate3d(0,20px,0);
-transition:opacity .28s ease,transform .28s ease,visibility .28s ease;
+transition:
+opacity .28s ease,
+transform .28s ease,
+visibility .28s ease;
 }
+
 #vandalKeepUpPopup.show{
 opacity:1;
 visibility:visible;
 transform:translate3d(0,0,0);
 }
+
 #vandalKeepUpPopup h3{
 margin:0 0 6px;
 font-size:15px;
 letter-spacing:.8px;
 }
+
 #vandalKeepUpPopup p{
 margin:0 0 11px;
 color:#ccc;
 font-size:13px;
 line-height:1.45;
 }
+
 #vandalKeepUpPopup a{
 color:#fff;
 font-size:12px;
@@ -132,9 +171,11 @@ font-weight:800;
 letter-spacing:.7px;
 text-decoration:none;
 }
+
 #vandalKeepUpPopup a:hover{
 color:#ff0000;
 }
+
 #vandalKeepUpClose{
 position:absolute;
 top:10px;
@@ -153,33 +194,54 @@ border-radius:50%;
 font-size:20px;
 line-height:1;
 }
+
 #vandalKeepUpClose:hover{
 background:#222;
 color:#fff;
 }
+
 @media(max-width:600px){
+
 #vandalKeepUpPopup{
 left:12px;
 right:12px;
 bottom:70px;
 width:auto;
 }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
-<!-- KEEP UP WITH VANDAL POPUP -->
-<div id="vandalKeepUpPopup" role="status" aria-live="polite" aria-hidden="true">
+
+<!-- =========================
+     KEEP UP WITH VANDAL
+========================= -->
+
+<div
+id="vandalKeepUpPopup"
+role="status"
+aria-live="polite"
+aria-hidden="true"
+>
+
 <button
 type="button"
 id="vandalKeepUpClose"
 aria-label="Close"
 onclick="hideVandalKeepUpPopup()"
->&times;</button>
+>
+&times;
+</button>
 
-<h3>KEEP UP WITH VANDAL</h3>
+<h3>
+KEEP UP WITH VANDAL
+</h3>
 
 <p>
 Stay tapped in for upcoming drops, updates and more.
@@ -188,14 +250,22 @@ Stay tapped in for upcoming drops, updates and more.
 <a href="contact.html">
 KEEP UP &rarr;
 </a>
+
 </div>
 
+
+<!-- =========================
+     CHECKOUT
+========================= -->
 
 <div class="checkout-page">
 
 <div class="checkout-box">
 
-<h1>CHECKOUT</h1>
+<h1>
+CHECKOUT
+</h1>
+
 
 <input
 type="text"
@@ -203,11 +273,13 @@ id="firstName"
 placeholder="First Name"
 >
 
+
 <input
 type="text"
 id="lastName"
 placeholder="Last Name"
 >
+
 
 <input
 type="email"
@@ -215,11 +287,13 @@ id="email"
 placeholder="Email"
 >
 
+
 <input
 type="text"
 id="phone"
 placeholder="Phone Number"
 >
+
 
 <input
 type="text"
@@ -227,22 +301,36 @@ id="address"
 placeholder="Full Delivery Address"
 >
 
+
 <p class="checkout-note">
-<strong>IMPORTANT:</strong>
+
+<strong>
+IMPORTANT:
+</strong>
+
 Please enter your complete and correct delivery address.
 Incorrect or incomplete addresses may cause delivery delays
 or additional courier charges.
+
 </p>
 
+
 <p class="checkout-note">
-<strong>MADE TO ORDER:</strong>
+
+<strong>
+MADE TO ORDER:
+</strong>
+
 Production time is separate from courier delivery time.
 Any courier delivery estimate shown below begins after your
 order has been completed and dispatched.
+
 </p>
 
 
-<!-- SHIPPING -->
+<!-- =========================
+     SHIPPING
+========================= -->
 
 <div class="shipping-box">
 
@@ -254,11 +342,19 @@ onclick="getShippingRates()"
 GET SHIPPING RATES
 </button>
 
+
 <p id="shippingStatus">
-Enter your details and full delivery address, then get shipping rates.
+
+Enter your details and full delivery address,
+then get shipping rates.
+
 </p>
 
-<select id="delivery" disabled>
+
+<select
+id="delivery"
+disabled
+>
 
 <option value="">
 Select a shipping option
@@ -266,15 +362,20 @@ Select a shipping option
 
 </select>
 
+
 <p class="shipping-note">
+
 Shipping prices are live courier quotes.
 If you change your address, get fresh rates.
+
 </p>
 
 </div>
 
 
-<!-- PROMO -->
+<!-- =========================
+     PROMO
+========================= -->
 
 <div class="promo-row">
 
@@ -283,6 +384,7 @@ type="text"
 id="promoInput"
 placeholder="Discount code"
 >
+
 
 <button
 type="button"
@@ -294,9 +396,12 @@ Apply
 
 </div>
 
+
 <p id="promoMsg"></p>
 
+
 <h2 id="total"></h2>
+
 
 <button
 type="button"
@@ -306,6 +411,7 @@ onclick="payNow()"
 PAY NOW
 </button>
 
+
 </div>
 
 </div>
@@ -313,7 +419,9 @@ PAY NOW
 
 <script src="site.js"></script>
 
+
 <script>
+
 
 /* =========================
    CART
@@ -324,9 +432,12 @@ JSON.parse(
 localStorage.getItem("cart")
 ) || [];
 
+
 let subtotal = 0;
 
-cart.forEach(function(item){
+
+cart.forEach(
+function(item){
 
 const quantity =
 Number(
@@ -335,11 +446,16 @@ item.qty ||
 1
 );
 
+
 subtotal +=
-Number(item.price || 0) *
+Number(
+item.price ||
+0
+) *
 quantity;
 
-});
+}
+);
 
 
 /* =========================
@@ -349,10 +465,12 @@ quantity;
 const stickerSelections =
 getStickerSelections();
 
+
 const totalStickerCount =
 getTotalStickerCount(
 stickerSelections
 );
+
 
 const stickerFee =
 getStickerCost(
@@ -369,15 +487,18 @@ document.getElementById(
 "delivery"
 );
 
+
 const shippingStatus =
 document.getElementById(
 "shippingStatus"
 );
 
+
 const getRatesBtn =
 document.getElementById(
 "getRatesBtn"
 );
+
 
 let selectedShippingFee = 0;
 
@@ -395,8 +516,10 @@ let shippingRatesLoaded = false;
 try{
 
 emailjs.init({
+
 publicKey:
 "YOUR_EMAILJS_PUBLIC_KEY"
+
 });
 
 }catch(error){
@@ -408,11 +531,14 @@ error
 
 }
 
+
 const EMAILJS_SERVICE_ID =
 "YOUR_EMAILJS_SERVICE_ID";
 
+
 const EMAILJS_TEMPLATE_ID =
 "YOUR_EMAILJS_TEMPLATE_ID";
+
 
 const SELLER_EMAIL =
 "wearsvandal@gmail.com";
@@ -434,6 +560,7 @@ const VALID_CODES = {
 
 };
 
+
 let discountRate = 0;
 
 let freeShipping = false;
@@ -449,8 +576,8 @@ let appliedCode = null;
 Products use the VANDAL conversion
 already inside site.js.
 
-Shipping is converted without the
-extra 5% product markup.
+Shipping uses the base exchange rate
+without the extra 5% product markup.
 */
 
 function convertShippingFromNaira(
@@ -461,22 +588,34 @@ currency
 const ngnAmount =
 Number(amount) || 0;
 
-if(currency === "NGN"){
+
+if(
+currency === "NGN"
+){
 
 return ngnAmount;
 
 }
 
+
 const rate =
-VANDAL_FX_RATES[currency] || 1;
+VANDAL_FX_RATES[currency] ||
+1;
+
 
 return Number(
-(ngnAmount * rate)
-.toFixed(2)
+(
+ngnAmount *
+rate
+).toFixed(2)
 );
 
 }
 
+
+/* =========================
+   FORMAT MONEY
+========================= */
 
 function formatCheckoutMoney(
 amount,
@@ -484,27 +623,40 @@ currency
 ){
 
 const number =
-Number(amount) || 0;
+Number(amount) ||
+0;
 
-if(currency === "NGN"){
+
+if(
+currency === "NGN"
+){
 
 return (
 "₦" +
-Math.round(number)
-.toLocaleString("en-NG")
+Math.round(
+number
+).toLocaleString(
+"en-NG"
+)
 );
 
 }
 
+
 return (
-VANDAL_CURRENCY_SYMBOLS[currency] +
+
+VANDAL_CURRENCY_SYMBOLS[
+currency
+] +
+
 number.toLocaleString(
 undefined,
 {
-minimumFractionDigits: 2,
-maximumFractionDigits: 2
+minimumFractionDigits:2,
+maximumFractionDigits:2
 }
 )
+
 );
 
 }
@@ -524,7 +676,10 @@ getVandalCurrency();
 
 let productSubtotal;
 
-if(currency === "NGN"){
+
+if(
+currency === "NGN"
+){
 
 productSubtotal =
 subtotal;
@@ -559,7 +714,9 @@ Math.max(
 totalStickerCount - 3
 );
 
+
 const stickerAmount =
+
 currency === "NGN"
 
 ? paidStickerCount * 200
@@ -570,6 +727,7 @@ currency === "NGN"
 /* SHIPPING */
 
 const shippingAmount =
+
 freeShipping
 
 ? 0
@@ -629,10 +787,12 @@ document.getElementById(
 "promoInput"
 );
 
+
 const msg =
 document.getElementById(
 "promoMsg"
 );
+
 
 const code =
 input.value
@@ -640,7 +800,9 @@ input.value
 .toUpperCase();
 
 
-if(!code){
+if(
+!code
+){
 
 msg.style.color =
 "#ff0000";
@@ -673,12 +835,16 @@ return;
 appliedCode =
 code;
 
+
 const value =
-VALID_CODES[code];
+VALID_CODES[
+code
+];
 
 
 if(
-value === "freeship"
+value ===
+"freeship"
 ){
 
 freeShipping =
@@ -716,10 +882,14 @@ value * 100
 input.disabled =
 true;
 
-document.getElementById(
+
+document
+.getElementById(
 "promoBtn"
-).disabled =
+)
+.disabled =
 true;
+
 
 updateTotal();
 
@@ -734,6 +904,7 @@ function updateTotal(){
 
 const amounts =
 getCheckoutAmounts();
+
 
 const currency =
 amounts.currency;
@@ -754,7 +925,8 @@ currency
 
 
 if(
-amounts.stickerAmount > 0
+amounts.stickerAmount >
+0
 ){
 
 html +=
@@ -778,7 +950,8 @@ currency
 
 
 if(
-amounts.discountAmount > 0
+amounts.discountAmount >
+0
 ){
 
 html +=
@@ -797,7 +970,9 @@ currency
 }
 
 
-if(selectedCourier){
+if(
+selectedCourier
+){
 
 html +=
 
@@ -840,16 +1015,18 @@ currency
 "</strong>";
 
 
-document.getElementById(
+document
+.getElementById(
 "total"
-).innerHTML =
+)
+.innerHTML =
 html;
 
 }
 
 
 /* =========================
-   LISTEN FOR CURRENCY CHANGE
+   CURRENCY CHANGE
 ========================= */
 
 window.addEventListener(
@@ -873,11 +1050,14 @@ message
 shippingRatesLoaded =
 false;
 
+
 selectedShippingFee =
 0;
 
+
 selectedCourier =
 null;
+
 
 shippingRequestToken =
 null;
@@ -886,11 +1066,14 @@ null;
 delivery.innerHTML =
 '<option value="">Select a shipping option</option>';
 
+
 delivery.disabled =
 true;
 
 
-if(message){
+if(
+message
+){
 
 shippingStatus.style.color =
 "#666";
@@ -899,6 +1082,7 @@ shippingStatus.innerText =
 message;
 
 }
+
 
 updateTotal();
 
@@ -920,7 +1104,9 @@ updateTotal();
 function(id){
 
 document
-.getElementById(id)
+.getElementById(
+id
+)
 .addEventListener(
 "input",
 function(){
@@ -971,6 +1157,7 @@ document
 .value
 .trim();
 
+
 const lastName =
 document
 .getElementById(
@@ -978,6 +1165,7 @@ document
 )
 .value
 .trim();
+
 
 const email =
 document
@@ -987,6 +1175,7 @@ document
 .value
 .trim();
 
+
 const phone =
 document
 .getElementById(
@@ -994,6 +1183,7 @@ document
 )
 .value
 .trim();
+
 
 const address =
 document
@@ -1024,20 +1214,25 @@ return;
 
 resetShippingRates();
 
+
 getRatesBtn.disabled =
 true;
+
 
 getRatesBtn.innerText =
 "GETTING RATES...";
 
+
 shippingStatus.style.color =
 "#666";
+
 
 shippingStatus.innerText =
 "Checking your address and available couriers...";
 
 
 try{
+
 
 const response =
 await fetch(
@@ -1078,18 +1273,12 @@ cart
 );
 
 
-/*
-Read as text first.
-
-This prevents the old:
-Unexpected token '<'
-JSON crash.
-*/
-
 const responseText =
 await response.text();
 
+
 let data;
+
 
 try{
 
@@ -1183,11 +1372,15 @@ document.createElement(
 
 
 option.value =
-String(index);
+String(
+index
+);
 
 
 option.dataset.fee =
-String(fee);
+String(
+fee
+);
 
 
 option.dataset.name =
@@ -1213,11 +1406,14 @@ courier.courier_name ||
 " — " +
 
 formatCheckoutMoney(
+
 convertShippingFromNaira(
 fee,
 getVandalCurrency()
 ),
+
 getVandalCurrency()
+
 );
 
 
@@ -1245,7 +1441,8 @@ option
 
 
 if(
-delivery.options.length <= 1
+delivery.options.length <=
+1
 ){
 
 throw new Error(
@@ -1258,11 +1455,14 @@ throw new Error(
 shippingRatesLoaded =
 true;
 
+
 delivery.disabled =
 false;
 
+
 shippingStatus.style.color =
 "#2ecc71";
+
 
 shippingStatus.innerText =
 "Shipping rates found. Choose a courier below.";
@@ -1270,18 +1470,23 @@ shippingStatus.innerText =
 
 }catch(error){
 
+
 resetShippingRates();
+
 
 shippingStatus.style.color =
 "#ff0000";
 
+
 shippingStatus.innerText =
 error.message;
+
 
 showToast(
 error.message,
 "error"
 );
+
 
 console.error(
 "Shipping error:",
@@ -1291,11 +1496,14 @@ error
 
 }finally{
 
+
 getRatesBtn.disabled =
 false;
 
+
 getRatesBtn.innerText =
 "GET SHIPPING RATES";
+
 
 }
 
@@ -1364,10 +1572,150 @@ updateTotal();
 
 
 /* =========================
-   KEEP UP WITH VANDAL POPUP
+   STICKER ORDER DATA
 ========================= */
 
-let vandalKeepUpTimer = null;
+/*
+This converts the customer's sticker
+selection into data that can be saved
+with the Supabase order.
+
+We preserve the existing selection keys
+and also try to attach the display name
+from site.js.
+*/
+
+function buildStickerOrderData(){
+
+const selections =
+stickerSelections ||
+{};
+
+
+let variants = [];
+
+
+try{
+
+if(
+typeof getStickerVariants ===
+"function"
+){
+
+variants =
+getStickerVariants() ||
+[];
+
+}
+
+}catch(error){
+
+console.error(
+"Could not load sticker names:",
+error
+);
+
+}
+
+
+const stickerData = [];
+
+
+Object.keys(
+selections
+)
+.forEach(
+function(key){
+
+const quantity =
+Number(
+selections[key]
+) ||
+0;
+
+
+if(
+quantity <= 0
+){
+
+return;
+
+}
+
+
+let name =
+key;
+
+
+if(
+Array.isArray(
+variants
+)
+){
+
+const matchingVariant =
+variants.find(
+function(variant){
+
+return (
+String(
+variant.key ||
+variant.id ||
+variant.value ||
+""
+) ===
+String(
+key
+)
+);
+
+}
+);
+
+
+if(
+matchingVariant
+){
+
+name =
+matchingVariant.label ||
+matchingVariant.name ||
+matchingVariant.title ||
+key;
+
+}
+
+}
+
+
+stickerData.push({
+
+key:
+key,
+
+name:
+name,
+
+quantity:
+quantity
+
+});
+
+}
+);
+
+
+return stickerData;
+
+}
+
+
+/* =========================
+   KEEP UP WITH VANDAL
+========================= */
+
+let vandalKeepUpTimer =
+null;
 
 
 function showVandalKeepUpPopup(){
@@ -1377,11 +1725,19 @@ document.getElementById(
 "vandalKeepUpPopup"
 );
 
-if(!popup){
+
+if(
+!popup
+){
+
 return;
+
 }
 
-if(vandalKeepUpTimer){
+
+if(
+vandalKeepUpTimer
+){
 
 clearTimeout(
 vandalKeepUpTimer
@@ -1389,14 +1745,17 @@ vandalKeepUpTimer
 
 }
 
+
 popup.classList.add(
 "show"
 );
+
 
 popup.setAttribute(
 "aria-hidden",
 "false"
 );
+
 
 vandalKeepUpTimer =
 setTimeout(
@@ -1414,20 +1773,30 @@ document.getElementById(
 "vandalKeepUpPopup"
 );
 
-if(!popup){
+
+if(
+!popup
+){
+
 return;
+
 }
+
 
 popup.classList.remove(
 "show"
 );
+
 
 popup.setAttribute(
 "aria-hidden",
 "true"
 );
 
-if(vandalKeepUpTimer){
+
+if(
+vandalKeepUpTimer
+){
 
 clearTimeout(
 vandalKeepUpTimer
@@ -1469,7 +1838,8 @@ margin-top:10px;
 "
 >
 Thanks for your order!
-Your payment has been verified.
+Your payment has been verified
+and your order has been received.
 </p>
 
 <p
@@ -1497,6 +1867,7 @@ ${orderRef}
 
 </div>
 
+
 <div class="confirm-block">
 
 <p>
@@ -1509,6 +1880,7 @@ ${transactionId}
 
 </div>
 
+
 <p
 style="
 color:#999;
@@ -1519,6 +1891,7 @@ margin-top:14px;
 Save this reference number
 for any order enquiries.
 </p>
+
 
 <a
 href="index.html"
@@ -1546,7 +1919,8 @@ BACK TO HOME
 function payNow(){
 
 if(
-cart.length === 0
+cart.length ===
+0
 ){
 
 showToast(
@@ -1567,6 +1941,7 @@ document
 .value
 .trim();
 
+
 const lastName =
 document
 .getElementById(
@@ -1574,6 +1949,7 @@ document
 )
 .value
 .trim();
+
 
 const email =
 document
@@ -1583,6 +1959,7 @@ document
 .value
 .trim();
 
+
 const phone =
 document
 .getElementById(
@@ -1590,6 +1967,7 @@ document
 )
 .value
 .trim();
+
 
 const address =
 document
@@ -1652,15 +2030,19 @@ return;
 const amounts =
 getCheckoutAmounts();
 
+
 const currency =
 amounts.currency;
+
 
 const total =
 amounts.total;
 
 
 if(
-!Number.isFinite(total) ||
+!Number.isFinite(
+total
+) ||
 total <= 0
 ){
 
@@ -1712,8 +2094,103 @@ currency
 ")";
 
 
-FlutterwaveCheckout({
+/* =========================
+   PREPARE ORDER FOR DATABASE
+========================= */
 
+const paidStickerCount =
+Math.max(
+0,
+totalStickerCount - 3
+);
+
+
+const freeStickerCount =
+Math.min(
+3,
+totalStickerCount
+);
+
+
+const stickerOrderData =
+buildStickerOrderData();
+
+
+const orderData = {
+
+customer_name:
+firstName +
+" " +
+lastName,
+
+customer_email:
+email,
+
+customer_phone:
+phone,
+
+delivery_address:
+address,
+
+items:
+cart,
+
+stickers:
+stickerOrderData,
+
+total_stickers:
+totalStickerCount,
+
+free_stickers:
+freeStickerCount,
+
+paid_stickers:
+paidStickerCount,
+
+sticker_charge:
+amounts.stickerAmount,
+
+promo_code:
+appliedCode ||
+null,
+
+discount_amount:
+amounts.discountAmount,
+
+courier_name:
+selectedCourier.name,
+
+courier_service:
+selectedCourier.service ||
+null,
+
+shipping_request_token:
+shippingRequestToken ||
+null,
+
+shipping_fee_ngn:
+selectedShippingFee,
+
+shipping_fee_charged:
+amounts.shippingAmount,
+
+currency:
+currency,
+
+amount:
+total,
+
+made_to_order:
+true
+
+};
+
+
+/* =========================
+   OPEN FLUTTERWAVE
+========================= */
+
+FlutterwaveCheckout({
 
 public_key:
 "FLWPUBK-3b34799c31afa84f90876a8a55afa1f0-X",
@@ -1732,6 +2209,7 @@ currency,
 
 
 payment_options:
+
 currency === "NGN"
 
 ? "card, banktransfer, ussd"
@@ -1785,7 +2263,7 @@ amounts.discountAmount,
 
 stickers:
 JSON.stringify(
-stickerSelections
+stickerOrderData
 ),
 
 sticker_fee:
@@ -1838,12 +2316,17 @@ return;
 
 
 showToast(
-"Payment received. Verifying payment...",
+"Payment received. Verifying and saving your order...",
 "success"
 );
 
 
 try{
+
+
+/* =========================
+   VERIFY + SAVE ORDER
+========================= */
 
 const verifyResponse =
 await fetch(
@@ -1871,7 +2354,10 @@ expected_amount:
 total,
 
 expected_currency:
-currency
+currency,
+
+order:
+orderData
 
 })
 
@@ -1882,7 +2368,9 @@ currency
 const verifyText =
 await verifyResponse.text();
 
+
 let verifyData;
+
 
 try{
 
@@ -1911,15 +2399,18 @@ if(
 ){
 
 throw new Error(
+
 verifyData.message ||
-"Payment could not be verified."
+
+"Payment could not be verified and saved."
+
 );
 
 }
 
 
 /* =========================
-   BUILD ORDER SUMMARY
+   BUILD EMAIL SUMMARY
 ========================= */
 
 const orderSummary =
@@ -1935,6 +2426,7 @@ item.qty ||
 1
 );
 
+
 let line =
 item.name;
 
@@ -1945,37 +2437,62 @@ item.size ||
 item.height
 ){
 
-const details = [];
+const details =
+[];
 
-if(item.color){
+
+if(
+item.color
+){
+
 details.push(
 item.color
 );
+
 }
 
-if(item.size){
+
+if(
+item.size
+){
+
 details.push(
 item.size
 );
+
 }
 
-if(item.height){
+
+if(
+item.height
+){
+
 details.push(
 item.height
 );
+
 }
 
+
 line +=
+
 " (" +
-details.join(", ") +
+
+details.join(
+", "
+) +
+
 ")";
 
 }
 
 
-if(qty > 1){
+if(
+qty > 1
+){
 
 line +=
+
 " x" +
 qty;
 
@@ -1986,10 +2503,14 @@ return line;
 
 }
 )
-.join("\n");
+.join(
+"\n"
+);
 
 
-/* CUSTOMER EMAIL */
+/* =========================
+   CUSTOMER EMAIL
+========================= */
 
 try{
 
@@ -2044,6 +2565,7 @@ error
 }
 );
 
+
 }catch(error){
 
 console.error(
@@ -2054,7 +2576,9 @@ error
 }
 
 
-/* SELLER EMAIL */
+/* =========================
+   SELLER EMAIL
+========================= */
 
 try{
 
@@ -2070,6 +2594,7 @@ to_email:
 SELLER_EMAIL,
 
 customer_name:
+
 firstName +
 " " +
 lastName +
@@ -2112,6 +2637,7 @@ error
 }
 );
 
+
 }catch(error){
 
 console.error(
@@ -2122,18 +2648,25 @@ error
 }
 
 
-/* CLEAR CART */
+/* =========================
+   CLEAR CART ONLY AFTER
+   PAYMENT VERIFIED +
+   ORDER SAVED
+========================= */
 
 localStorage.removeItem(
 "cart"
 );
+
 
 localStorage.removeItem(
 "vandalStickers"
 );
 
 
-/* SUCCESS */
+/* =========================
+   SUCCESS
+========================= */
 
 showConfirmation(
 orderRef,
@@ -2141,20 +2674,20 @@ response.transaction_id
 );
 
 
-/* SHOW KEEP UP WITH VANDAL POPUP */
-
 showVandalKeepUpPopup();
 
 
 }catch(error){
 
 console.error(
-"Payment verification failed:",
+"Payment verification/order save failed:",
 error
 );
 
+
 showToast(
-"Your payment may have been received, but verification failed. Do not pay again. Contact VANDAL with your transaction reference.",
+error.message ||
+"Your payment may have been received, but your order could not be confirmed. Do not pay again. Contact VANDAL with your transaction reference.",
 "error"
 );
 
@@ -2182,7 +2715,10 @@ function(){
 
 updateTotal();
 
+
 </script>
 
+
 </body>
+
 </html>

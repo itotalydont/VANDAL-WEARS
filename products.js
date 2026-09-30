@@ -141,19 +141,69 @@ colors:[
 "beanie-pink.png",
 "beanie-white.png"
 ]
+},
+
+// =========================
+// STICKER PACK
+// =========================
+
+{
+name:"VANDAL STICKER PACK",
+
+// 6-pack is the starting price.
+// product.html changes this depending on pack size.
+price:2000,
+
+isStickerPack:true,
+
+// Temporary shop/product image.
+// You can replace this later with a dedicated Sticker Pack image.
+colors:[
+"sticker-vr-logo-red.png"
+],
+
+packOptions:[
+{
+count:6,
+price:2000
+},
+{
+count:9,
+price:3000
+},
+{
+count:12,
+price:4000
+},
+{
+count:15,
+price:5000
+},
+{
+count:18,
+price:6000
+},
+{
+count:21,
+price:7000
+}
+]
+
 }
 
 ];
 
+
 function formatPrice(amount){
 
-    if(typeof formatVandalPrice === "function"){
-        return formatVandalPrice(amount);
-    }
+if(typeof formatVandalPrice === "function"){
+return formatVandalPrice(amount);
+}
 
-    return "₦" + amount.toLocaleString("en-NG");
+return "₦" + amount.toLocaleString("en-NG");
 
 }
+
 
 function guessColor(file){
 
@@ -172,24 +222,39 @@ return "white";
 
 }
 
-// Shorts, sweats, double waist, and foldover pieces get a height guide
-// so people can pick the right length/fit.
+
+// Shorts, sweats, double waist, and foldover pieces get a height guide.
+
 function needsHeight(name){
+
 return /shorts|sweats|waist|foldover/i.test(name);
+
 }
 
+
 const HEIGHT_OPTIONS = [
+
 "4'10\" - 5'2\"",
 "5'3\" - 5'6\"",
 "5'7\" - 5'10\"",
 "5'11\" - 6'2\"",
 "6'3\" and up"
+
 ];
 
-// Default size options for most products. Override per-product with a
-// "sizes" array (see BEANIE below) when a product needs a different set.
-const DEFAULT_SIZES = ["ES", "S", "M", "L", "XL", "XXL"];
+
+const DEFAULT_SIZES = [
+"ES",
+"S",
+"M",
+"L",
+"XL",
+"XXL"
+];
+
 
 function getSizes(product){
+
 return product.sizes || DEFAULT_SIZES;
+
 }

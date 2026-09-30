@@ -2,293 +2,1738 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VANDAL — Product</title>
-    <link rel="icon" href="VANDAL LOGO.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>VANDAL — Product</title>
+
+<link
+rel="icon"
+href="VANDAL LOGO.png"
+>
+
+<link
+rel="stylesheet"
+href="style.css"
+>
+
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com"
+>
+
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin
+>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Creepster&display=swap"
+rel="stylesheet"
+>
+
+
+<style>
+
+/* =========================
+   STICKER PACK BUILDER
+========================= */
+
+#stickerPackBuilder{
+display:none;
+margin-top:20px;
+}
+
+.pack-label{
+font-size:13px;
+font-weight:700;
+letter-spacing:1px;
+text-transform:uppercase;
+margin-top:20px;
+margin-bottom:8px;
+}
+
+.pack-options{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+}
+
+.pack-option,
+.pack-mode{
+border:1px solid #ccc;
+background:white;
+padding:12px 8px;
+cursor:pointer;
+font-weight:700;
+text-align:center;
+transition:.2s;
+}
+
+.pack-option:hover,
+.pack-mode:hover{
+border-color:#111;
+}
+
+.pack-option.selected,
+.pack-mode.selected{
+background:#111;
+color:white;
+border-color:#111;
+}
+
+.pack-mode-options{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+}
+
+#packStickerChooser{
+display:none;
+margin-top:20px;
+}
+
+.pack-progress{
+margin-bottom:12px;
+font-weight:700;
+}
+
+.pack-progress.complete{
+color:#159447;
+}
+
+.pack-progress.over{
+color:#ff0000;
+}
+
+.pack-sticker-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+}
+
+.pack-sticker{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+position:relative;
+}
+
+.pack-sticker img{
+width:100%;
+height:110px;
+object-fit:contain;
+}
+
+.pack-sticker-name{
+font-size:12px;
+font-weight:700;
+margin-top:6px;
+min-height:30px;
+}
+
+.pack-sticker-qty{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+margin-top:8px;
+}
+
+.pack-sticker-qty button{
+width:30px;
+height:30px;
+padding:0;
+margin:0;
+border:1px solid #111;
+background:white;
+color:#111;
+cursor:pointer;
+}
+
+.pack-sticker-qty button:hover{
+background:#111;
+color:white;
+}
+
+.pack-sticker-qty span{
+min-width:20px;
+font-weight:700;
+}
+
+.pack-note{
+font-size:12px;
+line-height:1.5;
+color:#777;
+margin-top:10px;
+}
+
+@media(max-width:650px){
+
+.pack-options{
+grid-template-columns:repeat(2,1fr);
+}
+
+.pack-sticker-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+</style>
+
 </head>
 
+
 <body>
+
 
 <nav class="navbar nav">
 
 <div class="logo">
-<img src="VANDAL LOGO.png" alt="VANDAL Logo">
+
+<img
+src="VANDAL LOGO.png"
+alt="VANDAL Logo"
+>
+
 <span>VANDAL</span>
+
 </div>
 
-<button class="menu-toggle" onclick="toggleMenu()">
-<span class="bars"><span></span><span></span><span></span></span>
+
+<button
+class="menu-toggle"
+onclick="toggleMenu()"
+>
+
+<span class="bars">
+<span></span>
+<span></span>
+<span></span>
+</span>
+
 MENU
+
 </button>
 
-<ul class="nav-links" id="navLinks">
-<li><a href="index.html">Home</a></li>
-<li><a href="shop.html" class="active">Shop</a></li>
-<li><a href="contact.html">Contact</a></li>
-<li><a href="cart.html">Cart</a></li>
-<li><a href="unreleased.html">Unreleased</a></li>
+
+<ul
+class="nav-links"
+id="navLinks"
+>
+
+<li>
+<a href="index.html">
+Home
+</a>
+</li>
+
+<li>
+<a
+href="shop.html"
+class="active"
+>
+Shop
+</a>
+</li>
+
+<li>
+<a href="contact.html">
+Contact
+</a>
+</li>
+
+<li>
+<a href="cart.html">
+Cart
+</a>
+</li>
+
+<li>
+<a href="unreleased.html">
+Unreleased
+</a>
+</li>
+
 </ul>
 
 </nav>
+
 
 <div id="productRoot">
 
 <div class="product-detail">
 
-<a href="shop.html" class="back-link">&larr; Back to Shop</a>
+<a
+href="shop.html"
+class="back-link"
+>
+&larr; Back to Shop
+</a>
+
 
 <div class="product-detail-grid">
 
+
 <div class="product-detail-image">
+
 <div class="main-image-wrap">
-<img id="mainImage" src="" alt="">
-<div class="image-fallback" id="imageFallback">Image coming soon</div>
+
+<img
+id="mainImage"
+src=""
+alt=""
+>
+
+<div
+class="image-fallback"
+id="imageFallback"
+>
+Image coming soon
 </div>
+
 </div>
+
+</div>
+
 
 <div class="product-detail-info">
 
 <h1 id="productName"></h1>
-<div class="price" id="productPrice"></div>
-<div class="detail-label">Color</div>
-<div class="color-options" id="colorSwatches"></div>
 
-<div class="view-thumbs" id="viewThumbs">
+<div
+class="price"
+id="productPrice"
+></div>
 
-<div class="view-thumb selected" id="thumbFrontWrap" onclick="selectView('front')">
-<img id="thumbFront" src="" alt="Front view" onerror="this.style.display='none';">
-<span class="view-thumb-label">FRONT</span>
+
+<!-- NORMAL PRODUCT OPTIONS -->
+
+<div id="normalProductOptions">
+
+<div class="detail-label">
+Color
 </div>
 
-<div class="view-thumb" id="thumbBackWrap" onclick="selectView('back')">
-<img id="thumbBack" src="" alt="Back view" onerror="this.style.display='none';">
-<span class="view-thumb-label">BACK</span>
-</div>
+<div
+class="color-options"
+id="colorSwatches"
+></div>
+
+
+<div
+class="view-thumbs"
+id="viewThumbs"
+>
+
+<div
+class="view-thumb selected"
+id="thumbFrontWrap"
+onclick="selectView('front')"
+>
+
+<img
+id="thumbFront"
+src=""
+alt="Front view"
+onerror="this.style.display='none';"
+>
+
+<span class="view-thumb-label">
+FRONT
+</span>
 
 </div>
 
-<div class="detail-label">Size</div>
+
+<div
+class="view-thumb"
+id="thumbBackWrap"
+onclick="selectView('back')"
+>
+
+<img
+id="thumbBack"
+src=""
+alt="Back view"
+onerror="this.style.display='none';"
+>
+
+<span class="view-thumb-label">
+BACK
+</span>
+
+</div>
+
+</div>
+
+
+<div class="detail-label">
+Size
+</div>
+
 <select id="sizeSelect"></select>
 
-<div id="heightWrap" style="display:none;">
-<div class="detail-label">Height (for fit)</div>
+
+<div
+id="heightWrap"
+style="display:none;"
+>
+
+<div class="detail-label">
+Height (for fit)
+</div>
+
 <select id="heightSelect"></select>
-</div>
-
-<button class="add-to-cart-btn" type="button" onclick="addToCart()">ADD TO CART</button>
 
 </div>
 
 </div>
 
+
+<!-- =========================
+     STICKER PACK BUILDER
+========================= -->
+
+<div id="stickerPackBuilder">
+
+
+<div class="pack-label">
+Choose Pack Size
+</div>
+
+<div
+class="pack-options"
+id="packOptions"
+></div>
+
+
+<div class="pack-label">
+How Do You Want Your Pack?
+</div>
+
+<div class="pack-mode-options">
+
+<button
+type="button"
+class="pack-mode selected"
+id="randomModeBtn"
+onclick="setPackMode('random')"
+>
+RANDOMISE
+</button>
+
+<button
+type="button"
+class="pack-mode"
+id="pickModeBtn"
+onclick="setPackMode('pick')"
+>
+PICK MY STICKERS
+</button>
+
+</div>
+
+
+<p class="pack-note">
+
+Randomise means VANDAL will choose the sticker designs for you.
+
+Pick My Stickers lets you choose exactly which designs you want,
+including multiples of the same sticker.
+
+</p>
+
+
+<div id="packStickerChooser">
+
+<div
+class="pack-progress"
+id="packProgress"
+>
+0 / 6 SELECTED
+</div>
+
+<div
+class="pack-sticker-grid"
+id="packStickerGrid"
+></div>
+
 </div>
 
 </div>
+
+
+<button
+class="add-to-cart-btn"
+id="addToCartButton"
+type="button"
+onclick="addToCart()"
+>
+ADD TO CART
+</button>
+
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 
 <script src="products.js"></script>
+
 <script src="site.js"></script>
+
 
 <script>
 
-const params = new URLSearchParams(window.location.search);
-const productId = parseInt(params.get("id"), 10);
-const product = PRODUCTS[productId];
 
-let activeColorFile = null;
-let activeView = "front";
+const params =
+new URLSearchParams(
+window.location.search
+);
+
+const productId =
+parseInt(
+params.get("id"),
+10
+);
+
+const product =
+PRODUCTS[
+productId
+];
+
+
+let activeColorFile =
+null;
+
+let activeView =
+"front";
+
+
+/* =========================
+   STICKER PACK STATE
+========================= */
+
+let selectedPackCount =
+6;
+
+let selectedPackPrice =
+2000;
+
+let selectedPackMode =
+"random";
+
+let packStickerSelections =
+{};
+
+
+/* =========================
+   PRODUCT HELPERS
+========================= */
 
 function isBeanie(){
-return product && product.name.toUpperCase() === "BEANIE";
-}
 
-function getBackImage(frontFile){
-return frontFile.replace(/\.png$/i, " BACK.png");
-}
-
-function showMainImage(src){
-
-const img = document.getElementById("mainImage");
-const fallback = document.getElementById("imageFallback");
-
-fallback.style.display = "none";
-img.style.display = "block";
-
-img.onerror = function(){
-img.style.display = "none";
-fallback.style.display = "flex";
-};
-
-img.src = src;
-
-}
-
-function updateViewThumbs(){
-
-activeView = "front";
-
-if(isBeanie()){
-showMainImage(activeColorFile);
-return;
-}
-
-const frontThumb = document.getElementById("thumbFront");
-const backThumb = document.getElementById("thumbBack");
-
-frontThumb.style.display = "block";
-backThumb.style.display = "block";
-
-frontThumb.src = activeColorFile;
-backThumb.src = getBackImage(activeColorFile);
-
-document.getElementById("thumbFrontWrap").classList.add("selected");
-document.getElementById("thumbBackWrap").classList.remove("selected");
-
-showMainImage(activeColorFile);
-
-}
-
-function selectView(view){
-
-if(isBeanie()) return;
-
-activeView = view;
-
-document.getElementById("thumbFrontWrap").classList.toggle("selected", view === "front");
-document.getElementById("thumbBackWrap").classList.toggle("selected", view === "back");
-
-showMainImage(
-view === "back"
-? getBackImage(activeColorFile)
-: activeColorFile
+return (
+product &&
+product.name.toUpperCase() ===
+"BEANIE"
 );
 
 }
 
-function renderColorSwatches(){
 
-const swatchWrap = document.getElementById("colorSwatches");
+function isStickerPack(){
 
-swatchWrap.innerHTML = product.colors.map(function(c){
-
-return '<div class="color' +
-(c === activeColorFile ? ' selected' : '') +
-'" data-file="' + c +
-'" onclick="selectColor(this)" title="' +
-c.replace(".png","") + '">' +
-
-'<img src="' + c +
-'" alt="' + c.replace(".png","") + '">' +
-
-'</div>';
-
-}).join("");
+return !!(
+product &&
+product.isStickerPack
+);
 
 }
 
-function selectColor(el){
 
-activeColorFile = el.getAttribute("data-file");
+function getBackImage(
+frontFile
+){
 
-document.querySelectorAll("#colorSwatches .color").forEach(function(d){
-d.classList.remove("selected");
-});
+return frontFile.replace(
+/\.png$/i,
+" BACK.png"
+);
 
-el.classList.add("selected");
+}
 
-if(isBeanie()){
-showMainImage(activeColorFile);
+
+function showMainImage(
+src
+){
+
+const img =
+document.getElementById(
+"mainImage"
+);
+
+const fallback =
+document.getElementById(
+"imageFallback"
+);
+
+fallback.style.display =
+"none";
+
+img.style.display =
+"block";
+
+img.onerror =
+function(){
+
+img.style.display =
+"none";
+
+fallback.style.display =
+"flex";
+
+};
+
+img.src =
+src;
+
+}
+
+
+/* =========================
+   NORMAL PRODUCT VIEW
+========================= */
+
+function updateViewThumbs(){
+
+activeView =
+"front";
+
+if(
+isBeanie() ||
+isStickerPack()
+){
+
+showMainImage(
+activeColorFile
+);
+
 return;
+
+}
+
+const frontThumb =
+document.getElementById(
+"thumbFront"
+);
+
+const backThumb =
+document.getElementById(
+"thumbBack"
+);
+
+frontThumb.style.display =
+"block";
+
+backThumb.style.display =
+"block";
+
+frontThumb.src =
+activeColorFile;
+
+backThumb.src =
+getBackImage(
+activeColorFile
+);
+
+document
+.getElementById(
+"thumbFrontWrap"
+)
+.classList
+.add(
+"selected"
+);
+
+document
+.getElementById(
+"thumbBackWrap"
+)
+.classList
+.remove(
+"selected"
+);
+
+showMainImage(
+activeColorFile
+);
+
+}
+
+
+function selectView(
+view
+){
+
+if(
+isBeanie() ||
+isStickerPack()
+){
+
+return;
+
+}
+
+activeView =
+view;
+
+document
+.getElementById(
+"thumbFrontWrap"
+)
+.classList
+.toggle(
+"selected",
+view === "front"
+);
+
+document
+.getElementById(
+"thumbBackWrap"
+)
+.classList
+.toggle(
+"selected",
+view === "back"
+);
+
+showMainImage(
+
+view === "back"
+
+? getBackImage(
+activeColorFile
+)
+
+: activeColorFile
+
+);
+
+}
+
+
+function renderColorSwatches(){
+
+const swatchWrap =
+document.getElementById(
+"colorSwatches"
+);
+
+swatchWrap.innerHTML =
+product.colors
+.map(
+function(c){
+
+return (
+
+'<div class="color' +
+
+(
+c === activeColorFile
+? ' selected'
+: ''
+)
+
++
+
+'" data-file="' +
+c +
+
+'" onclick="selectColor(this)" title="' +
+
+c.replace(
+".png",
+""
+)
+
++
+
+'">' +
+
+'<img src="' +
+c +
+
+'" alt="' +
+c.replace(
+".png",
+""
+) +
+
+'">' +
+
+'</div>'
+
+);
+
+}
+)
+.join(
+""
+);
+
+}
+
+
+function selectColor(
+el
+){
+
+activeColorFile =
+el.getAttribute(
+"data-file"
+);
+
+document
+.querySelectorAll(
+"#colorSwatches .color"
+)
+.forEach(
+function(d){
+
+d.classList.remove(
+"selected"
+);
+
+}
+);
+
+el.classList.add(
+"selected"
+);
+
+if(
+isBeanie()
+){
+
+showMainImage(
+activeColorFile
+);
+
+return;
+
 }
 
 updateViewThumbs();
 
 }
 
-if(!product){
 
-document.getElementById("productRoot").innerHTML =
+/* =========================
+   STICKER PACK
+========================= */
+
+function renderPackOptions(){
+
+const wrap =
+document.getElementById(
+"packOptions"
+);
+
+wrap.innerHTML =
+product.packOptions
+.map(
+function(option){
+
+return `
+
+<button
+type="button"
+class="pack-option ${
+option.count === selectedPackCount
+? "selected"
+: ""
+}"
+onclick="selectPackSize(${option.count}, ${option.price})"
+>
+
+${option.count} STICKERS
+
+<br>
+
+${formatPrice(option.price)}
+
+</button>
+
+`;
+
+}
+)
+.join(
+""
+);
+
+}
+
+
+function selectPackSize(
+count,
+price
+){
+
+selectedPackCount =
+count;
+
+selectedPackPrice =
+price;
+
+packStickerSelections =
+{};
+
+document
+.getElementById(
+"productPrice"
+)
+.textContent =
+formatPrice(
+selectedPackPrice
+);
+
+renderPackOptions();
+
+renderPackStickerChooser();
+
+}
+
+
+function setPackMode(
+mode
+){
+
+selectedPackMode =
+mode;
+
+packStickerSelections =
+{};
+
+document
+.getElementById(
+"randomModeBtn"
+)
+.classList
+.toggle(
+"selected",
+mode === "random"
+);
+
+document
+.getElementById(
+"pickModeBtn"
+)
+.classList
+.toggle(
+"selected",
+mode === "pick"
+);
+
+document
+.getElementById(
+"packStickerChooser"
+)
+.style
+.display =
+
+mode === "pick"
+
+? "block"
+
+: "none";
+
+renderPackStickerChooser();
+
+}
+
+
+function getPackSelectedCount(){
+
+return Object
+.values(
+packStickerSelections
+)
+.reduce(
+function(
+sum,
+qty
+){
+
+return (
+sum +
+Number(
+qty || 0
+)
+);
+
+},
+0
+);
+
+}
+
+
+function changePackSticker(
+key,
+delta
+){
+
+const current =
+Number(
+packStickerSelections[
+key
+] || 0
+);
+
+const total =
+getPackSelectedCount();
+
+
+if(
+delta > 0 &&
+total >= selectedPackCount
+){
+
+showToast(
+"You already selected " +
+selectedPackCount +
+" stickers.",
+"error"
+);
+
+return;
+
+}
+
+
+const next =
+Math.max(
+0,
+current + delta
+);
+
+
+if(
+next === 0
+){
+
+delete packStickerSelections[
+key
+];
+
+}else{
+
+packStickerSelections[
+key
+] =
+next;
+
+}
+
+
+renderPackStickerChooser();
+
+}
+
+
+function renderPackStickerChooser(){
+
+if(
+!isStickerPack()
+){
+
+return;
+
+}
+
+const chooser =
+document.getElementById(
+"packStickerChooser"
+);
+
+if(
+selectedPackMode !==
+"pick"
+){
+
+chooser.style.display =
+"none";
+
+return;
+
+}
+
+
+chooser.style.display =
+"block";
+
+
+const total =
+getPackSelectedCount();
+
+const progress =
+document.getElementById(
+"packProgress"
+);
+
+progress.textContent =
+
+total +
+" / " +
+selectedPackCount +
+" SELECTED";
+
+
+progress.classList.remove(
+"complete",
+"over"
+);
+
+
+if(
+total === selectedPackCount
+){
+
+progress.classList.add(
+"complete"
+);
+
+progress.textContent +=
+" ✓";
+
+}
+
+
+const grid =
+document.getElementById(
+"packStickerGrid"
+);
+
+
+grid.innerHTML =
+getStickerVariants()
+.map(
+function(sticker){
+
+const qty =
+Number(
+packStickerSelections[
+sticker.key
+] || 0
+);
+
+return `
+
+<div class="pack-sticker">
+
+<img
+src="${sticker.image}"
+alt="${sticker.label}"
+>
+
+<div class="pack-sticker-name">
+${sticker.label}
+</div>
+
+<div class="pack-sticker-qty">
+
+<button
+type="button"
+onclick="changePackSticker('${sticker.key}', -1)"
+${qty === 0 ? "disabled" : ""}
+>
+−
+</button>
+
+<span>
+${qty}
+</span>
+
+<button
+type="button"
+onclick="changePackSticker('${sticker.key}', 1)"
+${total >= selectedPackCount ? "disabled" : ""}
+>
++
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+)
+.join(
+""
+);
+
+}
+
+
+/* =========================
+   RENDER PRODUCT
+========================= */
+
+if(
+!product
+){
+
+document
+.getElementById(
+"productRoot"
+)
+.innerHTML =
+
 '<div class="product-detail"><p>Product not found. <a href="shop.html">Back to shop</a></p></div>';
 
-} else {
+}else{
 
 renderProduct();
 
 }
 
+
 function renderProduct(){
 
-document.title = product.name + " \u2014 VANDAL";
+document.title =
+product.name +
+" — VANDAL";
 
-document.getElementById("mainImage").alt = product.name;
-document.getElementById("productName").textContent = product.name;
-document.getElementById("productPrice").textContent = formatPrice(product.price);
+document
+.getElementById(
+"mainImage"
+)
+.alt =
+product.name;
 
-activeColorFile = product.colors[0];
+document
+.getElementById(
+"productName"
+)
+.textContent =
+product.name;
 
-if(isBeanie()){
 
-document.getElementById("viewThumbs").style.display = "none";
+activeColorFile =
+product.colors[
+0
+];
 
-} else {
 
-document.getElementById("viewThumbs").style.display = "";
+showMainImage(
+activeColorFile
+);
+
+
+/* =========================
+   STICKER PACK PRODUCT
+========================= */
+
+if(
+isStickerPack()
+){
+
+document
+.getElementById(
+"normalProductOptions"
+)
+.style.display =
+"none";
+
+document
+.getElementById(
+"stickerPackBuilder"
+)
+.style.display =
+"block";
+
+selectedPackCount =
+product.packOptions[
+0
+].count;
+
+selectedPackPrice =
+product.packOptions[
+0
+].price;
+
+document
+.getElementById(
+"productPrice"
+)
+.textContent =
+formatPrice(
+selectedPackPrice
+);
+
+renderPackOptions();
+
+setPackMode(
+"random"
+);
+
+return;
 
 }
+
+
+/* =========================
+   NORMAL PRODUCT
+========================= */
+
+document
+.getElementById(
+"productPrice"
+)
+.textContent =
+formatPrice(
+product.price
+);
+
+document
+.getElementById(
+"normalProductOptions"
+)
+.style.display =
+"block";
+
+document
+.getElementById(
+"stickerPackBuilder"
+)
+.style.display =
+"none";
+
+
+if(
+isBeanie()
+){
+
+document
+.getElementById(
+"viewThumbs"
+)
+.style.display =
+"none";
+
+}else{
+
+document
+.getElementById(
+"viewThumbs"
+)
+.style.display =
+"";
+
+}
+
 
 renderColorSwatches();
+
 updateViewThumbs();
 
-document.getElementById("sizeSelect").innerHTML =
-getSizes(product).map(function(s){
-return "<option>" + s + "</option>";
-}).join("");
 
-if(needsHeight(product.name)){
+document
+.getElementById(
+"sizeSelect"
+)
+.innerHTML =
 
-document.getElementById("heightWrap").style.display = "block";
+getSizes(
+product
+)
+.map(
+function(s){
 
-document.getElementById("heightSelect").innerHTML =
-HEIGHT_OPTIONS.map(function(h){
-return "<option>" + h + "</option>";
-}).join("");
+return (
+"<option>" +
+s +
+"</option>"
+);
+
+}
+)
+.join(
+""
+);
+
+
+if(
+needsHeight(
+product.name
+)
+){
+
+document
+.getElementById(
+"heightWrap"
+)
+.style.display =
+"block";
+
+document
+.getElementById(
+"heightSelect"
+)
+.innerHTML =
+
+HEIGHT_OPTIONS
+.map(
+function(h){
+
+return (
+"<option>" +
+h +
+"</option>"
+);
+
+}
+)
+.join(
+""
+);
 
 }
 
 }
+
+
+/* =========================
+   BUILD STICKER PACK LIST
+========================= */
+
+function buildChosenPackStickers(){
+
+const variants =
+getStickerVariants();
+
+const chosen =
+[];
+
+
+Object
+.keys(
+packStickerSelections
+)
+.forEach(
+function(key){
+
+const qty =
+Number(
+packStickerSelections[
+key
+] || 0
+);
+
+if(
+qty <= 0
+){
+
+return;
+
+}
+
+
+const variant =
+variants.find(
+function(v){
+
+return (
+v.key ===
+key
+);
+
+}
+);
+
+
+chosen.push({
+
+key:
+key,
+
+name:
+variant
+? variant.label
+: key,
+
+quantity:
+qty
+
+});
+
+}
+);
+
+
+return chosen;
+
+}
+
+
+/* =========================
+   ADD TO CART
+========================= */
 
 function addToCart(){
 
-const cart = JSON.parse(localStorage.getItem("cart")) || [];
+const cart =
+JSON.parse(
+localStorage.getItem(
+"cart"
+)
+) || [];
 
-const size = document.getElementById("sizeSelect").value;
-const color = activeColorFile.replace(".png","");
+
+/* =========================
+   ADD STICKER PACK
+========================= */
+
+if(
+isStickerPack()
+){
+
+if(
+selectedPackMode ===
+"pick" &&
+getPackSelectedCount() !==
+selectedPackCount
+){
+
+showToast(
+
+"Choose exactly " +
+selectedPackCount +
+" stickers first.",
+
+"error"
+
+);
+
+return;
+
+}
+
 
 const item = {
-name: product.name,
-image: activeColorFile,
-size: size,
-color: color,
-price: product.price
+
+name:
+"VANDAL STICKER PACK",
+
+image:
+activeColorFile,
+
+price:
+selectedPackPrice,
+
+quantity:
+1,
+
+isStickerPack:
+true,
+
+packSize:
+selectedPackCount,
+
+packMode:
+selectedPackMode,
+
+// IMPORTANT:
+// Shipping always uses 0.1kg per pack,
+// regardless of pack size.
+shippingWeight:
+0.1,
+
+packStickers:
+
+selectedPackMode ===
+"pick"
+
+? buildChosenPackStickers()
+
+: []
+
 };
 
-if(needsHeight(product.name)){
-item.height = document.getElementById("heightSelect").value;
+
+cart.push(
+item
+);
+
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(
+cart
+)
+
+);
+
+
+showToast(
+
+selectedPackCount +
+" sticker pack added to cart",
+
+"success"
+
+);
+
+
+return;
+
 }
 
-cart.push(item);
 
-localStorage.setItem("cart", JSON.stringify(cart));
+/* =========================
+   ADD NORMAL PRODUCT
+========================= */
 
-showToast(product.name + " added to cart", "success");
+const size =
+document
+.getElementById(
+"sizeSelect"
+)
+.value;
+
+const color =
+activeColorFile.replace(
+".png",
+""
+);
+
+
+const item = {
+
+name:
+product.name,
+
+image:
+activeColorFile,
+
+size:
+size,
+
+color:
+color,
+
+price:
+product.price
+
+};
+
+
+if(
+needsHeight(
+product.name
+)
+){
+
+item.height =
+document
+.getElementById(
+"heightSelect"
+)
+.value;
 
 }
+
+
+cart.push(
+item
+);
+
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(
+cart
+)
+
+);
+
+
+showToast(
+
+product.name +
+" added to cart",
+
+"success"
+
+);
+
+}
+
+
+/* =========================
+   CURRENCY CHANGE
+========================= */
+
+window.addEventListener(
+
+"vandalCurrencyChanged",
+
+function(){
+
+if(
+isStickerPack()
+){
+
+document
+.getElementById(
+"productPrice"
+)
+.textContent =
+formatPrice(
+selectedPackPrice
+);
+
+renderPackOptions();
+
+}else{
+
+document
+.getElementById(
+"productPrice"
+)
+.textContent =
+formatPrice(
+product.price
+);
+
+}
+
+}
+
+);
 
 </script>
 
 </body>
+
 </html>

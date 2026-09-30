@@ -1,30 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CHECKOUT</title>
 
-<link
-rel="icon"
-href="VANDAL LOGO.png"
->
-
-<link
-rel="stylesheet"
-href="style.css"
->
+<link rel="icon" href="VANDAL LOGO.png">
+<link rel="stylesheet" href="style.css">
 
 <script src="https://checkout.flutterwave.com/v3.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
 
 <style>
 
@@ -117,7 +102,6 @@ color:#777;
 line-height:1.5;
 text-align:left;
 }
-
 
 /* =========================
    KEEP UP WITH VANDAL POPUP
@@ -212,12 +196,9 @@ width:auto;
 }
 
 </style>
-
 </head>
 
-
 <body>
-
 
 <!-- =========================
      KEEP UP WITH VANDAL
@@ -239,9 +220,7 @@ onclick="hideVandalKeepUpPopup()"
 &times;
 </button>
 
-<h3>
-KEEP UP WITH VANDAL
-</h3>
+<h3>KEEP UP WITH VANDAL</h3>
 
 <p>
 Stay tapped in for upcoming drops, updates and more.
@@ -262,10 +241,7 @@ KEEP UP &rarr;
 
 <div class="checkout-box">
 
-<h1>
-CHECKOUT
-</h1>
-
+<h1>CHECKOUT</h1>
 
 <input
 type="text"
@@ -273,13 +249,11 @@ id="firstName"
 placeholder="First Name"
 >
 
-
 <input
 type="text"
 id="lastName"
 placeholder="Last Name"
 >
-
 
 <input
 type="email"
@@ -287,13 +261,11 @@ id="email"
 placeholder="Email"
 >
 
-
 <input
 type="text"
 id="phone"
 placeholder="Phone Number"
 >
-
 
 <input
 type="text"
@@ -301,12 +273,9 @@ id="address"
 placeholder="Full Delivery Address"
 >
 
-
 <p class="checkout-note">
 
-<strong>
-IMPORTANT:
-</strong>
+<strong>IMPORTANT:</strong>
 
 Please enter your complete and correct delivery address.
 Incorrect or incomplete addresses may cause delivery delays
@@ -314,12 +283,9 @@ or additional courier charges.
 
 </p>
 
-
 <p class="checkout-note">
 
-<strong>
-MADE TO ORDER:
-</strong>
+<strong>MADE TO ORDER:</strong>
 
 Production time is separate from courier delivery time.
 Any courier delivery estimate shown below begins after your
@@ -342,14 +308,10 @@ onclick="getShippingRates()"
 GET SHIPPING RATES
 </button>
 
-
 <p id="shippingStatus">
-
 Enter your details and full delivery address,
 then get shipping rates.
-
 </p>
-
 
 <select
 id="delivery"
@@ -362,12 +324,9 @@ Select a shipping option
 
 </select>
 
-
 <p class="shipping-note">
-
 Shipping prices are live courier quotes.
 If you change your address, get fresh rates.
-
 </p>
 
 </div>
@@ -385,7 +344,6 @@ id="promoInput"
 placeholder="Discount code"
 >
 
-
 <button
 type="button"
 id="promoBtn"
@@ -396,12 +354,9 @@ Apply
 
 </div>
 
-
 <p id="promoMsg"></p>
 
-
 <h2 id="total"></h2>
-
 
 <button
 type="button"
@@ -411,7 +366,6 @@ onclick="payNow()"
 PAY NOW
 </button>
 
-
 </div>
 
 </div>
@@ -419,9 +373,7 @@ PAY NOW
 
 <script src="site.js"></script>
 
-
 <script>
-
 
 /* =========================
    CART
@@ -432,9 +384,7 @@ JSON.parse(
 localStorage.getItem("cart")
 ) || [];
 
-
 let subtotal = 0;
-
 
 cart.forEach(
 function(item){
@@ -445,7 +395,6 @@ item.quantity ||
 item.qty ||
 1
 );
-
 
 subtotal +=
 Number(
@@ -465,12 +414,10 @@ quantity;
 const stickerSelections =
 getStickerSelections();
 
-
 const totalStickerCount =
 getTotalStickerCount(
 stickerSelections
 );
-
 
 const stickerFee =
 getStickerCost(
@@ -487,18 +434,15 @@ document.getElementById(
 "delivery"
 );
 
-
 const shippingStatus =
 document.getElementById(
 "shippingStatus"
 );
 
-
 const getRatesBtn =
 document.getElementById(
 "getRatesBtn"
 );
-
 
 let selectedShippingFee = 0;
 
@@ -518,7 +462,7 @@ try{
 emailjs.init({
 
 publicKey:
-"YOUR_EMAILJS_PUBLIC_KEY"
+"dkw6pg5mspRH9j2DI"
 
 });
 
@@ -531,14 +475,11 @@ error
 
 }
 
-
 const EMAILJS_SERVICE_ID =
-"YOUR_EMAILJS_SERVICE_ID";
-
+"service_s96xhps";
 
 const EMAILJS_TEMPLATE_ID =
-"YOUR_EMAILJS_TEMPLATE_ID";
-
+"template_1mcnbxg";
 
 const SELLER_EMAIL =
 "wearsvandal@gmail.com";
@@ -559,7 +500,6 @@ const VALID_CODES = {
 "UTOTY876": 0.05
 
 };
-
 
 let discountRate = 0;
 
@@ -588,7 +528,6 @@ currency
 const ngnAmount =
 Number(amount) || 0;
 
-
 if(
 currency === "NGN"
 ){
@@ -597,11 +536,9 @@ return ngnAmount;
 
 }
 
-
 const rate =
 VANDAL_FX_RATES[currency] ||
 1;
-
 
 return Number(
 (
@@ -626,7 +563,6 @@ const number =
 Number(amount) ||
 0;
 
-
 if(
 currency === "NGN"
 ){
@@ -641,7 +577,6 @@ number
 );
 
 }
-
 
 return (
 
@@ -675,7 +610,6 @@ getVandalCurrency();
 /* PRODUCT SUBTOTAL */
 
 let productSubtotal;
-
 
 if(
 currency === "NGN"
@@ -713,7 +647,6 @@ Math.max(
 0,
 totalStickerCount - 3
 );
-
 
 const stickerAmount =
 
@@ -787,18 +720,15 @@ document.getElementById(
 "promoInput"
 );
 
-
 const msg =
 document.getElementById(
 "promoMsg"
 );
 
-
 const code =
 input.value
 .trim()
 .toUpperCase();
-
 
 if(
 !code
@@ -813,7 +743,6 @@ msg.innerText =
 return;
 
 }
-
 
 if(
 !VALID_CODES.hasOwnProperty(
@@ -831,16 +760,13 @@ return;
 
 }
 
-
 appliedCode =
 code;
-
 
 const value =
 VALID_CODES[
 code
 ];
-
 
 if(
 value ===
@@ -878,10 +804,8 @@ value * 100
 
 }
 
-
 input.disabled =
 true;
-
 
 document
 .getElementById(
@@ -889,7 +813,6 @@ document
 )
 .disabled =
 true;
-
 
 updateTotal();
 
@@ -905,10 +828,8 @@ function updateTotal(){
 const amounts =
 getCheckoutAmounts();
 
-
 const currency =
 amounts.currency;
-
 
 let html =
 
@@ -1050,26 +971,20 @@ message
 shippingRatesLoaded =
 false;
 
-
 selectedShippingFee =
 0;
-
 
 selectedCourier =
 null;
 
-
 shippingRequestToken =
 null;
-
 
 delivery.innerHTML =
 '<option value="">Select a shipping option</option>';
 
-
 delivery.disabled =
 true;
-
 
 if(
 message
@@ -1082,7 +997,6 @@ shippingStatus.innerText =
 message;
 
 }
-
 
 updateTotal();
 
@@ -1148,7 +1062,6 @@ return;
 
 }
 
-
 const firstName =
 document
 .getElementById(
@@ -1156,7 +1069,6 @@ document
 )
 .value
 .trim();
-
 
 const lastName =
 document
@@ -1166,7 +1078,6 @@ document
 .value
 .trim();
 
-
 const email =
 document
 .getElementById(
@@ -1174,7 +1085,6 @@ document
 )
 .value
 .trim();
-
 
 const phone =
 document
@@ -1184,7 +1094,6 @@ document
 .value
 .trim();
 
-
 const address =
 document
 .getElementById(
@@ -1192,7 +1101,6 @@ document
 )
 .value
 .trim();
-
 
 if(
 !firstName ||
@@ -1211,28 +1119,21 @@ return;
 
 }
 
-
 resetShippingRates();
-
 
 getRatesBtn.disabled =
 true;
 
-
 getRatesBtn.innerText =
 "GETTING RATES...";
-
 
 shippingStatus.style.color =
 "#666";
 
-
 shippingStatus.innerText =
 "Checking your address and available couriers...";
 
-
 try{
-
 
 const response =
 await fetch(
@@ -1272,13 +1173,10 @@ cart
 }
 );
 
-
 const responseText =
 await response.text();
 
-
 let data;
-
 
 try{
 
@@ -1300,7 +1198,6 @@ throw new Error(
 
 }
 
-
 if(
 !response.ok ||
 !data.success
@@ -1318,7 +1215,6 @@ data.shipbubble?.message ||
 
 }
 
-
 if(
 !Array.isArray(
 data.couriers
@@ -1332,15 +1228,12 @@ throw new Error(
 
 }
 
-
 shippingRequestToken =
 data.request_token ||
 null;
 
-
 delivery.innerHTML =
 '<option value="">Choose a courier</option>';
-
 
 data.couriers.forEach(
 function(
@@ -1353,7 +1246,6 @@ Number(
 courier.total
 );
 
-
 if(
 !Number.isFinite(
 fee
@@ -1364,35 +1256,29 @@ return;
 
 }
 
-
 const option =
 document.createElement(
 "option"
 );
-
 
 option.value =
 String(
 index
 );
 
-
 option.dataset.fee =
 String(
 fee
 );
 
-
 option.dataset.name =
 courier.courier_name ||
 "Courier";
-
 
 option.dataset.service =
 courier.service_type ||
 courier.service_code ||
 "";
-
 
 let label =
 
@@ -1416,7 +1302,6 @@ getVandalCurrency()
 
 );
 
-
 if(
 courier.delivery_eta
 ){
@@ -1427,10 +1312,8 @@ courier.delivery_eta;
 
 }
 
-
 option.textContent =
 label;
-
 
 delivery.appendChild(
 option
@@ -1438,7 +1321,6 @@ option
 
 }
 );
-
 
 if(
 delivery.options.length <=
@@ -1451,59 +1333,45 @@ throw new Error(
 
 }
 
-
 shippingRatesLoaded =
 true;
-
 
 delivery.disabled =
 false;
 
-
 shippingStatus.style.color =
 "#2ecc71";
-
 
 shippingStatus.innerText =
 "Shipping rates found. Choose a courier below.";
 
-
 }catch(error){
 
-
 resetShippingRates();
-
 
 shippingStatus.style.color =
 "#ff0000";
 
-
 shippingStatus.innerText =
 error.message;
-
 
 showToast(
 error.message,
 "error"
 );
 
-
 console.error(
 "Shipping error:",
 error
 );
 
-
 }finally{
-
 
 getRatesBtn.disabled =
 false;
 
-
 getRatesBtn.innerText =
 "GET SHIPPING RATES";
-
 
 }
 
@@ -1523,7 +1391,6 @@ delivery.options[
 delivery.selectedIndex
 ];
 
-
 if(
 !delivery.value ||
 !option
@@ -1541,13 +1408,11 @@ return;
 
 }
 
-
 selectedShippingFee =
 Number(
 option.dataset.fee ||
 0
 );
-
 
 selectedCourier = {
 
@@ -1563,7 +1428,6 @@ fee:
 selectedShippingFee
 
 };
-
 
 updateTotal();
 
@@ -1591,9 +1455,7 @@ const selections =
 stickerSelections ||
 {};
 
-
 let variants = [];
-
 
 try{
 
@@ -1617,9 +1479,7 @@ error
 
 }
 
-
 const stickerData = [];
-
 
 Object.keys(
 selections
@@ -1633,7 +1493,6 @@ selections[key]
 ) ||
 0;
 
-
 if(
 quantity <= 0
 ){
@@ -1642,10 +1501,8 @@ return;
 
 }
 
-
 let name =
 key;
-
 
 if(
 Array.isArray(
@@ -1658,6 +1515,7 @@ variants.find(
 function(variant){
 
 return (
+
 String(
 variant.key ||
 variant.id ||
@@ -1667,11 +1525,11 @@ variant.value ||
 String(
 key
 )
+
 );
 
 }
 );
-
 
 if(
 matchingVariant
@@ -1686,7 +1544,6 @@ key;
 }
 
 }
-
 
 stickerData.push({
 
@@ -1704,7 +1561,6 @@ quantity
 }
 );
 
-
 return stickerData;
 
 }
@@ -1717,14 +1573,12 @@ return stickerData;
 let vandalKeepUpTimer =
 null;
 
-
 function showVandalKeepUpPopup(){
 
 const popup =
 document.getElementById(
 "vandalKeepUpPopup"
 );
-
 
 if(
 !popup
@@ -1733,7 +1587,6 @@ if(
 return;
 
 }
-
 
 if(
 vandalKeepUpTimer
@@ -1745,17 +1598,14 @@ vandalKeepUpTimer
 
 }
 
-
 popup.classList.add(
 "show"
 );
-
 
 popup.setAttribute(
 "aria-hidden",
 "false"
 );
-
 
 vandalKeepUpTimer =
 setTimeout(
@@ -1773,7 +1623,6 @@ document.getElementById(
 "vandalKeepUpPopup"
 );
 
-
 if(
 !popup
 ){
@@ -1782,17 +1631,14 @@ return;
 
 }
 
-
 popup.classList.remove(
 "show"
 );
-
 
 popup.setAttribute(
 "aria-hidden",
 "true"
 );
-
 
 if(
 vandalKeepUpTimer
@@ -1823,7 +1669,6 @@ const box =
 document.querySelector(
 ".checkout-box"
 );
-
 
 box.innerHTML = `
 
@@ -1867,7 +1712,6 @@ ${orderRef}
 
 </div>
 
-
 <div class="confirm-block">
 
 <p>
@@ -1880,7 +1724,6 @@ ${transactionId}
 
 </div>
 
-
 <p
 style="
 color:#999;
@@ -1891,7 +1734,6 @@ margin-top:14px;
 Save this reference number
 for any order enquiries.
 </p>
-
 
 <a
 href="index.html"
@@ -1932,7 +1774,6 @@ return;
 
 }
 
-
 const firstName =
 document
 .getElementById(
@@ -1940,7 +1781,6 @@ document
 )
 .value
 .trim();
-
 
 const lastName =
 document
@@ -1950,7 +1790,6 @@ document
 .value
 .trim();
 
-
 const email =
 document
 .getElementById(
@@ -1958,7 +1797,6 @@ document
 )
 .value
 .trim();
-
 
 const phone =
 document
@@ -1968,7 +1806,6 @@ document
 .value
 .trim();
 
-
 const address =
 document
 .getElementById(
@@ -1976,7 +1813,6 @@ document
 )
 .value
 .trim();
-
 
 if(
 !firstName ||
@@ -1995,7 +1831,6 @@ return;
 
 }
 
-
 if(
 !shippingRatesLoaded ||
 !selectedCourier ||
@@ -2011,7 +1846,6 @@ return;
 
 }
 
-
 if(
 typeof FlutterwaveCheckout ===
 "undefined"
@@ -2026,18 +1860,14 @@ return;
 
 }
 
-
 const amounts =
 getCheckoutAmounts();
-
 
 const currency =
 amounts.currency;
 
-
 const total =
 amounts.total;
-
 
 if(
 !Number.isFinite(
@@ -2055,11 +1885,9 @@ return;
 
 }
 
-
 const orderRef =
 "VANDAL-" +
 Date.now();
-
 
 const deliveryLabel =
 
@@ -2104,17 +1932,14 @@ Math.max(
 totalStickerCount - 3
 );
 
-
 const freeStickerCount =
 Math.min(
 3,
 totalStickerCount
 );
 
-
 const stickerOrderData =
 buildStickerOrderData();
-
 
 const orderData = {
 
@@ -2195,18 +2020,14 @@ FlutterwaveCheckout({
 public_key:
 "FLWPUBK-3b34799c31afa84f90876a8a55afa1f0-X",
 
-
 tx_ref:
 orderRef,
-
 
 amount:
 total,
 
-
 currency:
 currency,
-
 
 payment_options:
 
@@ -2215,7 +2036,6 @@ currency === "NGN"
 ? "card, banktransfer, ussd"
 
 : "card",
-
 
 customer:{
 
@@ -2231,7 +2051,6 @@ firstName +
 lastName
 
 },
-
 
 meta:{
 
@@ -2279,7 +2098,6 @@ made_to_order:
 
 },
 
-
 customizations:{
 
 title:
@@ -2292,7 +2110,6 @@ logo:
 "VANDAL LOGO.png"
 
 },
-
 
 callback:
 async function(
@@ -2314,12 +2131,10 @@ return;
 
 }
 
-
 showToast(
 "Payment received. Verifying and saving your order...",
 "success"
 );
-
 
 try{
 
@@ -2364,13 +2179,10 @@ orderData
 }
 );
 
-
 const verifyText =
 await verifyResponse.text();
 
-
 let verifyData;
-
 
 try{
 
@@ -2391,7 +2203,6 @@ throw new Error(
 );
 
 }
-
 
 if(
 !verifyResponse.ok ||
@@ -2426,10 +2237,8 @@ item.qty ||
 1
 );
 
-
 let line =
 item.name;
-
 
 if(
 item.color ||
@@ -2440,7 +2249,6 @@ item.height
 const details =
 [];
 
-
 if(
 item.color
 ){
@@ -2450,7 +2258,6 @@ item.color
 );
 
 }
-
 
 if(
 item.size
@@ -2462,7 +2269,6 @@ item.size
 
 }
 
-
 if(
 item.height
 ){
@@ -2472,7 +2278,6 @@ item.height
 );
 
 }
-
 
 line +=
 
@@ -2486,7 +2291,6 @@ details.join(
 
 }
 
-
 if(
 qty > 1
 ){
@@ -2498,7 +2302,6 @@ qty;
 
 }
 
-
 return line;
 
 }
@@ -2509,80 +2312,57 @@ return line;
 
 
 /* =========================
-   CUSTOMER EMAIL
+   BUILD STICKER EMAIL SUMMARY
 ========================= */
 
-try{
+const stickerSummary =
 
-emailjs.send(
+stickerOrderData.length > 0
 
-EMAILJS_SERVICE_ID,
+? stickerOrderData
+.map(
+function(sticker){
 
-EMAILJS_TEMPLATE_ID,
+return (
 
-{
+(sticker.name ||
+sticker.key ||
+"Sticker")
 
-to_email:
-email,
++
 
-customer_name:
-firstName +
-" " +
-lastName,
+" x"
 
-order_ref:
-orderRef,
++
 
-transaction_id:
-response.transaction_id,
+(Number(
+sticker.quantity
+) || 0)
 
-order_items:
-orderSummary,
-
-order_total:
-formatCheckoutMoney(
-total,
-currency
-),
-
-delivery_option:
-deliveryLabel,
-
-address:
-address
+);
 
 }
-
 )
-.catch(
-function(error){
+.join(
+"\n"
+)
 
-console.error(
-"Customer email failed:",
-error
-);
-
-}
-);
-
-
-}catch(error){
-
-console.error(
-"EmailJS unavailable:",
-error
-);
-
-}
+: "No stickers selected";
 
 
 /* =========================
    SELLER EMAIL
 ========================= */
 
+/*
+This is the internal VANDAL order
+notification sent to
+wearsvandal@gmail.com.
+*/
+
 try{
 
-emailjs.send(
+await emailjs.send(
 
 EMAILJS_SERVICE_ID,
 
@@ -2590,17 +2370,16 @@ EMAILJS_TEMPLATE_ID,
 
 {
 
-to_email:
-SELLER_EMAIL,
-
 customer_name:
-
 firstName +
 " " +
-lastName +
-" (" +
-phone +
-")",
+lastName,
+
+customer_email:
+email,
+
+customer_phone:
+phone,
 
 order_ref:
 orderRef,
@@ -2610,6 +2389,9 @@ response.transaction_id,
 
 order_items:
 orderSummary,
+
+stickers:
+stickerSummary,
 
 order_total:
 formatCheckoutMoney(
@@ -2625,23 +2407,12 @@ address
 
 }
 
-)
-.catch(
-function(error){
-
-console.error(
-"Seller email failed:",
-error
 );
-
-}
-);
-
 
 }catch(error){
 
 console.error(
-"EmailJS unavailable:",
+"Seller email failed:",
 error
 );
 
@@ -2658,7 +2429,6 @@ localStorage.removeItem(
 "cart"
 );
 
-
 localStorage.removeItem(
 "vandalStickers"
 );
@@ -2673,7 +2443,6 @@ orderRef,
 response.transaction_id
 );
 
-
 showVandalKeepUpPopup();
 
 
@@ -2683,7 +2452,6 @@ console.error(
 "Payment verification/order save failed:",
 error
 );
-
 
 showToast(
 error.message ||
@@ -2695,14 +2463,12 @@ error.message ||
 
 },
 
-
 onclose:
 function(){
 
 // Customer closed payment window.
 
 }
-
 
 });
 
@@ -2715,10 +2481,7 @@ function(){
 
 updateTotal();
 
-
 </script>
 
-
 </body>
-
 </html>
